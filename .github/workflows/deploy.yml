@@ -1,0 +1,105 @@
+name: verify and deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  # The gate exists because this game is played occasionally. There is no ambient
+  # traffic to reveal a broken deploy, so without a check that blocks it, a bad push
+  # stays invisible until the next game night — which is the worst possible moment
+  # to find it.
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install
+        run: |
+          npm ci
+          npm ci --prefix server
+          npm ci --prefix client
+
+      - name: Question bank lint
+        run: node questions/lint.js
+
+      - name: Reliability (sockets)
+        run: node test-reliability.js
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Start servers
+        run: node scripts/dev.js up
+
+      - name: Browser (shared screen + 3 phones)
+        run: node test-browser.js --url http://localhost:5273
+
+      - name: Stop servers
+        if: always()
+        run: node scripts/dev.js down
+
+  build:
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm ci --prefix client
+
+      # Without this the deployed site connects to the visitor's own localhost and
+      # "Open the room" silently does nothing — a failure that looks like a bug in
+      # the game rather than a missing secret, so it is checked rather than assumed.
+      - name: Require the backend URL
+        env:
+          VITE_SERVER_URL: ${{ secrets.VITE_SERVER_URL }}
+        run: |
+          if [ -z "$VITE_SERVER_URL" ]; then
+            echo "VITE_SERVER_URL secret is not set."
+            echo "Set it to the deployed backend, e.g. https://fajil.onrender.com"
+            exit 1
+          fi
+
+      - name: Build
+        env:
+          VITE_SERVER_URL: ${{ secrets.VITE_SERVER_URL }}
+        run: npm run build --prefix client
+
+      # A build that kept a localhost reference would deploy a site that works on
+      # the machine that built it and nowhere else.
+      - name: Refuse to ship localhost
+        run: |
+          if grep -rq "localhost:3101\|localhost:3001" client/dist/assets/*.js; then
+            echo "localhost survived into the bundle — VITE_SERVER_URL was not applied."
+            exit 1
+          fi
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: client/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

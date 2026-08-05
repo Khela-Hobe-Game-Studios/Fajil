@@ -1,251 +1,268 @@
-# BHUA — Project Brief
+# FAJIL (ফাজিল) — architecture
 
-**Studio:** Khela Hobe Game Studios
-**Game:** BHUA (ভুয়া, "fake") — a bluffing trivia party game about Bangladesh
-**Audience:** Bangladeshi diaspora and anyone with Bangladeshi cultural knowledge
-**Status:** Working single-device prototype exists (`bhua.html`). This document specifies the multiplayer build.
+> **New here? Read [AGENTS.md](AGENTS.md) first** — commands, the verify gate, and
+> the traps that are expensive to rediscover. This file is the architecture reference.
+> [docs/original-brief.md](docs/original-brief.md) is the original design brief, kept
+> as the design record; where it and this file disagree, this file is what was built.
 
----
+A bluffing trivia party game about Bangladesh and its diaspora. Everyone sees one
+fill-in-the-blank question and secretly writes a **lie**. The lies are shuffled in
+with the real answer and the room votes. **+1000** for finding the truth, **+500**
+for every player your lie fools. The shared screen runs on a TV or laptop; players
+join on their phones with a four-letter room code.
 
-## 1. The game
-
-Fibbage mechanics. Each round:
-
-1. Everyone sees the same fill-in-the-blank prompt: *"Bangladesh's national fruit is the ___."*
-2. Each player secretly writes a **lie** — a plausible wrong answer.
-3. All lies plus the real answer are shuffled and shown to everyone.
-4. Each player picks the one they think is true. You can't pick your own lie.
-5. **Scoring:** +1000 for finding the truth, +500 for every player your lie fooled.
-6. Reveal shows who wrote what, then a short "why it matters" blurb explaining the real answer.
-
-The design insight worth protecting: the diaspora's *uneven* cultural knowledge is the engine, not an obstacle. Someone raised in Dhaka and someone raised in Michigan fool each other in opposite directions. Everything below should preserve that.
+The design premise worth protecting: the diaspora's *uneven* cultural knowledge is
+the engine, not an obstacle. Someone raised in Dhaka and someone raised in Michigan
+fool each other in opposite directions. The `mixed` deck alternates `desh` and
+`probash` tiers round by round specifically to keep that true.
 
 ---
 
-## 2. Architecture
-
-**Node + WebSockets. One authoritative server. Phones are dumb terminals.**
+## Architecture
 
 ```
-┌─────────────┐         ┌──────────────┐         ┌─────────────┐
-│  Big screen │◄───ws──►│    Server    │◄──ws───►│   Phones    │
-│  (room host)│         │ (game state) │         │(controllers)│
-└─────────────┘         └──────────────┘         └─────────────┘
+client/     React 19 + Vite     → GitHub Pages
+server/     Node + Express + Socket.io → Render (free tier)
+questions/  questions.json + lint.js, or a published Google Sheet CSV
 ```
 
-- **Big screen** — laptop/TV in the room. Joins a room as `role: "screen"`. Shows prompt, options, reveal, scoreboard. Renders the rickshaw-panel design.
-- **Phones** — join by room code at a short URL. Show only what that player needs to do right now: a text box, or a list of options to tap.
-- **Server** — holds all state. Runs all timers. Decides all transitions.
-
-Do **not** use WebRTC or peer-to-peer. Do **not** put game logic in the client.
-
-### The single most important rule
-
-**The correct answer never leaves the server until the reveal phase.** Not in the initial round payload, not flagged in the options array, not as an index. If the truth ships to clients early, someone reads it out of the WebSocket frames in devtools on round one and the game is dead. Options go to clients as `[{id, text}]` with no truth marker; the server knows which id is true.
-
-Same applies to lie authorship — clients get authorship only at reveal.
-
-### Suggested stack
-
-- `ws` or Socket.IO for transport (Socket.IO buys you reconnection handling; worth it here)
-- Plain TypeScript on the server, no framework needed
-- Vite + vanilla TS or React for both clients
-- In-memory room store, `Map<roomCode, Room>`. No database for v1. Rooms expire 30 min after last activity.
-- Deploy: Fly.io or Railway. Needs sticky sessions if you scale past one instance — for v1, don't.
+The backend is **stateful** — rooms are an in-memory `Map`. Serverless will not work.
+One instance only; scaling past one needs sticky sessions *and* a shared room store.
 
 ---
 
-## 3. State machine
+## The rule the whole game rests on
 
-Server-owned. Every transition is server-driven, either by timer expiry or by all players having acted.
+**The correct answer must not leave the server before the reveal.**
 
-```
-LOBBY ──start──► PROMPT ──(3s)──► COLLECTING ──all in / timeout──► VOTING
-                                                                      │
-                        ┌─────────────────────────────────────────────┘
-                        ▼
-                    REVEAL ──(host advances)──► SCOREBOARD
-                                                    │
-                          ┌─────────────────────────┤
-                          ▼                         ▼
-                    (rounds left)              (last round)
-                        PROMPT                    FINAL
-```
+If it ships early, one player reads it out of a WebSocket frame on round one and the
+game is over. Three specific defences, all in `server/src/lies.js`:
 
-**Timers matter.** The pass-and-play prototype has none and doesn't need them. The phone version does, or one distracted player stalls the room.
+1. `toClientOptions()` is the **only** shape allowed out during `VOTING`, and it
+   *builds a fresh `{id, text}`* rather than deleting secrets from the internal
+   object. A delete-pass is the version that leaks the day somebody adds a field.
+2. **Option ids are assigned after the shuffle**, so the id sequence carries no
+   signal. Assigning before would make "the truth is always o1" true.
+3. **Authorship is withheld on the same reasoning** — knowing who wrote what is
+   knowing what is not true. Authors and voters appear for the first time in
+   `round:reveal`.
 
-| Phase | Duration | On expiry |
-|---|---|---|
-| `PROMPT` | 3s | auto-advance |
-| `COLLECTING` | 60s | non-submitters get an auto-lie from a filler pool |
-| `VOTING` | 20s | non-voters score nothing that round |
-| `REVEAL` | manual | screen advances one option at a time |
-| `SCOREBOARD` | manual | host taps continue |
-
-Auto-lie filler pool: a small set of generic plausible-sounding answers per question, marked so the reveal can say "the house wrote this" rather than blaming an AFK player.
+`test-reliability.js` records every frame each client is ever sent and re-reads the
+transcript the way a player with devtools would. Note that the answer's *text* is
+necessarily present during voting — it is one of the options — so the assertion is
+that nothing identifies **which** one.
 
 ---
 
-## 4. Message protocol
+## Game state machine
 
-Client → server:
-
-```ts
-{ t: "join",       code: "MITH", name: "Rumi", role: "player" | "screen" }
-{ t: "rejoin",     token: "..." }
-{ t: "start",      rounds: 3 | 5 | 7, deck: "mixed" | "desh" | "probash" }
-{ t: "lie",        text: "Mango" }
-{ t: "vote",       optionId: "o3" }
-{ t: "advance" }              // screen/host only
+```
+LOBBY
+  └─ PROMPT (3s) → COLLECTING (45/60/90s) → VOTING (25s) → REVEAL (scheduled) → SCOREBOARD (6s)
+       ↑                                                                              │
+       └──────────────────────── advanceRound() ──────────────────────────────────────┘
+                                        │ (rounds exhausted)
+                                    GAME_OVER
 ```
 
-Server → client:
+`advanceRound()` in `gameManager.js` is **the one place** a round ends and the next
+begins — the scoreboard timer, the host's skip and the resume-after-pause path all
+funnel through it. Three copies is how a new phase ends up missing from one of them.
 
-```ts
-{ t: "joined",     token, playerId, room: {...} }
-{ t: "roster",     players: [{id, name, score, connected}] }
-{ t: "phase",      phase, round, of, endsAt }   // endsAt = server epoch ms
-{ t: "prompt",     text: "Bangladesh's national fruit is the ___." }
-{ t: "options",    options: [{id, text}] }      // NO truth flag
-{ t: "waiting",    stillOut: ["Ayesha", "Tanvir"] }
-{ t: "reveal",     step, option: {id, text, truth, authors, voters, points} }
-{ t: "scores",     players: [{id, name, score, gained}] }
-{ t: "final",      standings: [...] }
-{ t: "error",      code, message }
-```
-
-Clients render `endsAt` against their own clock with a drift correction on join. Don't send countdown ticks over the socket.
+Timers are `setTimeout`s on `room._timers`, cleared when a phase is cut short.
+`COLLECTING` and `VOTING` also end early the moment everyone connected has acted.
 
 ---
 
-## 5. Data model
+## Scoring
 
-```ts
-type Room = {
-  code: string;              // 4 letters, ambiguity-free alphabet
-  hostId: string;
-  phase: Phase;
-  round: number;
-  totalRounds: number;
-  deck: DeckFilter;
-  questions: Question[];     // pre-drawn at start, no repeats
-  players: Map<string, Player>;
-  screens: Set<WebSocket>;
-  current: RoundState | null;
-  lastActivity: number;
-};
+| | |
+|---|---|
+| Vote for the truth | **+1000** |
+| Each player your lie fools | **+500** (every author of a merged lie is paid in full) |
+| Final round | **×2** |
+| Typing the real answer into the lie box | **0 points**, a private notice, a badge |
 
-type Player = {
-  id: string;
-  token: string;             // for reconnect
-  name: string;
-  score: number;
-  connected: boolean;
-  socket: WebSocket | null;
-};
+The truth-collision reward is deliberately zero. Paying for it would make typing the
+real answer the dominant strategy for anyone who knows it, which empties the lie pool
+— the one thing the game cannot survive. It is worth a **Knew it ×N** badge on the
+final standings instead.
 
-type RoundState = {
-  question: Question;
-  lies: Map<playerId, string>;
-  options: Option[];         // built after collection closes
-  votes: Map<playerId, optionId>;
-  revealStep: number;
-  gains: Map<playerId, number>;
-};
-
-type Option = {
-  id: string;
-  text: string;
-  truth: boolean;
-  authors: string[];         // [] for house decoy and for truth
-};
-```
-
-**Room code alphabet:** exclude I, O, 0, 1, L. Use `ABCDEFGHJKMNPQRSTUVWXYZ`. People read these aloud across a room.
+The final-round doubling is one line and is most of what keeps a table playing to the
+end rather than watching a leader coast from round four.
 
 ---
 
-## 6. Question bank
+## Player cap: 8
 
-Ships as JSON, not hardcoded. Schema:
+Not arbitrary. Reading N lies is O(N) attention, unlike guessing a number — at 15
+players the vote screen is 16 options in 25 seconds, which makes voting random and
+means half the room never hears its own lie read out. Below 4 players, house decoys
+pad the board to a floor of 5 options (`MIN_OPTIONS`).
+
+---
+
+## Message protocol
+
+Client → server: `time:ping`, `host:create_room`, `host:update_settings`,
+`host:rejoin`, `host:start_game`, `host:skip`, `host:end_game`, `host:play_again`,
+`player:join`, `player:rejoin`, `player:submit_lie`, `player:submit_vote`.
+
+Server → client: `room:created`, `player:joined`, `room:updated`, `room:settings`,
+`room:reset`, `round:prompt`, `round:collecting`, `round:lie_count`, `lie:accepted`,
+`lie:knew_it`, `round:options`, `vote:accepted`, `round:vote_count`, `round:reveal`,
+`round:scoreboard`, `game:over`, `game:paused`, `game:resumed`, `error`.
+
+**Every phase event carries the server's clock:** `{ phase, serverNow, startedAt,
+endsAt, durationMs }`. Clients measure their offset once per connect (`time:ping`)
+and derive the remainder from `endsAt`. Nobody counts down from a number they were
+handed once. See `client/src/game/clock.js`.
+
+**`round:options` is per-recipient**, not a broadcast — each player must learn which
+option is their own (so they cannot vote for it) without learning anyone else's. See
+`emitPerPlayer()`.
+
+---
+
+## Reconnection
+
+This is load-bearing. Phones sleep, tabs get backgrounded, wifi drops.
+
+- **Identity is a durable client-generated `pid`** in `localStorage`, never the
+  socket id. Socket ids change on every reconnect; keying game state off them silently
+  resets a returning player's score to zero.
+- **Host control is a separate minted `hostToken`**, sent only to the socket that
+  created the room and required back on `host:rejoin`. Room codes are 48 dictionary
+  words, so granting host control on the code alone means anyone who guesses one
+  seizes the game — and demotes the real host.
+- **The client re-announces on every `connect`, not the first.** `socket.once` looks
+  correct and silently kills every player who reconnects.
+- **`socket.js` also reconnects on `visibilitychange` / `online` / `pageshow`**, because
+  iOS does not always fire a clean disconnect when a suspended tab resumes.
+- **Seat holds:** 20s in the lobby, **120s mid-game**, 30s for the host. A mid-game
+  drop is **never removed from the roster** — after the hold it is marked `dropped`
+  but keeps its row and score, so a phone that dies in round 3 is still on the final
+  standings.
+- **`syncPlayerState()` replays the live phase with real elapsed time**, including the
+  reveal, which would otherwise restart its whole choreography for a phone that
+  rejoined eight seconds in.
+- **The host dropping pauses the room** rather than running the clock down — the
+  prompt and the options live on the shared screen, so without it the room is blind.
+
+---
+
+## UI
+
+`client/src/press/` is the design system. Plain React, plain CSS, no component
+library. Do not introduce Tailwind, CSS modules, styled-components or MUI.
+
+**The premise is a tabloid front page.** Each player's lie is a competing headline;
+the truth is printed afterwards as a correction. Two colours of ink on paper, as a
+cheap press would run: **red** for the masthead and the correction stamp, **blue**
+for attribution. Everything else is black ink at four strengths.
+
+**Fluid, not scaled.** A newspaper reflows — that is why this metaphor was chosen
+over a fixed board. Every size is a `clamp()` token in `tokens.css` and the ballot is
+an `auto-fit` grid, so eight options are four columns on a television and one column
+in a hand with no breakpoint. There are three media queries in the whole client and
+all are about column count. Consequence: the host page opened on a phone is usable
+rather than blocked, and no rotate-guard is needed.
+
+**The page is a strict viewport box** (`height: 100dvh; overflow: hidden`). Neither
+side may scroll the page. Regions that can genuinely outgrow their space carry
+`.pr-scroll`. Because that turns overflow into silent clipping, `test-browser.js`
+asserts both no-scroll *and* nothing-clipped.
+
+**Night edition.** `data-edition="night"` (and `prefers-color-scheme`) swaps paper to
+charcoal. A white page on a television in a dark room is the most common way this
+gets played and is genuinely unpleasant.
+
+**Typography:** Anton for headlines, Oswald for labels and every numeral, Lora for
+the article voice, Hind Siliguri for Bengali. The bank already carries Bangla script
+in its `show` fields, so the Bengali subset is not optional.
+
+| File | What it is |
+|---|---|
+| `press/tokens.css` | Colour, type scale, spacing, night edition, the 8 player inks |
+| `press/press.css` | Primitives, the reset, halftone, keyframes |
+| `press/Page.jsx` | Page, Masthead, Nameplate, Kicker, Rule, Prompt |
+| `press/Bits.jsx` | Btn, Stamp, Chip, Num, Score, Clock, Meter |
+| `press/Ballot.jsx` | The options list — one component for both roles |
+
+---
+
+## Question bank
+
+`questions/questions.json`, linted by `questions/lint.js`. 74 questions:
+36 `desh`, 28 `probash`, 10 `shared`.
 
 ```jsonc
 {
   "id": "bd-natl-fruit",
-  "q": "Bangladesh's national fruit is the ___.",
+  "q": "Bangladesh's national fruit is the ___.",   // must contain ___
   "a": "jackfruit",
-  "alt": ["kathal", "jackfruit (kathal)"],   // accepted as truth-collisions
-  "show": "Jackfruit (kathal)",              // display form at reveal
-  "decoy": "Mango",                          // house lie, used when <5 players
-  "why": "Mango gets the poetry, but kathal gets the title...",
-  "tier": "desh",                            // desh | probash | shared
-  "region": "national",                      // national | sylhet | dhaka | chittagong | ...
-  "era": "modern"                            // modern | 1971 | colonial | precolonial
+  "show": "Jackfruit (কাঁঠাল)",                     // display form at reveal
+  "alt": ["kathal"],                                // also counts as truth-collision
+  "decoys": ["Mango", "Lychee", "Guava"],           // ≥3, pad a thin room
+  "filler": ["Mango", "Papaya"],                    // ≥2, for AFK players
+  "why": "…",                                       // the payoff of the round
+  "tier": "desh",                                   // desh | probash | shared
+  "region": "national",
+  "era": "modern"
 }
 ```
 
-The `tier` field is the important one. 26 questions exist in `bhua.html` and they skew hard toward `desh` — someone raised in Dhaka will sweep. You need a second bank of `probash` (diaspora) questions so the advantage flips round to round: Brick Lane and the Sylheti chain migration, Devon Avenue and Jackson Heights, the UK curry-house economy, Bangla school on Sundays, ABCD-vs-FOB vocabulary, what happens at a Bangladeshi wedding in New Jersey.
+**Content policy is enforced by the linter, not merely documented.** `era: "1971"`
+and party-political / atrocity keywords are refused. Players author the lies here — a
+war prompt manufactures something tasteless which then appears on a shared screen
+with a name attached, and there is no way to moderate it live. These remain
+legitimate trivia subjects; they are not safe as bluffing fodder.
 
-Deck filters: `mixed` alternates tiers round to round. `desh` and `probash` are single-tier decks.
-
-**Content policy, encoded in the bank:** the Liberation War, the 2024 protests, Rohingya, and party politics are fine as *trivia* and must never appear as *joke fodder*. Since players write the lies, a war prompt invites a tasteless lie. Keep `era: "1971"` questions factual and few, and consider excluding them from the deck entirely on first release until you've watched real tables play.
-
-Also needed: Sylheti, Chittagonian, Barishali, Indigenous/Chakma, and Bengali Hindu content, so the bank isn't just Dhaka middle class talking to itself.
+The linter also fails a decoy or filler that **collides with the real answer**, which
+would put two correct options on the board, and warns when the desh:probash ratio
+passes 2.5:1, at which point the mixed deck can no longer alternate.
 
 ---
 
-## 7. Design system
+## Key files
 
-Lift these from `bhua.html` verbatim — palette, type, and the panel component all transfer to the phone controller.
+```
+server/src/
+  index.js          Socket handlers, validation, rate limits, seat holds
+  gameManager.js    State machine, timers, scoring, reveal schedule
+  roomManager.js    Rooms Map, codes, players, settings, reaping
+  lies.js           Normalisation, dedupe, option building, truth secrecy
+  sanitize.js       The one sanitizePlayers()
+  questionsLoader.js  Sheet CSV or JSON fallback
 
-```css
---midnight:  #0E1A2B;   /* base */
---panel:     #15263D;   /* card */
---vermilion: #E63329;   /* primary action */
---chrome:    #F5C518;   /* keyline, numerals, emphasis */
---rose:      #E8377D;   /* focus, accents */
---jade:      #0E8F6E;   /* truth, positive */
---cream:     #F6E9CE;   /* text */
+client/src/
+  App.jsx           The router: host branch, player branch, device guess
+  socket.js         Socket.io singleton + wake-on-visibility
+  session.js        Durable pid, session persistence, ?join= deep link
+  game/
+    useGameSocket.js  One reducer owning every socket event
+    clock.js          Server-time offset, phase remaining
+    revealBeats.js    Plays the server's beat schedule
+  press/            The design system
+  views/host/       Landing, Lobby, Round, Reveal, Standings
+  views/player/     Join, Lobby, Round, Result
+
+scripts/dev.js      Detached dev servers, stale-listener detection
+scripts/verify.js   The gate
+test-reliability.js Sockets: truth secrecy, reconnect, scoring, full game
+test-browser.js     Real browser: shared screen + 3 phones, layout assertions
 ```
 
-Display face **Baloo Da 2**, body face **Hind Siliguri**. Both cover Bengali and Latin — non-negotiable, since prompts will eventually carry Bangla script alongside transliteration.
-
-**Direction:** rickshaw art, not the flag. Hand-painted tin panels — scalloped chrome edge along the top, thick keyline border, corner rosettes, saturated signage color. The prototype's `.panel` component with its `::before` scallop strip is the signature; carry it to both screens.
-
-**Screen vs phone:** the big screen is where the design lives — large type, the panel frame, the reveal animation. Phones stay deliberately plain: a name, a prompt, one input, one button. Phone UI competing with the screen splits attention in the room.
-
-Every prompt eventually needs Bangla script + transliteration + English gloss. Build the schema for it now (`q_bn`, `q_translit`) even if you populate it later.
-
 ---
 
-## 8. Build order
+## Known limitations
 
-Do these in sequence. Do not skip ahead — step 1 is the genuinely hard part and everything else assumes it works.
-
-1. **Lobby only.** Room creation, four-letter code, phones join by code, names appear live on the big screen, players can leave and rejoin. No game logic at all. Get four real phones in a room showing four names before writing anything else.
-2. **Reconnect.** Lock a phone, unlock it, confirm the player is still in the room with their score. Phones sleep constantly during play; if this is broken the game is unplayable and you'll wrongly blame it on game logic later.
-3. **One full round, no timers.** Prompt → collect lies → build options → vote → reveal → score. Advance manually.
-4. **Timers and auto-advance.** Server-authoritative, `endsAt` timestamps, filler lies for AFK players.
-5. **Full game loop.** Multiple rounds, no question repeats, final standings.
-6. **The reveal sequence.** This is where the fun actually lives — one option at a time, authors named, laughter beat between each. Give it real design attention.
-7. **Deck filters and the probash bank.**
-
----
-
-## 9. Known pitfalls
-
-- **Truth leakage.** Covered above. Audit every payload leaving the server during `VOTING`.
-- **Duplicate lies.** Two players write "Mango." Merge into one option; both authors score when someone falls for it. Normalize by lowercasing and stripping non-alphanumerics, but preserve Bengali codepoints (`\u0980-\u09FF`) — the prototype's `norm()` does this.
-- **Truth collisions.** A player writes the actual answer. Reject at submission with "That's the real answer — now write a lie." Check against `a` and every entry in `alt`. This lands as a delightful moment, not an error.
-- **Duplicate player names.** Two Rumis in one room breaks the reveal copy. Reject on join, or auto-suffix.
-- **Phone keyboards.** The lie input is the whole game on mobile. Test the keyboard covering the submit button on a small iPhone before you ship anything else.
-- **Screen-only rooms.** Someone will open the screen URL on their phone. Handle it or block it.
-- **Empty rooms.** Host disconnects mid-game. Promote the next player or hold the room open for a reconnect window.
-
----
-
-## 10. Open decisions
-
-- **Studio name.** *Khela Hobe* carries specific party associations in both Bangladesh and West Bengal. Many people hear only sporting bravado; a real share of the audience won't. Worth deciding on purpose rather than by default, before it's on a storefront.
-- **Question sourcing.** The 26 in the prototype are a seed, not a bank. A shippable game wants 200+. Consider community submission with editorial review — it doubles as your pre-launch audience.
-- **Answer-audience mismatch.** Watch a real table play before tuning the scoring. If desh-raised players sweep every game, the fix is deck balance first, then possibly team play, and only then scoring changes.
+- **No profanity filter.** Player-authored text appears on a shared screen. Bounded
+  to 60 characters and stripped of control characters, nothing more. Fine for a
+  living room, not for strangers.
+- All state is in memory — a server restart drops every live room, and Render's free
+  tier spins down when idle (~30s cold start, surfaced as "Waking the press…").
+- No accounts, no history, no persistence between games.
+- Questions load once at startup unless `QUESTIONS_SHEET_URL` is set.
+- No audio. The reveal is silent, which costs it something.
+- 8 players max by design; 2 minimum to start.

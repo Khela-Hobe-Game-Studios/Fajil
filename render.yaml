@@ -1,0 +1,29 @@
+# Render blueprint for the game server.
+#
+# The backend is stateful — rooms live in an in-memory Map — so it must be a
+# persistent process. Serverless will not work: every request would land on a
+# different instance with no idea the room exists.
+#
+# Free tier spins down when idle, so the first connection of the evening takes
+# around 30 seconds. The client surfaces that as "Waking the press…" rather than
+# leaving the host looking at a dead button.
+#
+# One instance only. Scaling past one needs sticky sessions AND a shared room
+# store; until then, a second instance simply loses half the players.
+services:
+  - type: web
+    name: fajil
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: server
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      # Optional: a Google Sheet published as CSV, so the bank can grow without a
+      # redeploy. Falls back to questions/questions.json when unset or unreachable.
+      - key: QUESTIONS_SHEET_URL
+        sync: false
