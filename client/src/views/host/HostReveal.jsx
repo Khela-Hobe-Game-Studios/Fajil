@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import {
   Page, PageBody, Masthead, Nameplate, Kicker, Rule, Prompt, Chip, Stamp, Btn,
 } from '../../press';
@@ -36,6 +37,7 @@ export default function HostReveal({ state, actions }) {
           ))}
         </ul>
 
+
         {showWhy ? (
           <div className="hs-why pr-why pr-anim-slam">
             <Kicker>Why it matters</Kicker>
@@ -53,9 +55,25 @@ export default function HostReveal({ state, actions }) {
 
 function RevealCard({ step, active }) {
   const { truth, house, authors, voters, points } = step;
+  const ref = useRef(null);
+
+  /**
+   * Keep the card that just landed in view.
+   *
+   * At eight players the reveal is nine cards, which cannot fit a screen at a size
+   * anyone can read across a room — so the list scrolls and follows the beat. Left
+   * to itself the payoff happens below the fold and the room watches a static page
+   * while the interesting part is off-screen.
+   */
+  useEffect(() => {
+    if (!active || !ref.current) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    ref.current.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' });
+  }, [active]);
 
   return (
     <li
+      ref={ref}
       className={[
         'hs-card',
         truth ? 'hs-card--truth' : '',

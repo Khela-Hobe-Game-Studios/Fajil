@@ -34,9 +34,19 @@ body {
 
 /* ── page ─────────────────────────────────────────────────────────────────── */
 
+/*
+ * The page is a strict viewport box, not a document that grows.
+ *
+ * Neither side of this game may scroll the page itself: the shared screen is
+ * across a room with nobody holding a mouse, and the phone is a controller, where
+ * a screen that has to be scrolled to reach its own button reads as a freeze.
+ * Regions that can genuinely outgrow their space (the reveal's cards, a roster, a
+ * scoreboard) carry .pr-scroll and scroll inside themselves instead.
+ */
 .pr-page {
-  min-height: 100%;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   background: var(--paper);

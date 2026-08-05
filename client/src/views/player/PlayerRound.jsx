@@ -64,17 +64,22 @@ function WriteLie({ state, actions }) {
 
   return (
     <form className="pl-write" onSubmit={submit}>
-      <Kicker>Write a convincing lie</Kicker>
-      <Prompt text={state.prompt} className="pl-prompt" />
+      {/* The question sits in the middle of the free space; the input stays at the
+          bottom where a thumb actually reaches. Top-aligning both left a phone-
+          shaped hole between them. */}
+      <div className="pl-write-top">
+        <Kicker>Write a convincing lie</Kicker>
+        <Prompt text={state.prompt} className="pl-prompt" />
 
-      {/* The "you knew it" moment, delivered privately. Announcing it to the room
-          would hand everybody the answer. */}
-      {state.notice?.kind === 'knew' ? (
-        <div className="pl-knew" role="status">
-          <Stamp tone="blue" animate>You knew it</Stamp>
-          <p className="pr-article">{state.notice.message}</p>
-        </div>
-      ) : null}
+        {/* The "you knew it" moment, delivered privately. Announcing it to the room
+            would hand everybody the answer. */}
+        {state.notice?.kind === 'knew' ? (
+          <div className="pl-knew" role="status">
+            <Stamp tone="blue" animate>You knew it</Stamp>
+            <p className="pr-article">{state.notice.message}</p>
+          </div>
+        ) : null}
+      </div>
 
       <input
         className="pr-input pl-lie-input"
@@ -118,13 +123,17 @@ function PickOne({ state, actions }) {
     <div className="pl-vote">
       <Kicker>Which one is true?</Kicker>
       <Prompt text={state.prompt} className="pl-prompt pl-prompt--small" />
-      <Ballot
-        options={state.options}
-        ownId={state.yourOptionId}
-        chosen={state.myVote}
-        onPick={actions.submitVote}
-        single
-      />
+      {/* Centred when the board is short, scrolls within itself when it is not —
+          at eight players this is nine options on a 640px-tall phone. */}
+      <div className="pl-vote-body">
+        <Ballot
+          options={state.options}
+          ownId={state.yourOptionId}
+          chosen={state.myVote}
+          onPick={actions.submitVote}
+          single
+        />
+      </div>
       {state.yourOptionId ? (
         <p className="pl-hint">Your own lie is crossed out — you can't vote for it.</p>
       ) : null}

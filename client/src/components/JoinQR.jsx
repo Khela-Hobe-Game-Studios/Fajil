@@ -12,7 +12,7 @@ import QRCode from 'qrcode';
  * page — QR tolerates the contrast easily, and the night edition inverts safely
  * because the quiet zone comes from the light module colour.
  */
-export default function JoinQR({ code, size = 220 }) {
+export default function JoinQR({ code, size = 320 }) {
   const [src, setSrc] = useState(null);
 
   useEffect(() => {
@@ -41,14 +41,8 @@ export default function JoinQR({ code, size = 220 }) {
     return () => { live = false; };
   }, [code, size]);
 
-  if (!src) return <div className="jq-placeholder" style={{ width: size, height: size }} />;
-  return (
-    <img
-      className="jq-img"
-      src={src}
-      width={size}
-      height={size}
-      alt={`Scan to join room ${code}`}
-    />
-  );
+  // Sized by CSS (.jq-img), not by an inline style — the displayed size is fluid
+  // and an inline width would beat the stylesheet and pin it.
+  if (!src) return <div className="jq-placeholder" />;
+  return <img className="jq-img" src={src} alt={`Scan to join room ${code}`} />;
 }

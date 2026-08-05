@@ -13,7 +13,9 @@
 
 /* ── landing ──────────────────────────────────────────────────────────────── */
 
-.hs-landing { max-width: 1100px; width: 100%; margin: 0 auto; }
+/* Centred vertically: on a 16:9 television this page is short, and top-aligning it
+   leaves the bottom half of the screen empty across a room. */
+.hs-landing { max-width: 1100px; width: 100%; margin: 0 auto; justify-content: center; }
 
 .hs-landing-lede { display: flex; flex-direction: column; gap: var(--gap-s); }
 .hs-lede-head { max-width: 22ch; }
@@ -76,7 +78,14 @@
   min-height: 0;
 }
 
-.hs-join { display: flex; flex-direction: column; gap: var(--gap-s); align-items: flex-start; }
+.hs-join {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 0;
+}
 
 /* The room code is being read aloud across a room by somebody holding a phone.
    It is the largest thing on the screen for exactly that reason. */
@@ -90,10 +99,29 @@
 
 .hs-join-how { max-width: 30ch; }
 
-.jq-img { display: block; border: var(--hair) solid var(--rule); background: var(--paper); }
-.jq-placeholder { background: var(--paper-3); border: var(--hair) solid var(--rule); }
+/* Rendered at 2x and sized by CSS, so it is scannable from the sofa on a large
+   screen without being half the page on a small one. */
+.jq-img,
+.jq-placeholder {
+  display: block;
+  width: clamp(9rem, 15vw, 17rem);
+  height: auto;
+  aspect-ratio: 1;
+  border: var(--hair) solid var(--rule);
+  background: var(--paper);
+}
 
-.hs-roster { display: flex; flex-direction: column; gap: var(--gap-s); min-height: 0; }
+.jq-placeholder { background: var(--paper-3); }
+
+/* Centred to balance the join column beside it — both halves of the lobby sit on
+   the same optical line rather than one hanging from the top. */
+.hs-roster {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--gap-s);
+  min-height: 0;
+}
 .hs-roster-count { font-size: var(--t-numeral); }
 .hs-roster-max { color: var(--ink-3); font-size: 0.55em; }
 
@@ -102,7 +130,9 @@
   flex-wrap: wrap;
   gap: var(--gap-s);
   align-content: flex-start;
-  flex: 1;
+  /* Grows only as far as it has chips, then stops — a fixed flex:1 stretched an
+     empty roster over the whole column. */
+  flex: 0 1 auto;
 }
 
 .hs-roster-list .pr-chip { font-size: clamp(1rem, 1.6vw, 1.4rem); padding: 0.3em 0.8em 0.3em 0.4em; }
