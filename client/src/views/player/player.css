@@ -1,0 +1,164 @@
+/*
+ * The phone.
+ *
+ * Capped in width and centred, because a player on a laptop is still holding a
+ * controller — the phone layout should not stretch to 1400px just because it can.
+ * Never scaled: black bars down the sides of a device in the hand look broken.
+ *
+ * Vertically it is fluid and uses dvh, so the layout does not fight the URL bar
+ * hiding or the keyboard appearing.
+ */
+
+.pl-join, .pl-lobby, .pl-round, .pl-result {
+  width: 100%;
+  max-width: 34rem;
+  margin: 0 auto;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── join ─────────────────────────────────────────────────────────────────── */
+
+.pl-form { display: flex; flex-direction: column; gap: var(--gap); }
+.pl-label { display: flex; flex-direction: column; gap: 0.3em; }
+
+.pl-code-input {
+  font-family: var(--face-display);
+  font-size: clamp(2rem, 12vw, 3rem);
+  letter-spacing: 0.25em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+.pl-switch { margin-top: auto; padding-top: var(--gap); }
+.pl-switch .pr-btn { font-size: var(--t-label); min-height: var(--tap); }
+
+/* ── lobby ────────────────────────────────────────────────────────────────── */
+
+/* The player's own colour, at the size it needs to be learned at — this is how
+   they will find themselves on the shared screen for the rest of the game. */
+.pl-me {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: var(--gap-s) var(--gap);
+  background: var(--paper-2);
+  border-left: 0.5rem solid var(--chip);
+}
+
+.pl-me-dot { flex: none; width: 1.4em; height: 1.4em; background: var(--chip); }
+
+.pl-me-name {
+  font-family: var(--face-display);
+  font-size: clamp(1.5rem, 8vw, 2.4rem);
+  text-transform: uppercase;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pl-wait { color: var(--ink-2); }
+.pl-others { display: flex; flex-direction: column; gap: var(--gap-s); min-height: 0; }
+.pl-chip-list { display: flex; flex-wrap: wrap; gap: var(--gap-s); }
+
+/* ── round ────────────────────────────────────────────────────────────────── */
+
+.pl-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-s);
+  text-align: center;
+  min-height: 0;
+}
+
+.pl-write, .pl-vote { display: flex; flex-direction: column; gap: var(--gap-s); min-height: 0; flex: 1; }
+
+.pl-prompt { font-size: clamp(1.1rem, 5.5vw, 1.7rem); }
+.pl-prompt--small { font-size: clamp(0.95rem, 4.4vw, 1.3rem); }
+
+.pl-lie-input { margin-top: auto; }
+
+.pl-hint {
+  font-family: var(--face-body);
+  font-style: italic;
+  font-size: var(--t-label);
+  color: var(--ink-3);
+  text-align: center;
+}
+
+.pl-knew {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4em;
+  padding: var(--gap-s);
+  background: var(--paper-2);
+  border-left: var(--rule-thick) solid var(--blue);
+}
+
+.pl-filed-text {
+  font-family: var(--face-display);
+  font-size: clamp(1.3rem, 7vw, 2rem);
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: var(--ink);
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.pl-waiting-for { color: var(--ink-3); }
+
+/* The ballot on a phone is always one column and always full width. */
+.pl-vote .pr-ballot-item { font-size: clamp(1rem, 4.4vw, 1.25rem); }
+
+/* ── result ───────────────────────────────────────────────────────────────── */
+
+.pl-result { display: flex; flex-direction: column; gap: var(--gap-s); }
+.pl-verdict { display: flex; justify-content: center; padding: var(--gap) 0; }
+.pl-answer { font-size: clamp(1rem, 4.6vw, 1.25rem); }
+.pl-answer b { color: var(--red); font-weight: 600; }
+
+.pl-gain { display: flex; align-items: baseline; justify-content: space-between; gap: var(--gap-s); }
+.pl-gain-num { font-size: clamp(2rem, 12vw, 3.2rem); color: var(--red); }
+
+.pl-final-me {
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-s);
+  flex-wrap: wrap;
+}
+
+.pl-final-rank { font-size: clamp(2.4rem, 14vw, 3.6rem); color: var(--red); line-height: 1; }
+
+.pl-table { display: flex; flex-direction: column; min-height: 0; }
+
+.pl-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.45em 0.3em;
+  border-bottom: var(--hair) solid var(--rule-soft);
+  font-family: var(--face-ui);
+  font-size: clamp(0.95rem, 4vw, 1.1rem);
+}
+
+/* Finding yourself in the table has to be instant — this is read in about two
+   seconds, one-handed, in a noisy room. */
+.pl-row--me { background: var(--paper-2); border-left: 0.35rem solid var(--chip); padding-left: 0.5em; }
+
+.pl-rank { width: 2ch; color: var(--ink-3); text-align: right; }
+.pl-row-dot { flex: none; width: 0.8em; height: 0.8em; background: var(--chip); }
+.pl-row-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pl-row .pr-score { font-size: clamp(1rem, 4.4vw, 1.2rem); }
+
+/* On a short phone (the SE, most of the cheap Android fleet) the round screen has
+   to give the input room. Everything decorative gives up its height first. */
+@media (max-height: 700px) {
+  .pl-hint { display: none; }
+  .pl-verdict { padding: var(--gap-s) 0; }
+}

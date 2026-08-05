@@ -1,0 +1,489 @@
+/*
+ * Press primitives.
+ *
+ * Every rule here is shared by the shared screen and the phone. The two differ in
+ * scale and density, never in vocabulary — the phone is the same newspaper, printed
+ * as a single narrow column.
+ */
+
+/* The reset is wrapped in :where() so it has zero specificity. A bare
+ * `button { background: none }` beats `.pr-btn` and silently strips every button's
+ * fill — a reset must never out-specify the components it is resetting. */
+:where(*, *::before, *::after) { box-sizing: border-box; }
+:where(body, h1, h2, h3, p, figure, blockquote, ul, ol) { margin: 0; padding: 0; }
+:where(ul, ol) { list-style: none; }
+:where(button, input, textarea) { font: inherit; color: inherit; background: none; border: none; }
+:where(button) { cursor: pointer; }
+
+html, body, #root { height: 100%; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--face-body);
+  font-size: var(--t-body);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+/* Bengali needs its own face and a little more leading — Hind Siliguri's
+ * ascenders and the matra line collide at the body's tighter setting. */
+:lang(bn), .pr-bn { font-family: var(--face-bn); line-height: 1.6; }
+
+/* ── page ─────────────────────────────────────────────────────────────────── */
+
+.pr-page {
+  min-height: 100%;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  /* Notched phones: paint to the edge, pad the content back out. */
+  padding:
+    env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* The faint dot screen of a cheap press. Behind everything, barely there — it
+ * stops the large flat areas of paper from reading as a website. */
+.pr-page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: var(--halftone);
+  background-size: var(--halftone-size);
+  opacity: 0.045;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.pr-body {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  padding: var(--pad);
+  min-height: 0; /* so a flex child can actually shrink instead of bursting out */
+}
+
+/* ── masthead ─────────────────────────────────────────────────────────────── */
+
+.pr-masthead {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+  padding: var(--gap-s) var(--pad);
+  border-bottom: var(--rule-thick) solid var(--rule);
+  flex-wrap: wrap;
+}
+
+.pr-nameplate {
+  font-family: var(--face-display);
+  font-size: var(--t-nameplate);
+  line-height: 0.86;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--red);
+  white-space: nowrap;
+}
+
+.pr-nameplate small {
+  display: block;
+  font-family: var(--face-ui);
+  font-weight: 500;
+  font-size: var(--t-label);
+  letter-spacing: 0.34em;
+  color: var(--ink-2);
+  text-transform: uppercase;
+}
+
+/* The dateline strip: the small caps furniture a masthead sits on. */
+.pr-dateline {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.5rem, 1.4vw, 1.4rem);
+  flex-wrap: wrap;
+  font-family: var(--face-ui);
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.pr-dateline b {
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.28em;
+}
+
+/* ── rules ────────────────────────────────────────────────────────────────── */
+
+.pr-rule { border: 0; border-top: var(--hair) solid var(--rule); }
+.pr-rule-thick { border: 0; border-top: var(--rule-thick) solid var(--rule); }
+
+/* The double rule under a section head — pure newspaper furniture. */
+.pr-rule-double {
+  border: 0;
+  border-top: var(--hair) solid var(--rule);
+  border-bottom: var(--rule-thick) solid var(--rule);
+  height: 3px;
+}
+
+.pr-kicker {
+  font-family: var(--face-ui);
+  font-size: var(--t-label);
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+.pr-kicker--ink { color: var(--ink-2); }
+
+/* ── headlines ────────────────────────────────────────────────────────────── */
+
+.pr-headline {
+  font-family: var(--face-display);
+  font-size: var(--t-headline);
+  line-height: 1.02;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  color: var(--ink);
+}
+
+.pr-headline--red { color: var(--red); }
+
+.pr-subhead {
+  font-family: var(--face-body);
+  font-style: italic;
+  font-size: var(--t-subhead);
+  line-height: 1.28;
+  color: var(--ink-2);
+  text-wrap: balance;
+}
+
+.pr-article {
+  font-family: var(--face-body);
+  font-size: var(--t-body);
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 62ch;
+}
+
+/* The blank in a prompt. It has to look like something you fill in, not like a
+ * typo — so it is an actual underline with breathing room around it. */
+.pr-blank {
+  display: inline-block;
+  min-width: 3.5em;
+  border-bottom: 0.11em solid var(--red);
+  margin: 0 0.12em;
+  vertical-align: baseline;
+}
+
+/* ── buttons ──────────────────────────────────────────────────────────────── */
+
+.pr-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  min-height: var(--tap);
+  padding: 0.55em 1.5em;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--face-ui);
+  font-weight: 600;
+  font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border: var(--hair) solid var(--ink);
+  transition: transform 80ms ease-out;
+}
+
+.pr-btn:active:not(:disabled) { transform: translateY(1px); }
+.pr-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.pr-btn--red { background: var(--red); border-color: var(--red); color: #FFF6E9; }
+.pr-btn--ghost { background: transparent; color: var(--ink); }
+.pr-btn--block { width: 100%; }
+
+/* A visible focus ring is not optional — this is played on shared screens and
+ * phones, and somebody will be on a keyboard. */
+.pr-btn:focus-visible,
+.pr-input:focus-visible,
+.pr-ballot-item:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* ── input ────────────────────────────────────────────────────────────────── */
+
+.pr-input {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0.6em 0.7em;
+  background: var(--paper-2);
+  color: var(--ink);
+  font-family: var(--face-ui);
+  font-size: clamp(1.05rem, 4.6vw, 1.6rem);
+  font-weight: 500;
+  border: var(--hair) solid var(--rule);
+  border-radius: 0;
+}
+
+.pr-input::placeholder { color: var(--ink-3); }
+
+/* iOS zooms the page when a focused input is under 16px. The clamp floor above
+ * keeps it clear of that, and this is the belt to that braces. */
+@supports (-webkit-touch-callout: none) {
+  .pr-input { font-size: max(16px, clamp(1.05rem, 4.6vw, 1.6rem)); }
+}
+
+/* ── the ballot: what the room votes on ───────────────────────────────────── */
+
+.pr-ballot {
+  display: grid;
+  gap: var(--gap-s);
+  /* auto-fit is what makes one component serve a television and a phone: eight
+     options are four columns on a wide screen and one column in a hand, with no
+     breakpoint and no second layout. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22ch), 1fr));
+  align-content: start;
+}
+
+.pr-ballot--single { grid-template-columns: 1fr; }
+
+.pr-ballot-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0.6em 0.8em;
+  text-align: left;
+  background: var(--paper-2);
+  border: var(--hair) solid var(--rule);
+  font-family: var(--face-ui);
+  font-weight: 500;
+  font-size: var(--t-option);
+  line-height: 1.2;
+  color: var(--ink);
+  transition: background 100ms ease-out, transform 80ms ease-out;
+}
+
+.pr-ballot-item:active:not(:disabled) { transform: translateY(1px); }
+
+.pr-ballot-item[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+/* Your own lie. Shown, never selectable — hiding it entirely would make the board
+ * a different length for you than for everyone else, and the reveal refers to
+ * options by position often enough that that matters. */
+.pr-ballot-item:disabled {
+  opacity: 1;
+  cursor: not-allowed;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--paper-3) 0 6px,
+    var(--paper-2) 6px 12px
+  );
+  color: var(--ink-3);
+  border-style: dashed;
+}
+
+.pr-ballot-letter {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.9em;
+  height: 1.9em;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 700;
+  font-size: 0.8em;
+}
+
+.pr-ballot-item[aria-pressed='true'] .pr-ballot-letter { background: var(--paper); color: var(--ink); }
+.pr-ballot-item:disabled .pr-ballot-letter { background: var(--ink-3); }
+
+/* ── stamps ───────────────────────────────────────────────────────────────── */
+
+/* The rubber stamp: rotated, outlined, slightly ink-starved. Used for THE TRUTH
+ * at the reveal and for a player's verdict on their phone. */
+.pr-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.24em 0.7em;
+  font-family: var(--face-ui);
+  font-weight: 700;
+  font-size: clamp(0.75rem, 1.3vw, 1.05rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--red);
+  border: 2px solid var(--red);
+  transform: rotate(-3.5deg);
+  white-space: nowrap;
+}
+
+.pr-stamp--blue { color: var(--blue); border-color: var(--blue); }
+.pr-stamp--ink { color: var(--ink-2); border-color: var(--ink-2); transform: rotate(1.5deg); }
+
+/* ── player chips ─────────────────────────────────────────────────────────── */
+
+.pr-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.2em 0.6em 0.2em 0.3em;
+  background: var(--paper-2);
+  border: var(--hair) solid var(--rule);
+  font-family: var(--face-ui);
+  font-weight: 500;
+  font-size: clamp(0.8rem, 1.15vw, 1rem);
+  max-width: 100%;
+}
+
+.pr-chip-dot {
+  flex: none;
+  width: 0.85em;
+  height: 0.85em;
+  background: var(--chip, var(--ink));
+}
+
+.pr-chip-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pr-chip--out { opacity: 0.45; }
+.pr-chip--out .pr-chip-name { text-decoration: line-through; }
+
+/* A player who is reconnecting is shown as reconnecting, not as gone — the room
+ * can see that somebody's phone is coming back rather than assuming they left. */
+.pr-chip--wait .pr-chip-dot { animation: pr-pulse 1.1s steps(2, jump-none) infinite; }
+
+/* ── numerals ─────────────────────────────────────────────────────────────── */
+
+.pr-num {
+  font-family: var(--face-ui);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.01em;
+}
+
+.pr-score { font-size: var(--t-numeral); }
+
+.pr-gain { color: var(--red); font-weight: 600; }
+
+/* ── countdown ────────────────────────────────────────────────────────────── */
+
+.pr-clock {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3em;
+  font-family: var(--face-ui);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(1.1rem, 2.2vw, 2rem);
+  color: var(--ink);
+}
+
+.pr-clock--urgent { color: var(--red); animation: pr-tick 1s steps(2, jump-none) infinite; }
+
+.pr-meter {
+  height: 6px;
+  background: var(--paper-3);
+  border: var(--hair) solid var(--rule);
+}
+
+.pr-meter-fill {
+  height: 100%;
+  background: var(--ink);
+  transition: width 260ms linear;
+}
+
+/* ── boxes ────────────────────────────────────────────────────────────────── */
+
+.pr-box {
+  background: var(--paper-2);
+  border: var(--hair) solid var(--rule);
+  padding: var(--gap);
+}
+
+.pr-box--red { border: var(--rule-thick) double var(--red); }
+
+/* The "why it matters" panel — set as an actual article, because that is the one
+ * moment in the round where somebody is being told something true. */
+.pr-why {
+  border-left: var(--rule-thick) solid var(--red);
+  padding-left: var(--gap);
+}
+
+/* ── motion ───────────────────────────────────────────────────────────────── */
+
+/* Print does not ease. Everything here is steps() or linear, so the page reads as
+ * something stamped rather than something animated. */
+@keyframes pr-stamp-in {
+  0%   { opacity: 0; transform: rotate(-3.5deg) scale(2.4); }
+  60%  { opacity: 1; transform: rotate(-3.5deg) scale(0.94); }
+  100% { opacity: 1; transform: rotate(-3.5deg) scale(1); }
+}
+
+@keyframes pr-slam {
+  0%   { opacity: 0; transform: translateY(-0.35em); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pr-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+@keyframes pr-tick  { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+.pr-anim-stamp { animation: pr-stamp-in 320ms steps(6, jump-none) both; }
+.pr-anim-slam  { animation: pr-slam 200ms steps(4, jump-none) both; }
+
+/*
+ * `steps(N)` defaults to jump-end, which holds the FROM value for the whole
+ * duration — an element animated that way finishes still invisible. Every keyframe
+ * above therefore uses jump-none, whose end state is the one that matters.
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  .pr-anim-stamp, .pr-anim-slam { animation-duration: 1ms; }
+  .pr-chip--wait .pr-chip-dot, .pr-clock--urgent { animation: none; }
+  .pr-meter-fill { transition: none; }
+}
+
+/* ── utility ──────────────────────────────────────────────────────────────── */
+
+.pr-stack { display: flex; flex-direction: column; gap: var(--gap); min-height: 0; }
+.pr-stack--tight { gap: var(--gap-s); }
+.pr-row { display: flex; align-items: center; gap: var(--gap-s); flex-wrap: wrap; }
+.pr-row--between { justify-content: space-between; }
+.pr-grow { flex: 1; min-height: 0; }
+.pr-center { display: grid; place-items: center; text-align: center; }
+.pr-sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Long lists (a roster, a scoreboard, the ballot at eight options) scroll inside
+ * their own region rather than scrolling the page. The masthead must stay put. */
+.pr-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}

@@ -1,0 +1,77 @@
+/* Cross-role furniture: the connection banner, the pause overlay, error strips. */
+
+.sh-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  padding: 0.5em 1em;
+  padding-top: calc(0.5em + env(safe-area-inset-top));
+  background: var(--red);
+  color: #FFF6E9;
+  font-family: var(--face-ui);
+  font-size: clamp(0.8rem, 1.1vw, 0.95rem);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.sh-banner b { font-weight: 700; text-transform: none; letter-spacing: 0.02em; }
+
+.sh-banner-dot {
+  flex: none;
+  width: 0.6em;
+  height: 0.6em;
+  background: #FFF6E9;
+  animation: pr-pulse 1s steps(2, jump-none) infinite;
+}
+
+.sh-paused {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: var(--pad);
+  /* Not fully opaque: the room should still see the game is there, frozen, rather
+     than think it has been thrown away. */
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(2px);
+}
+
+.sh-paused-card {
+  max-width: 46ch;
+  padding: var(--pad);
+  background: var(--paper-2);
+  border: var(--rule-thick) double var(--red);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-s);
+  align-items: center;
+}
+
+.sh-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-s);
+  padding: 0.5em 0.4em 0.5em 0.8em;
+  background: var(--paper-2);
+  border-left: var(--rule-thick) solid var(--red);
+  font-family: var(--face-ui);
+  font-size: clamp(0.9rem, 1.2vw, 1rem);
+  color: var(--ink);
+}
+
+.sh-error .pr-btn { min-height: 2rem; padding: 0 0.6em; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-banner-dot { animation: none; }
+}

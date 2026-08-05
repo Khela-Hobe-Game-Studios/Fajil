@@ -1,0 +1,168 @@
+/*
+ * FAJIL — the press.
+ *
+ * The design premise is a tabloid front page. Each player's lie is a competing
+ * headline; the truth is printed afterwards as a correction. That is not a skin
+ * over the game — it is the game's premise (manufacturing plausible falsehoods)
+ * rendered as a layout, which is why the reveal reads as a paper going to press.
+ *
+ * Two colours of ink on paper, as a cheap press would actually run: RED for the
+ * masthead and the correction stamp, BLUE for attribution — whose lie it was, who
+ * fell for it. Everything else is black ink at four strengths. A third spot colour
+ * would look like a magazine, and this is not a magazine.
+ */
+
+:root {
+  /* ── paper ─────────────────────────────────────────────────────────────── */
+  --paper:      #F2EEE3;   /* newsprint */
+  --paper-2:    #E9E3D4;   /* a tinted box — a sidebar, a pull-quote */
+  --paper-3:    #DCD5C3;   /* the deepest tint before it reads as a rule */
+
+  /* ── ink ───────────────────────────────────────────────────────────────── */
+  --ink:        #17140F;   /* body and headline */
+  --ink-2:      #4E473D;   /* standfirst, secondary */
+  --ink-3:      #857D6F;   /* captions, disabled, the small print */
+  --rule:       #17140F;   /* hairlines. Full-strength ink — a grey rule looks
+                              like a mistake in print, not like restraint. */
+  --rule-soft:  #C3BBA8;
+
+  /* ── the two spot colours ──────────────────────────────────────────────── */
+  --red:        #C0261C;
+  --red-deep:   #8E140D;
+  --blue:       #1B4E7C;
+  --blue-deep:  #0F3355;
+
+  /* ── press furniture ───────────────────────────────────────────────────── */
+  --hair:       1px;
+  --rule-thick: 3px;
+  --shadow-print: 0 1px 0 rgba(23, 20, 15, 0.14);
+
+  /* Halftone: the dot screen a cheap press leaves behind. Used at low opacity
+     behind photos-that-are-not-photos, so a flat colour block still reads as
+     something that went through a printer. */
+  --halftone: radial-gradient(circle at center, var(--ink) 0.9px, transparent 1.1px);
+  --halftone-size: 4px 4px;
+
+  /* ── type ──────────────────────────────────────────────────────────────── */
+  --face-display: 'Anton', 'Oswald', Impact, sans-serif;      /* the headline */
+  --face-ui:      'Oswald', 'Arial Narrow', sans-serif;       /* labels, numerals */
+  --face-body:    'Lora', Georgia, serif;                     /* the article */
+  --face-bn:      'Hind Siliguri', 'Anton', sans-serif;       /* Bengali */
+
+  /* Every size is fluid. A newspaper reflows — that is the whole reason this
+     metaphor was chosen over a fixed board, and it is what lets one page serve a
+     4K television and a 320px phone without a second layout. */
+  --t-nameplate: clamp(2.2rem, 7vw, 6rem);
+  --t-headline:  clamp(1.6rem, 4.4vw, 4.2rem);
+  --t-subhead:   clamp(1.1rem, 2.2vw, 2rem);
+  --t-option:    clamp(1rem, 1.9vw, 1.75rem);
+  --t-body:      clamp(0.95rem, 1.15vw, 1.15rem);
+  --t-label:     clamp(0.66rem, 0.85vw, 0.82rem);
+  --t-numeral:   clamp(1.4rem, 3.2vw, 3rem);
+
+  --gap:   clamp(0.7rem, 1.6vw, 1.6rem);
+  --gap-s: clamp(0.4rem, 0.8vw, 0.8rem);
+  --pad:   clamp(0.85rem, 2.2vw, 2.2rem);
+
+  /* Nothing tappable ever goes under this. A phone is held in one hand, at a
+     party, usually while talking to somebody. */
+  --tap: 48px;
+
+  color-scheme: light;
+}
+
+/*
+ * Night edition.
+ *
+ * A white page on a television in a dark living room is genuinely unpleasant, and
+ * that is the single most common way this game gets played. Same geometry, same
+ * two-colour logic — the paper goes to charcoal and the ink to bone, and the spot
+ * colours brighten just enough to survive the inversion.
+ *
+ * `data-edition` is stamped on the root by the edition setting; the media query is
+ * the fallback for a device that never touched the toggle.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-edition='day']) {
+    --paper:     #14120D;
+    --paper-2:   #1F1C15;
+    --paper-3:   #2B2720;
+    --ink:       #F1EBDB;
+    --ink-2:     #B8B09E;
+    --ink-3:     #7E776A;
+    --rule:      #F1EBDB;
+    --rule-soft: #3A352C;
+    --red:       #E8483C;
+    --red-deep:  #F4776C;
+    --blue:      #6FA8D8;
+    --blue-deep: #A6CBEC;
+    --shadow-print: 0 1px 0 rgba(0, 0, 0, 0.5);
+    color-scheme: dark;
+  }
+}
+
+:root[data-edition='night'] {
+  --paper:     #14120D;
+  --paper-2:   #1F1C15;
+  --paper-3:   #2B2720;
+  --ink:       #F1EBDB;
+  --ink-2:     #B8B09E;
+  --ink-3:     #7E776A;
+  --rule:      #F1EBDB;
+  --rule-soft: #3A352C;
+  --red:       #E8483C;
+  --red-deep:  #F4776C;
+  --blue:      #6FA8D8;
+  --blue-deep: #A6CBEC;
+  --shadow-print: 0 1px 0 rgba(0, 0, 0, 0.5);
+  color-scheme: dark;
+}
+
+/*
+ * Player ink.
+ *
+ * Eight stamps, because the room caps at eight. These are chosen to hold their
+ * identity against both papers — a pastel that reads on newsprint disappears on
+ * charcoal, so every one of these is a mid-tone. Colour is the identity token the
+ * shared screen leans on: across a room a name is small and a colour block is
+ * instant.
+ */
+:root {
+  --p0: #C0261C;  /* red */
+  --p1: #1B4E7C;  /* blue */
+  --p2: #1F6B4A;  /* green */
+  --p3: #A2571B;  /* orange */
+  --p4: #6B3A82;  /* purple */
+  --p5: #0E6C74;  /* teal */
+  --p6: #A81E5C;  /* magenta */
+  --p7: #5E4B2B;  /* sepia */
+}
+
+:root[data-edition='night'],
+:root:not([data-edition='day']) {
+  --p0-lift: #F0685C;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-edition='day']) {
+    --p0: #EE5A4E;
+    --p1: #5E9BD1;
+    --p2: #4FB489;
+    --p3: #DE9440;
+    --p4: #AE84C4;
+    --p5: #3FB2B9;
+    --p6: #E5629B;
+    --p7: #C0A579;
+  }
+}
+
+:root[data-edition='night'] {
+  --p0: #EE5A4E;
+  --p1: #5E9BD1;
+  --p2: #4FB489;
+  --p3: #DE9440;
+  --p4: #AE84C4;
+  --p5: #3FB2B9;
+  --p6: #E5629B;
+  --p7: #C0A579;
+}

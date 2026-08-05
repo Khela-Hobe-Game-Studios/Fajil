@@ -1,0 +1,282 @@
+/*
+ * The shared screen.
+ *
+ * Fluid, not scaled. A newspaper reflows, which is the reason this metaphor was
+ * picked over a fixed board — the same markup serves a 4K television, a laptop and
+ * somebody who opened the host page on a tablet, with no second layout and no
+ * "please turn your device" guard.
+ *
+ * Sizes come from the clamp tokens, so nothing here needs a breakpoint. The two
+ * media queries at the bottom are the only places geometry actually changes, and
+ * both are about column count rather than about type.
+ */
+
+/* ── landing ──────────────────────────────────────────────────────────────── */
+
+.hs-landing { max-width: 1100px; width: 100%; margin: 0 auto; }
+
+.hs-landing-lede { display: flex; flex-direction: column; gap: var(--gap-s); }
+.hs-lede-head { max-width: 22ch; }
+
+.hs-setup {
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+}
+
+.hs-field { display: flex; flex-direction: column; gap: var(--gap-s); }
+.hs-field-note {
+  font-family: var(--face-body);
+  font-style: italic;
+  font-size: var(--t-label);
+  color: var(--ink-3);
+  line-height: 1.4;
+}
+
+.hs-choice { display: flex; gap: 0; flex-wrap: wrap; }
+
+.hs-choice-btn {
+  flex: 1 1 auto;
+  min-width: 3.5rem;
+  min-height: var(--tap);
+  padding: 0.4em 0.9em;
+  background: var(--paper-2);
+  border: var(--hair) solid var(--rule);
+  /* Collapse the shared border between adjacent segments so the group reads as one
+     ruled box rather than as separate buttons. */
+  margin-left: calc(var(--hair) * -1);
+  font-family: var(--face-ui);
+  font-weight: 600;
+  font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.hs-choice-btn:first-child { margin-left: 0; }
+.hs-choice-btn[aria-checked='true'] {
+  background: var(--ink);
+  color: var(--paper);
+  position: relative; /* lift the selected segment's border above its neighbours */
+}
+.hs-choice-btn:focus-visible { outline: 3px solid var(--blue); outline-offset: -3px; }
+
+.hs-landing-go { display: flex; gap: var(--gap-s); flex-wrap: wrap; align-items: center; }
+.hs-waking { color: var(--ink-3); font-style: italic; }
+
+/* ── lobby ────────────────────────────────────────────────────────────────── */
+
+.hs-lobby { max-width: 1400px; width: 100%; margin: 0 auto; }
+
+.hs-lobby-grid {
+  flex: 1;
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: 1fr;
+  min-height: 0;
+}
+
+.hs-join { display: flex; flex-direction: column; gap: var(--gap-s); align-items: flex-start; }
+
+/* The room code is being read aloud across a room by somebody holding a phone.
+   It is the largest thing on the screen for exactly that reason. */
+.hs-code {
+  font-family: var(--face-display);
+  font-size: clamp(4rem, 13vw, 11rem);
+  line-height: 0.9;
+  letter-spacing: 0.06em;
+  color: var(--red);
+}
+
+.hs-join-how { max-width: 30ch; }
+
+.jq-img { display: block; border: var(--hair) solid var(--rule); background: var(--paper); }
+.jq-placeholder { background: var(--paper-3); border: var(--hair) solid var(--rule); }
+
+.hs-roster { display: flex; flex-direction: column; gap: var(--gap-s); min-height: 0; }
+.hs-roster-count { font-size: var(--t-numeral); }
+.hs-roster-max { color: var(--ink-3); font-size: 0.55em; }
+
+.hs-roster-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-s);
+  align-content: flex-start;
+  flex: 1;
+}
+
+.hs-roster-list .pr-chip { font-size: clamp(1rem, 1.6vw, 1.4rem); padding: 0.3em 0.8em 0.3em 0.4em; }
+.hs-empty { color: var(--ink-3); font-style: italic; }
+
+.hs-lobby-go {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+  flex-wrap: wrap;
+}
+
+.hs-settings-summary {
+  display: flex;
+  gap: var(--gap);
+  flex-wrap: wrap;
+  font-family: var(--face-ui);
+  font-size: var(--t-label);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.hs-settings-summary b { color: var(--ink); font-weight: 700; }
+.hs-deck-name { color: var(--red); font-weight: 600; }
+
+/* ── round ────────────────────────────────────────────────────────────────── */
+
+.hs-round, .hs-reveal, .hs-standings { max-width: 1500px; width: 100%; margin: 0 auto; }
+
+.hs-round-head { display: flex; flex-direction: column; gap: var(--gap-s); }
+
+.hs-double {
+  font-family: var(--face-ui);
+  font-size: var(--t-label);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--red);
+  padding: 0.25em 0.7em;
+}
+
+.hs-round-body { flex: 1; display: flex; flex-direction: column; gap: var(--gap); min-height: 0; }
+.hs-getready { color: var(--ink-3); }
+
+.hs-waiting { display: flex; flex-direction: column; gap: var(--gap-s); }
+.hs-count { font-size: clamp(1.1rem, 2vw, 1.8rem); color: var(--ink-3); }
+.hs-count b { color: var(--ink); }
+.hs-still-out { color: var(--ink-2); font-style: italic; }
+.hs-hint { color: var(--ink-3); max-width: 46ch; }
+
+.hs-round-foot { display: flex; gap: var(--gap-s); flex-wrap: wrap; }
+.hs-round-foot .pr-btn { font-size: var(--t-label); min-height: 2.4rem; padding: 0.4em 1em; }
+
+/* ── reveal ───────────────────────────────────────────────────────────────── */
+
+.hs-reveal-head { display: flex; flex-direction: column; gap: 0.2em; }
+.hs-reveal-prompt { font-size: clamp(1.2rem, 2.6vw, 2.4rem); }
+
+.hs-cards { flex: 1; display: flex; flex-direction: column; gap: var(--gap-s); min-height: 0; }
+
+.hs-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  padding: var(--gap-s) var(--gap);
+  background: var(--paper-2);
+  border: var(--hair) solid var(--rule);
+  /* Cards that have already had their moment stay legible but recede, so the room's
+     eye is always on the one that just landed. */
+  opacity: 0.55;
+  transition: opacity 160ms linear;
+}
+
+.hs-card--active { opacity: 1; }
+
+.hs-card--truth {
+  opacity: 1;
+  background: var(--paper);
+  border: var(--rule-thick) double var(--red);
+}
+
+.hs-card-main { display: flex; align-items: center; gap: var(--gap); flex-wrap: wrap; }
+
+.hs-card-text {
+  font-family: var(--face-display);
+  font-size: clamp(1.2rem, 2.8vw, 2.6rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.hs-card--truth .hs-card-text { color: var(--red); }
+
+.hs-card-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+  flex-wrap: wrap;
+  font-family: var(--face-ui);
+  font-size: clamp(0.8rem, 1.15vw, 1rem);
+}
+
+.hs-card-by, .hs-card-victims { display: inline-flex; align-items: center; gap: 0.4em; flex-wrap: wrap; }
+
+.hs-card-by-label {
+  font-size: var(--t-label);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.hs-card-by--house { font-style: italic; color: var(--ink-3); }
+.hs-nobody { color: var(--ink-3); }
+
+.hs-card-points {
+  margin-left: auto;
+  font-family: var(--face-ui);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(1rem, 1.8vw, 1.6rem);
+  color: var(--blue);
+}
+
+.hs-card-points--truth { color: var(--red); }
+
+.hs-why { margin-top: auto; }
+
+/* ── standings ────────────────────────────────────────────────────────────── */
+
+.hs-winner { display: flex; flex-direction: column; gap: 0.2em; }
+.hs-winner-name { font-size: clamp(2rem, 6vw, 5rem); }
+
+.hs-table { flex: 1; display: flex; flex-direction: column; gap: 0; min-height: 0; }
+
+.hs-row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-s);
+  padding: 0.45em 0.2em;
+  border-bottom: var(--hair) solid var(--rule-soft);
+  font-family: var(--face-ui);
+  font-size: clamp(1rem, 2vw, 1.7rem);
+}
+
+.hs-row--first { border-bottom-color: var(--red); }
+
+.hs-rank { width: 2ch; color: var(--ink-3); text-align: right; }
+.hs-row-dot { flex: none; width: 0.9em; height: 0.9em; background: var(--chip); }
+.hs-row-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hs-row-gone { color: var(--ink-3); font-size: 0.7em; font-style: italic; }
+.hs-row-gain { font-size: 0.7em; }
+.hs-knew { font-size: 0.55em; }
+
+/* ── the only layout breakpoints ──────────────────────────────────────────── */
+
+/* Wide enough for two columns: the join panel beside the roster. Below this they
+   stack, which is what a narrow newspaper column does anyway. */
+@media (min-width: 820px) {
+  .hs-lobby-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 4fr); }
+}
+
+/* A genuinely large screen — a television across a room. Give the reveal's cards
+   more air, since at that distance the limiting factor is line length, not space. */
+@media (min-width: 1600px) {
+  .hs-card { padding: var(--gap) calc(var(--gap) * 1.5); }
+}
+
+/* The host page opened on a phone. It is not the intended device, but somebody
+   will do it and it must not be broken — the fluid layout already handles it, this
+   just stops the code from eating the whole viewport. */
+@media (max-width: 480px) {
+  .hs-code { font-size: clamp(3rem, 22vw, 5rem); }
+  .hs-roster-list .pr-chip { font-size: 1rem; }
+}
