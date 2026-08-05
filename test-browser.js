@@ -168,13 +168,24 @@ async function run() {
   await assertNoScroll(phones[0].page, 'phone vote');
   await assertTapTargets(phones[0].page, 'phone vote');
 
-  // The two who wrote the same lie must share one disabled option.
-  const disabled = await phones[0].page.locator('.pr-ballot-item[disabled]').count();
-  check('a player cannot tap their own lie', disabled >= 1, `${disabled} disabled`);
+  // The two who wrote the same lie must share one option, struck out on both phones.
+  const own = await phones[0].page.locator('.pr-ballot-item--own[disabled]').count();
+  check('a player cannot tap their own lie', own === 1, `${own} marked own`);
 
   const hostOptions = await host.locator('.pr-ballot-item').count();
   const phoneOptions = await phones[0].page.locator('.pr-ballot-item').count();
   check('screen and phone show the same ballot', hostOptions === phoneOptions, `${hostOptions} vs ${phoneOptions}`);
+
+  // The shared screen is not an input. Rendering it as buttons with no handler made
+  // every option :disabled, so the whole television board wore the "this is your
+  // own lie" hatching and the room was asked to vote on nine struck-out options.
+  const hostDisabled = await host.locator('.pr-ballot-item[disabled], .pr-ballot-item--own').count();
+  check('the shared screen does not render its ballot as disabled', hostDisabled === 0, `${hostDisabled} struck out`);
+
+  // Options are called out by letter across a room, so every one needs a letter —
+  // at nine options an 8-letter alphabet silently fell back to "9".
+  const letters = await host.locator('.pr-ballot-letter').allTextContents();
+  check('every option has a letter, not a number', letters.every((l) => /^[A-Z]$/.test(l)), letters.join(''));
 
   // Everyone votes for the first option they are allowed to.
   for (const p of phones) {
@@ -229,11 +240,108 @@ async function run() {
   await browser.close();
 }
 
+/**
+ * The layout at the design cap.
+ *
+ * Three fixtures prove nothing about a screen that has to hold nine options and
+ * nine reveal cards — that is the density every party-game layout breaks at. Seven
+ * of the eight players are driven over raw sockets rather than as browser contexts,
+ * because what is being tested is what the shared screen renders, not eight copies
+ * of a phone.
+ */
+async function runAtCap() {
+  console.log('\n  — at the eight-player cap —\n');
+  const { io } = require('socket.io-client');
+  const SERVER = arg('--server', 'http://localhost:3101');
+
+  const browser = await chromium.launch();
+  const hostCtx = await browser.newContext({ viewport: DESKTOP });
+  const host = await hostCtx.newPage();
+  await host.goto(CLIENT, { waitUntil: 'networkidle' });
+  await host.getByTestId('create-room').waitFor({ timeout: 20000 });
+  await host.getByTestId('rounds-3').click();
+  await host.getByTestId('create-room').click();
+  await host.getByTestId('room-code').waitFor({ timeout: 15000 });
+  const code = (await host.getByTestId('room-code').textContent()).trim();
+
+  const bots = [];
+  for (let i = 0; i < 8; i++) {
+    const s = io(SERVER, { forceNew: true, transports: ['websocket'] });
+    await new Promise((r) => s.once('connect', r));
+    s.pid = `cap-${i}`;
+    s.emit('player:join', { code, name: `Player${i + 1}`, pid: s.pid });
+    await new Promise((r) => s.once('player:joined', r));
+    // Each bot writes a distinct lie, so the board reaches its full nine options.
+    s.on('round:collecting', () => s.emit('player:submit_lie', { text: `Decoy number ${i + 1}` }));
+    // Hold the latest options rather than voting on arrival. Eight bots voting
+    // immediately end the phase in about 120ms, so the shared screen's vote layout
+    // exists for less time than it takes to assert anything about it — the layout
+    // would go unchecked while the test still passed.
+    s.on('round:options', (p) => { s.pending = p; });
+    bots.push(s);
+  }
+
+  const castVotes = () => {
+    for (const s of bots) {
+      const p = s.pending;
+      if (!p) continue;
+      const target = p.options.find((o) => o.id !== p.yourOptionId);
+      if (target) s.emit('player:submit_vote', { optionId: target.id });
+      s.pending = null;
+    }
+  };
+
+  await host.waitForTimeout(700);
+  await shot(host, '20-host-lobby-8');
+  await assertNoScroll(host, 'host lobby (8 players)');
+  const chips = await host.locator('.hs-roster-list .pr-chip').count();
+  check('all eight players fit the lobby roster', chips === 8, `${chips} chips`);
+
+  await host.getByTestId('start-game').click();
+
+  await host.locator('.pr-ballot-item').first().waitFor({ timeout: 30000 });
+  await host.waitForTimeout(500);
+  const options = await host.locator('.pr-ballot-item').count();
+  check('the ballot carries every lie plus the truth', options >= 8, `${options} options`);
+  await shot(host, '21-host-voting-8');
+  await assertNoScroll(host, 'host voting (8 players)');
+
+  castVotes();
+
+  await host.locator('.hs-card--truth').waitFor({ timeout: 40000 });
+  await host.waitForTimeout(600);
+  const cards = await host.locator('.hs-card').count();
+  check('the reveal renders every card', cards >= 8, `${cards} cards`);
+  await shot(host, '22-host-reveal-8');
+  await assertNoScroll(host, 'host reveal (8 players)');
+
+  // The truth is the last beat, so if the list did not follow the reveal it is now
+  // scrolled out of sight — which is the failure this whole scroll mechanism exists
+  // to prevent.
+  const truthVisible = await host.locator('.hs-card--truth').isVisible();
+  const inView = await host.locator('.hs-card--truth').evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    return r.top >= 0 && r.bottom <= window.innerHeight + 1;
+  });
+  check('the truth card is on screen when it lands', truthVisible && inView);
+
+  await host.locator('.hs-table').waitFor({ timeout: 40000 });
+  await host.waitForTimeout(400);
+  await shot(host, '23-host-scoreboard-8');
+  await assertNoScroll(host, 'host scoreboard (8 players)');
+  const rows = await host.locator('.hs-row').count();
+  check('every player is on the scoreboard', rows === 8, `${rows} rows`);
+
+  for (const s of bots) s.close();
+  await browser.close();
+}
+
 (async () => {
   console.log(`\nFajil browser test — ${CLIENT}\n`);
   const started = Date.now();
   try {
     await run();
+    await runAtCap();
   } catch (err) {
     failures.push(`suite threw: ${err.message}`);
     console.log(`  FAIL suite threw — ${err.message}`);

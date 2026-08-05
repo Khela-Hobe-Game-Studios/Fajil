@@ -299,9 +299,13 @@ body {
 }
 
 /* Your own lie. Shown, never selectable — hiding it entirely would make the board
- * a different length for you than for everyone else, and the reveal refers to
- * options by position often enough that that matters. */
-.pr-ballot-item:disabled {
+ * a different length for you than for everyone else, and the room calls options
+ * out by letter.
+ *
+ * Keyed to an explicit class, NOT to :disabled. The shared screen renders the same
+ * options with no handler, and styling this off :disabled painted every option on
+ * the television as struck out. */
+.pr-ballot-item--own {
   opacity: 1;
   cursor: not-allowed;
   background: repeating-linear-gradient(
@@ -312,6 +316,9 @@ body {
   color: var(--ink-3);
   border-style: dashed;
 }
+
+/* A board locked because the vote is in, rather than because the option is yours. */
+.pr-ballot-item:disabled:not(.pr-ballot-item--own) { opacity: 0.55; cursor: default; }
 
 .pr-ballot-letter {
   flex: none;
@@ -326,7 +333,7 @@ body {
 }
 
 .pr-ballot-item[aria-pressed='true'] .pr-ballot-letter { background: var(--paper); color: var(--ink); }
-.pr-ballot-item:disabled .pr-ballot-letter { background: var(--ink-3); }
+.pr-ballot-item--own .pr-ballot-letter { background: var(--ink-3); }
 
 /* ── stamps ───────────────────────────────────────────────────────────────── */
 

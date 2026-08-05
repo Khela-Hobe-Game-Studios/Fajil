@@ -180,7 +180,9 @@
 .hs-round-body { flex: 1; display: flex; flex-direction: column; gap: var(--gap); min-height: 0; }
 .hs-getready { color: var(--ink-3); }
 
-.hs-waiting { display: flex; flex-direction: column; gap: var(--gap-s); }
+/* Pushed to the foot of the page, so the headcount sits at the bottom of the sheet
+   rather than hard under the ballot with the rest of the screen empty. */
+.hs-waiting { display: flex; flex-direction: column; gap: var(--gap-s); margin-top: auto; }
 .hs-count { font-size: clamp(1.1rem, 2vw, 1.8rem); color: var(--ink-3); }
 .hs-count b { color: var(--ink); }
 .hs-still-out { color: var(--ink-2); font-style: italic; }

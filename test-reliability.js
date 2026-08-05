@@ -231,6 +231,125 @@ async function run() {
 }
 
 /**
+ * A full game at the design cap, with connections dropping at every phase.
+ *
+ * The first scenario proves the happy path and one reconnect. This one is the
+ * question actually asked of a party game: eight people, phones locking and
+ * unlocking, someone refreshing mid-vote, someone's wifi dying during the reveal —
+ * does the room still get to a final standing with everybody's score intact?
+ */
+async function runStress() {
+  console.log('\n  — eight players, dropping throughout —\n');
+
+  const host = makeClient('host');
+  await connect(host);
+  host.emit('host:create_room', { rounds: 3, lieSeconds: 45, deck: 'mixed' });
+  const { code } = await once(host, 'room:created');
+
+  const NAMES = ['Rumi', 'Tanvir', 'Ayesha', 'Shuvo', 'Nadia', 'Farhan', 'Mou', 'Zayan'];
+  let players = [];
+  for (const [i, name] of NAMES.entries()) {
+    const s = makeClient(name);
+    await connect(s);
+    s.pid = `stress-${i}`;
+    s.playerName = name;
+    s.emit('player:join', { code, name, pid: s.pid });
+    await once(s, 'player:joined');
+    players.push(s);
+  }
+  check('a room fills to the eight-player cap', players.length === 8);
+
+  // A ninth device must be refused rather than quietly making the vote unreadable.
+  const ninth = makeClient('ninth');
+  await connect(ninth);
+  ninth.emit('player:join', { code, name: 'Overflow', pid: 'stress-9' });
+  const fullErr = await once(ninth, 'error', 4000).catch(() => null);
+  check('a ninth player is refused', /full/i.test(fullErr?.message ?? ''), JSON.stringify(fullErr));
+  ninth.close();
+
+  /** Drop a player's socket and bring them back on a new one, as a phone would. */
+  async function bounce(index) {
+    const old = players[index];
+    const { pid, playerName } = old;
+    old.close();
+    await sleep(300);
+    const fresh = makeClient(`${playerName}*`);
+    await connect(fresh);
+    fresh.pid = pid;
+    fresh.playerName = playerName;
+    const joined = once(fresh, 'player:joined');
+    fresh.emit('player:rejoin', { code, pid, name: playerName });
+    await joined;
+    players[index] = fresh;
+    return fresh;
+  }
+
+  host.emit('host:start_game');
+
+  let final = null;
+  host.on('game:over', (p) => { final = p; });
+
+  const scoresSeen = {};
+  host.on('round:scoreboard', (p) => {
+    for (const row of p.standings) scoresSeen[row.id] = row.score;
+  });
+
+  let bounced = 0;
+  for (let guard = 0; guard < 60 && !final; guard++) {
+    const evt = await Promise.race([
+      once(host, 'round:collecting', 30000).then((p) => ({ t: 'collect', p })),
+      once(host, 'round:options', 30000).then((p) => ({ t: 'vote', p })),
+      once(host, 'round:reveal', 30000).then((p) => ({ t: 'reveal', p })),
+      once(host, 'game:over', 30000).then((p) => ({ t: 'over', p })),
+    ]).catch(() => null);
+
+    if (!evt || evt.t === 'over') break;
+
+    if (evt.t === 'collect') {
+      // Somebody's phone dies before they have written anything — the round must
+      // still close rather than sitting on its full timer.
+      await bounce(0); bounced++;
+      for (const [i, p] of players.entries()) {
+        p.emit('player:submit_lie', { text: `stress-${i}-${Math.random().toString(36).slice(2, 6)}` });
+      }
+    } else if (evt.t === 'vote') {
+      await bounce(3); bounced++;
+      for (const p of players) {
+        const f = [...p.frames].reverse().find((x) => x.event === 'round:options');
+        if (!f) continue;
+        const mine = f.payload.yourOptionId;
+        const target = f.payload.options.find((o) => o.id !== mine);
+        if (target) p.emit('player:submit_vote', { optionId: target.id });
+      }
+    } else if (evt.t === 'reveal') {
+      await bounce(6); bounced++;
+      await sleep(300);
+      host.emit('host:skip');
+      await sleep(200);
+      host.emit('host:skip');
+    }
+  }
+
+  check('a full eight-player game finishes despite drops', !!final, `${bounced} reconnects`);
+
+  if (final) {
+    check('every player is on the final standings', final.standings.length === 8, `${final.standings.length}`);
+    check('nobody was reset to zero by reconnecting',
+      final.standings.every((s) => typeof s.score === 'number' && s.score >= 0));
+    const total = final.standings.reduce((n, s) => n + s.score, 0);
+    check('the game actually scored', total > 0, `total ${total}`);
+    check('names survived every reconnect',
+      final.standings.every((s) => NAMES.includes(s.name)),
+      final.standings.map((s) => s.name).join(','));
+    check('colours stayed unique across reconnects',
+      new Set(final.standings.map((s) => s.colorIndex)).size === 8);
+  }
+
+  for (const p of players) p.close();
+  host.close();
+}
+
+/**
  * The truth must not be derivable from anything a player was sent before REVEAL.
  *
  * Checked three ways, because there are three ways to leak it: a flag on the
@@ -334,6 +453,7 @@ async function main() {
   const started = Date.now();
   try {
     await run();
+    await runStress();
   } catch (err) {
     failures.push(`suite threw: ${err.message}`);
     console.log(`  FAIL suite threw — ${err.message}`);

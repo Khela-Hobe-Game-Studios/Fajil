@@ -7,29 +7,51 @@
  * lettered them differently from the phones would make that impossible.
  */
 
-const LETTERS = 'ABCDEFGH';
+// Ambiguity-free and long enough for the worst case: eight players' lies plus the
+// truth is nine options. 'I' is omitted because it is read as a 1 across a room.
+const LETTERS = 'ABCDEFGHJKMN';
 
 export function Ballot({ options, onPick, chosen, ownId, disabled = false, single = false }) {
+  // The shared screen is not an input. It used to render the same buttons with no
+  // handler, which made every one of them `:disabled` — so the whole board wore the
+  // "this is your own lie" hatching and the room was asked to vote on nine options
+  // that all looked struck out.
+  const readOnly = !onPick;
+
   return (
     <ul className={`pr-ballot ${single ? 'pr-ballot--single' : ''}`}>
       {options.map((o, i) => {
         const isOwn = o.id === ownId;
-        const isChosen = o.id === chosen;
+        const letter = LETTERS[i] ?? String(i + 1);
+        const body = (
+          <>
+            <span className="pr-ballot-letter" aria-hidden="true">{letter}</span>
+            <span>{o.text}</span>
+          </>
+        );
+
+        if (readOnly) {
+          return (
+            <li key={o.id}>
+              <div className="pr-ballot-item" data-testid={`option-${o.id}`}>{body}</div>
+            </li>
+          );
+        }
+
         return (
           <li key={o.id}>
             <button
               type="button"
-              className="pr-ballot-item"
+              className={`pr-ballot-item ${isOwn ? 'pr-ballot-item--own' : ''}`}
               // Your own lie is shown but never selectable. Removing it would make
               // the board a different length for you than for everyone else, and
               // the room refers to options by letter out loud.
-              disabled={disabled || isOwn || !onPick}
-              aria-pressed={onPick ? isChosen : undefined}
-              onClick={onPick ? () => onPick(o.id) : undefined}
+              disabled={disabled || isOwn}
+              aria-pressed={o.id === chosen}
+              onClick={() => onPick(o.id)}
               data-testid={`option-${o.id}`}
             >
-              <span className="pr-ballot-letter" aria-hidden="true">{LETTERS[i] ?? i + 1}</span>
-              <span>{o.text}</span>
+              {body}
               {isOwn ? <span className="pr-sr">— your own lie, not selectable</span> : null}
             </button>
           </li>
