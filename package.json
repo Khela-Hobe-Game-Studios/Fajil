@@ -9,9 +9,9 @@
     "dev:logs": "node scripts/dev.js logs",
     "verify": "node scripts/verify.js",
     "test:reliability": "node test-reliability.js",
-    "test:truth": "node test-truth-leak.js",
-    "test:fit": "node scripts/fit-check.js",
+    "test:browser": "node test-browser.js",
     "questions:lint": "node questions/lint.js",
+    "build": "npm run build --prefix client",
     "install:all": "npm install && npm install --prefix server && npm install --prefix client"
   },
   "devDependencies": {
