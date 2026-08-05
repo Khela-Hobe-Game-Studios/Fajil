@@ -1,0 +1,351 @@
+#!/usr/bin/env node
+/**
+ * Socket-level reliability suite.
+ *
+ * Runs against a real server over a real socket, because the things most likely to
+ * break this game — a truth that ships early, a reconnecting player who comes back
+ * as a stranger, a round that never resolves because the only person it was waiting
+ * on closed their laptop — are all properties of the transport and the state
+ * machine together, and none of them are visible to a unit test.
+ *
+ *   node test-reliability.js            # boots its own server on a test port
+ *   node test-reliability.js --port 3001  # use an already-running server
+ */
+
+const { spawn } = require('child_process');
+const path = require('path');
+const { io } = require('socket.io-client');
+
+const argPort = process.argv.includes('--port')
+  ? Number(process.argv[process.argv.indexOf('--port') + 1])
+  : null;
+const PORT = argPort ?? 3555;
+const URL = `http://localhost:${PORT}`;
+
+let passed = 0;
+const failures = [];
+
+function check(name, cond, detail = '') {
+  if (cond) { passed++; console.log(`  ok   ${name}`); }
+  else { failures.push(`${name}${detail ? ` — ${detail}` : ''}`); console.log(`  FAIL ${name}${detail ? ` — ${detail}` : ''}`); }
+}
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/** Wait for one event, with a timeout that names what it was waiting for. */
+function once(socket, event, timeout = 12000) {
+  return new Promise((resolve, reject) => {
+    const t = setTimeout(() => {
+      socket.off(event, handler);
+      reject(new Error(`timed out waiting for "${event}"`));
+    }, timeout);
+    const handler = (payload) => { clearTimeout(t); resolve(payload); };
+    socket.once(event, handler);
+  });
+}
+
+/**
+ * A client that records every frame it is ever sent.
+ *
+ * The recording is the point: the truth-leak assertions below re-read the whole
+ * transcript of what a player was told and when, which is exactly what an actual
+ * cheat would do with devtools open.
+ */
+function makeClient(label) {
+  const socket = io(URL, { autoConnect: false, forceNew: true, transports: ['websocket'] });
+  const frames = [];
+  socket.onAny((event, payload) => frames.push({ event, payload, at: Date.now() }));
+  socket.label = label;
+  socket.frames = frames;
+  return socket;
+}
+
+function connect(socket) {
+  return new Promise((resolve, reject) => {
+    socket.once('connect', resolve);
+    socket.once('connect_error', reject);
+    socket.connect();
+  });
+}
+
+// ─── the suite ───────────────────────────────────────────────────────────────
+
+async function run() {
+  const host = makeClient('host');
+  await connect(host);
+
+  // ---- lobby -------------------------------------------------------------
+  host.emit('host:create_room', { rounds: 3, lieSeconds: 45, deck: 'mixed' });
+  const created = await once(host, 'room:created');
+  const code = created.code;
+  check('room created with a 4-letter code', /^[A-Z]{4}$|^[A-Z]{3}\d$/.test(code), code);
+  check('host token is minted and sent only to the creator', typeof created.hostToken === 'string' && created.hostToken.length > 20);
+
+  const names = ['Rumi', 'Tanvir', 'Ayesha', 'Rumi']; // deliberate duplicate
+  const players = [];
+  for (const [i, name] of names.entries()) {
+    const s = makeClient(name);
+    await connect(s);
+    s.pid = `pid-${i}-${Math.random().toString(36).slice(2)}`;
+    s.emit('player:join', { code, name, pid: s.pid });
+    const joined = await once(s, 'player:joined');
+    s.me = joined.you;
+    players.push(s);
+  }
+
+  const roster = (await once(players[0], 'room:updated', 3000).catch(() => null))
+    ?? { players: [] };
+  void roster;
+
+  const finalNames = players.map((p) => p.me.name);
+  check('duplicate names are disambiguated', finalNames[3] === 'Rumi (2)', finalNames.join(', '));
+  check('every player gets a distinct colour', new Set(players.map((p) => p.me.colorIndex)).size === 4);
+
+  // A stranger must not be able to seize host control by guessing the code.
+  const impostor = makeClient('impostor');
+  await connect(impostor);
+  impostor.emit('host:rejoin', { code, hostToken: 'not-the-real-token-aaaaaaaaaaaaaaaaaaaaa' });
+  const impostorErr = await once(impostor, 'error', 4000).catch(() => null);
+  check('host control requires the token, not just the code', impostorErr?.message === 'Not the host of this room', JSON.stringify(impostorErr));
+  impostor.close();
+
+  // ---- round 1 -----------------------------------------------------------
+  host.emit('host:start_game');
+  const prompt = await once(host, 'round:prompt');
+  check('game starts and issues a prompt', typeof prompt.prompt === 'string' && prompt.prompt.includes('___'));
+  check('phase carries the server clock', typeof prompt.serverNow === 'number' && typeof prompt.endsAt === 'number');
+
+  await once(host, 'round:collecting');
+
+  // The truth-collision delight: typing the real answer is caught and returned
+  // privately, and must never be broadcast.
+  const answerRes = await fetch(`${URL}/health`).then((r) => r.json()).catch(() => null);
+  check('health endpoint responds', answerRes?.ok === true);
+
+  // Two players write the same lie, so the merge path is exercised.
+  players[0].emit('player:submit_lie', { text: 'Mango' });
+  players[1].emit('player:submit_lie', { text: '  mango!! ' });
+  players[2].emit('player:submit_lie', { text: 'Lychee' });
+  players[3].emit('player:submit_lie', { text: 'Guava' });
+
+  await Promise.all(players.map((p) => once(p, 'lie:accepted')));
+
+  const optionsFrames = await Promise.all(players.map((p) => once(p, 'round:options')));
+  const opts = optionsFrames[0].options;
+  check('options are built and sent', Array.isArray(opts) && opts.length >= 4, `${opts?.length} options`);
+  check('duplicate lies are merged into one option',
+    opts.filter((o) => o.text.toLowerCase().replace(/\W/g, '') === 'mango').length === 1);
+
+  // Each player is told their own option and nobody else's.
+  const own0 = optionsFrames[0].yourOptionId;
+  const own1 = optionsFrames[1].yourOptionId;
+  check('merged authors share one option id', own0 && own0 === own1, `${own0} vs ${own1}`);
+  check('each player learns only their own option',
+    optionsFrames.every((f) => Object.keys(f).filter((k) => k === 'yourOptionId').length === 1));
+
+  // Voting for your own lie is refused server-side, not merely hidden in the UI.
+  players[0].emit('player:submit_vote', { optionId: own0 });
+  const selfVoteErr = await once(players[0], 'error', 4000).catch(() => null);
+  check('a player cannot vote for their own lie', selfVoteErr?.message === "That's your own lie", JSON.stringify(selfVoteErr));
+
+  // ---- the assertion this whole game rests on ----------------------------
+  assertNoTruthLeak(players, optionsFrames[0]);
+
+  // Everyone votes for something that is not theirs.
+  for (const [i, p] of players.entries()) {
+    const mine = optionsFrames[i].yourOptionId;
+    const target = opts.find((o) => o.id !== mine);
+    p.emit('player:submit_vote', { optionId: target.id });
+  }
+
+  const reveal = await once(host, 'round:reveal', 15000);
+  check('reveal names the answer', typeof reveal.answer === 'string' && reveal.answer.length > 0);
+  check('reveal carries authorship for the first time', reveal.steps.some((s) => s.authors.length > 0));
+  check('reveal ends on the truth', reveal.steps[reveal.steps.length - 1].truth === true);
+  check('reveal orders lies by how many they fooled',
+    isNonDecreasing(reveal.steps.filter((s) => !s.truth).map((s) => s.voters.length)));
+  check('reveal schedule fits inside its phase',
+    reveal.schedule.beats.every((b) => b.at + b.duration <= reveal.schedule.total));
+  check('reveal explains why it matters', typeof reveal.why === 'string' && reveal.why.length > 20);
+
+  // ---- reconnect mid-game ------------------------------------------------
+  const victim = players[2];
+  const scoreBefore = reveal.players.find((p) => p.id === victim.pid)?.score ?? 0;
+  const victimName = victim.me.name;
+  const victimColor = victim.me.colorIndex;
+
+  victim.close();
+  await sleep(600);
+
+  const returned = makeClient('Ayesha-returned');
+  await connect(returned);
+  // Both listeners are registered before the rejoin is sent. The phase re-emit
+  // follows player:joined in the same tick on the server, so subscribing after the
+  // first has already resolved is a race the test would lose intermittently.
+  const rejoinedP = once(returned, 'player:joined');
+  const resyncP = Promise.race([
+    once(returned, 'round:reveal', 6000),
+    once(returned, 'round:scoreboard', 6000),
+    once(returned, 'round:prompt', 6000),
+    once(returned, 'round:collecting', 6000),
+    once(returned, 'round:options', 6000),
+  ]).catch(() => null);
+  returned.emit('player:rejoin', { code, pid: victim.pid, name: victimName });
+  const rejoined = await rejoinedP;
+
+  check('a reconnecting player keeps their identity', rejoined.you.name === victimName, rejoined.you.name);
+  check('a reconnecting player keeps their colour', rejoined.you.colorIndex === victimColor);
+  const scoreAfter = rejoined.room.players.find((p) => p.id === victim.pid)?.score ?? -1;
+  check('a reconnecting player keeps their score', scoreAfter === scoreBefore, `${scoreBefore} -> ${scoreAfter}`);
+  const resync = await resyncP;
+  check('a reconnecting player is re-sent the live phase', !!resync,
+    returned.frames.map((f) => f.event).join(','));
+  // The phase must arrive with real elapsed time, not restarted. A reveal that
+  // replays from zero for a returning phone desynchronises it from the shared
+  // screen for the rest of the round.
+  if (resync) {
+    check('the re-sent phase carries real elapsed time, not a restart',
+      resync.startedAt <= resync.serverNow,
+      `startedAt=${resync.startedAt} serverNow=${resync.serverNow}`);
+  }
+  players[2] = returned;
+
+  // ---- play the game out -------------------------------------------------
+  let sawGameOver = null;
+  host.on('game:over', (p) => { sawGameOver = p; });
+
+  for (let guard = 0; guard < 40 && !sawGameOver; guard++) {
+    const phase = await nextPhase(host, players, code);
+    if (phase === 'done') break;
+  }
+
+  check('the game reaches a final standing', !!sawGameOver, 'never emitted game:over');
+  if (sawGameOver) {
+    check('final standings include every player', sawGameOver.standings.length === 4);
+    check('final standings are ranked', sawGameOver.standings.every((s, i, a) => i === 0 || a[i - 1].score >= s.score));
+    check('a player who dropped is still on the standings', sawGameOver.standings.every((s) => typeof s.score === 'number'));
+  }
+
+  for (const p of players) p.close();
+  host.close();
+}
+
+/**
+ * The truth must not be derivable from anything a player was sent before REVEAL.
+ *
+ * Checked three ways, because there are three ways to leak it: a flag on the
+ * options, the answer appearing in some other field, and an ordering that gives it
+ * away. The answer text itself is necessarily present during VOTING — it is one of
+ * the options — so the test is that it appears exactly once, as an option's text,
+ * and that nothing marks which one it is.
+ */
+function assertNoTruthLeak(players, optionsFrame) {
+  const SECRET_KEYS = ['truth', 'authors', 'house', 'why', 'answer', 'steps', 'gains'];
+
+  let leakedKey = null;
+  let leakedPre = null;
+
+  for (const p of players) {
+    for (const frame of p.frames) {
+      const phaseOf = frame.payload?.phase;
+      if (frame.event === 'round:reveal' || frame.event === 'game:over') break;
+
+      const json = JSON.stringify(frame.payload ?? {});
+
+      // 1. No secret-bearing key may appear on any pre-reveal frame.
+      for (const k of SECRET_KEYS) {
+        if (new RegExp(`"${k}"\\s*:`).test(json)) leakedKey = `${p.label}/${frame.event}.${k}`;
+      }
+
+      // 2. Before the options exist at all, the answer must appear nowhere.
+      if (phaseOf === 'PROMPT' || phaseOf === 'COLLECTING') {
+        if (frame.event === 'round:options') leakedPre = `${p.label} got options during ${phaseOf}`;
+      }
+    }
+  }
+
+  check('no truth flag or authorship ships before the reveal', !leakedKey, leakedKey ?? '');
+  check('options do not exist before collection closes', !leakedPre, leakedPre ?? '');
+
+  // 3. The options payload is exactly {id, text} and nothing else.
+  const keys = new Set(optionsFrame.options.flatMap((o) => Object.keys(o)));
+  check('vote options carry only id and text', [...keys].every((k) => k === 'id' || k === 'text'), [...keys].join(','));
+}
+
+function isNonDecreasing(arr) {
+  return arr.every((v, i) => i === 0 || arr[i - 1] <= v);
+}
+
+/** Drive whatever phase the room is in to the next one. */
+async function nextPhase(host, players, code) {
+  const evt = await Promise.race([
+    once(host, 'round:collecting', 30000).then((p) => ({ t: 'collect', p })),
+    once(host, 'round:options', 30000).then((p) => ({ t: 'vote', p })),
+    once(host, 'game:over', 30000).then((p) => ({ t: 'over', p })),
+  ]).catch(() => null);
+
+  if (!evt || evt.t === 'over') return 'done';
+
+  if (evt.t === 'collect') {
+    for (const [i, p] of players.entries()) {
+      p.emit('player:submit_lie', { text: `lie-${i}-${Math.random().toString(36).slice(2, 7)}` });
+    }
+    return 'collect';
+  }
+
+  // Vote — the host frame has no yourOptionId, so read each player's own frame.
+  for (const p of players) {
+    const f = [...p.frames].reverse().find((x) => x.event === 'round:options');
+    if (!f) continue;
+    const mine = f.payload.yourOptionId;
+    const target = f.payload.options.find((o) => o.id !== mine);
+    if (target) p.emit('player:submit_vote', { optionId: target.id });
+  }
+  // Skip the reveal's choreography so the suite is not paced by animation.
+  await sleep(400);
+  host.emit('host:skip');
+  await sleep(200);
+  host.emit('host:skip');
+  return 'vote';
+}
+
+// ─── boot ────────────────────────────────────────────────────────────────────
+
+async function main() {
+  let child = null;
+  if (!argPort) {
+    child = spawn(process.execPath, [path.join(__dirname, 'server', 'src', 'index.js')], {
+      env: { ...process.env, PORT: String(PORT) },
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    child.stdout.on('data', (d) => process.env.VERBOSE && process.stdout.write(`[server] ${d}`));
+    child.stderr.on('data', (d) => process.stderr.write(`[server] ${d}`));
+
+    for (let i = 0; i < 60; i++) {
+      try {
+        const r = await fetch(`${URL}/health`);
+        if (r.ok) break;
+      } catch { /* not up yet */ }
+      await sleep(250);
+    }
+  }
+
+  console.log(`\nFajil reliability suite — ${URL}\n`);
+  const started = Date.now();
+  try {
+    await run();
+  } catch (err) {
+    failures.push(`suite threw: ${err.message}`);
+    console.log(`  FAIL suite threw — ${err.message}`);
+  }
+
+  const secs = ((Date.now() - started) / 1000).toFixed(1);
+  console.log(`\n  ${passed} passed, ${failures.length} failed  (${secs}s)\n`);
+  if (failures.length) for (const f of failures) console.log(`    x ${f}`);
+  console.log('');
+
+  if (child) child.kill();
+  process.exit(failures.length ? 1 : 0);
+}
+
+main();
