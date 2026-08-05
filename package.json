@@ -1,0 +1,21 @@
+{
+  "name": "fajil",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev.js up",
+    "dev:stop": "node scripts/dev.js down",
+    "dev:status": "node scripts/dev.js status",
+    "dev:restart": "node scripts/dev.js restart",
+    "dev:logs": "node scripts/dev.js logs",
+    "verify": "node scripts/verify.js",
+    "test:reliability": "node test-reliability.js",
+    "test:truth": "node test-truth-leak.js",
+    "test:fit": "node scripts/fit-check.js",
+    "questions:lint": "node questions/lint.js",
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client"
+  },
+  "devDependencies": {
+    "playwright": "^1.59.1",
+    "socket.io-client": "^4.7.5"
+  }
+}
