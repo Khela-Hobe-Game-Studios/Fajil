@@ -13,7 +13,8 @@
     "screens": "node capture-screens.js",
     "questions:lint": "node questions/lint.js",
     "build": "npm run build --prefix client",
-    "install:all": "npm install && npm install --prefix server && npm install --prefix client"
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client",
+    "questions:merge": "node questions/merge.js"
   },
   "devDependencies": {
     "playwright": "^1.59.1",
