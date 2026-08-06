@@ -63,10 +63,6 @@ function phaseTiming(room) {
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 
-function activePlayers(room) {
-  return room.players;
-}
-
 // Single source of truth for "who are we waiting on". The progress bar and the
 // auto-advance check reading two different lists is how a host bar sticks at 5/6
 // forever on a round that already resolved.

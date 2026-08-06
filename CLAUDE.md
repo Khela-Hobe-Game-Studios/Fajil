@@ -111,7 +111,14 @@ Client → server: `time:ping`, `host:create_room`, `host:update_settings`,
 Server → client: `room:created`, `player:joined`, `room:updated`, `room:settings`,
 `room:reset`, `round:prompt`, `round:collecting`, `round:lie_count`, `lie:accepted`,
 `lie:knew_it`, `round:options`, `vote:accepted`, `round:vote_count`, `round:reveal`,
-`round:scoreboard`, `game:over`, `game:paused`, `game:resumed`, `error`.
+`round:scoreboard`, `game:over`, `game:paused`, `game:resumed`, `server:shutdown`,
+`error`.
+
+`server:shutdown` is the goodbye frame. Rooms are in memory, so a deploy or a
+free-tier spin-down destroys every live game; without a frame on the way out the
+clients — which retry forever by design — reconnect to a server that has forgotten
+them and sit on a phase that never advances. One frame turns that into an honest
+message.
 
 **Every phase event carries the server's clock:** `{ phase, serverNow, startedAt,
 endsAt, durationMs }`. Clients measure their offset once per connect (`time:ping`)
@@ -232,6 +239,7 @@ server/src/
   gameManager.js    State machine, timers, scoring, reveal schedule
   roomManager.js    Rooms Map, codes, players, settings, reaping
   lies.js           Normalisation, dedupe, option building, truth secrecy
+  limits.js         IP-keyed abuse ceilings that survive a reconnect
   sanitize.js       The one sanitizePlayers()
   questionsLoader.js  Sheet CSV or JSON fallback
 
@@ -255,6 +263,43 @@ test-browser.js     Real browser: shared screen + 3 phones, layout assertions
 
 ---
 
+## Capacity and abuse limits
+
+Measured, not estimated: **20 concurrent games — 120 sockets — cost 73MB RSS and
+answered every submit with a p99 of 2ms.** Compute is not the constraint and will
+not be the constraint. What binds is memory and the single instance.
+
+| Ceiling | Default | Why it exists |
+|---|---|---|
+| `MAX_ROOMS_GLOBAL` | 5000 | Bounds memory. Refusing politely beats an OOM that takes every live game with it |
+| `MAX_ROOMS_PER_IP` | 8 | The ceiling that closes the exhaustion hole below |
+| `MAX_SOCKETS_PER_IP` | 40 | Stops a socket flood; loose enough for a NAT'd venue |
+| `ALLOWED_ORIGINS` | unset (open) | Set to the deployed client in production |
+| `TRUST_PROXY` | on under Render | See below — getting this wrong breaks the game either way |
+
+**The room code space was a global single point of failure.** 48 words plus a
+digit-suffix tier is 432 codes *in total*, and every limit protecting them lived on
+`socket.data` — which a reconnect discards. One laptop, unauthenticated, took every
+code in under a minute; the failure mode is not degradation but a worldwide outage,
+because every host anywhere gets "No rooms available". Fixed in two places: a random
+fourth tier (31⁴, digit forced so it never deals a real word onto a television) and
+the IP-keyed ceilings in `server/src/limits.js`. Re-measured after: the same attack
+yields 5 rooms. `test-reliability.js` asserts it.
+
+**`TRUST_PROXY` has no safe default.** Behind a proxy the socket address is the
+proxy's, so every player shares one bucket and the ceilings lock everyone out.
+Without a proxy, `X-Forwarded-For` is client-controlled, so trusting it makes every
+ceiling opt-out. It is explicit, inferred only from Render's own env var, and stated
+in the startup log — read that log after the first deploy.
+
+**Loopback is exempt by default.** Anything on 127.0.0.1 already owns the box. The
+real reason is the gate: a developer with `npm run dev` up all afternoon must not
+trip a production ceiling on their fifth `verify`, because a gate that starts failing
+for irrelevant reasons is a gate people switch off. `LIMIT_EXEMPT_LOOPBACK=0` polices
+it, which is how the test exercises the limits at all.
+
+---
+
 ## Known limitations
 
 - **No profanity filter.** Player-authored text appears on a shared screen. Bounded
@@ -262,6 +307,18 @@ test-browser.js     Real browser: shared screen + 3 phones, layout assertions
   living room, not for strangers.
 - All state is in memory — a server restart drops every live room, and Render's free
   tier spins down when idle (~30s cold start, surfaced as "Waking the press…").
+  Clients are now *told* (`server:shutdown`) rather than left retrying into a server
+  that has forgotten them, but the game is still gone. **A deploy mid-party kills
+  every game in progress**; there is no drain and no way to add one while rooms live
+  in a single process's memory.
+- **Still one instance.** The abuse ceilings and the widened code space raise the
+  roof a long way, but horizontal scaling needs sticky sessions *and* a shared room
+  store (the socket.io Redis adapter plus rooms out of the `Map`). `emitPerPlayer()`
+  and `io.sockets.sockets.get()` both assume every socket is local, and would need
+  revisiting first.
+- **Single region.** Oregon is ~250ms from Dhaka, on top of a 25-second vote timer.
+  The clock protocol keeps every timer *correct*, but taps still feel slow for the
+  audience this game is actually for. See the note in `render.yaml`.
 - No accounts, no history, no persistence between games.
 - Questions load once at startup unless `QUESTIONS_SHEET_URL` is set.
 - No audio. The reveal is silent, which costs it something.

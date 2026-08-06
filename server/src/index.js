@@ -24,22 +24,68 @@ const { handleGameEvent, syncPlayerState, setQuestions, resetToLobby } = require
 const { sanitizePlayers } = require('./sanitize');
 const { loadQuestions } = require('./questionsLoader');
 const { LIE_MAX } = require('./lies');
+const {
+  clientIp,
+  checkRoomCreate,
+  checkJoin,
+  checkConnect,
+  removeSocket,
+  startLimitSweeper,
+  limitStats,
+  describeTrustProxy,
+  MAX_ROOMS_GLOBAL,
+} = require('./limits');
+
+/**
+ * Which origins may drive this backend.
+ *
+ * `*` let any page on the internet open rooms and drive games against this server,
+ * which is both an abuse surface and the reason the limits in `limits.js` cannot be
+ * reasoned about — you cannot rate-limit a caller you have not scoped. Set
+ * `ALLOWED_ORIGINS` to the deployed client (comma-separated for a custom domain
+ * alongside the Pages URL). Unset stays open, because a LAN dev session and a
+ * self-hosted copy both legitimately have no fixed origin.
+ */
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+const corsOrigin = ALLOWED_ORIGINS.length ? ALLOWED_ORIGINS : '*';
 
 const app = express();
-app.use(cors());
-app.use(express.json());
+app.set('trust proxy', true);
+app.use(cors({ origin: corsOrigin }));
+app.use(express.json({ limit: '16kb' }));
 
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: '*' },
+  cors: { origin: corsOrigin },
   // Phones sleep aggressively and mobile data drops for seconds at a time. These are
   // deliberately slack: a backgrounded tab or a lift ride should not be read as a
   // disconnect at all, because the cheapest reconnect is the one that never happens.
   pingInterval: 20000,
   pingTimeout: 25000,
+  // The largest thing a client ever legitimately sends is a 60-character lie. The
+  // default ceiling is 1MB per message, which is four orders of magnitude of free
+  // memory pressure per socket for anyone who wants it.
+  maxHttpBufferSize: 8 * 1024,
 });
 
-app.get('/health', (req, res) => res.json({ ok: true, rooms: rooms.size }));
+app.get('/health', (req, res) => {
+  const mem = process.memoryUsage();
+  res.json({
+    ok: true,
+    rooms: rooms.size,
+    maxRooms: MAX_ROOMS_GLOBAL,
+    sockets: io.engine?.clientsCount ?? 0,
+    players: [...rooms.values()].reduce((n, r) => n + r.players.length, 0),
+    rssMb: Math.round(mem.rss / 1048576),
+    heapMb: Math.round(mem.heapUsed / 1048576),
+    uptimeS: Math.round(process.uptime()),
+    ...limitStats(),
+  });
+});
 
 // ─── how long a seat is held ─────────────────────────────────────────────────
 //
@@ -56,7 +102,6 @@ const LOBBY_GRACE_MS = 20000;
 const GAME_GRACE_MS = 120000;
 const HOST_GRACE_MS = 30000;
 const GAME_OVER_ROOM_TTL = 15 * 60 * 1000;
-const MAX_ROOMS_PER_SOCKET = 5;
 
 // ─── validation ──────────────────────────────────────────────────────────────
 
@@ -83,8 +128,13 @@ function timingSafeEqual(given, expected) {
   return crypto.timingSafeEqual(a, b);
 }
 
-// Token bucket per socket. A spammed submit otherwise fans a broadcast out to every
-// device in the room with no ceiling.
+// Token bucket per socket, for the in-room actions.
+//
+// Deliberately still per-socket: a spammed submit fans a broadcast out to every
+// device in the room, and the socket is the right thing to charge because the
+// spammer must already hold a seat in that room to do it. The limits that had to
+// move to an IP are the ones a stranger can reach *before* being admitted anywhere —
+// creating and joining — because those reset for free on reconnect. See limits.js.
 function allow(socket, key, perSec = 5) {
   const now = Date.now();
   socket.data._buckets ??= {};
@@ -120,10 +170,22 @@ function cancelDrop(player) {
 // ─── socket handlers ─────────────────────────────────────────────────────────
 
 io.on('connection', (socket) => {
+  // Charged to the address, not the connection, so a flood cannot buy more room by
+  // opening more sockets. Released on disconnect below.
+  const ip = clientIp(socket);
+  socket.data.ip = ip;
+  if (!checkConnect(ip)) {
+    socket.emit('error', { message: 'Too many connections from this network' });
+    return socket.disconnect(true);
+  }
+
   // Clients derive every countdown from the server's clock rather than from a number
   // handed to them once, so they measure their offset here first.
   socket.on('time:ping', (clientSent, ack) => {
-    const payload = { clientSent, serverNow: Date.now() };
+    // Echo only what a clock sync needs. Reflecting the client's own value back
+    // unbounded makes this a free amplifier; the client only ever sends a number.
+    const echoed = typeof clientSent === 'number' ? clientSent : null;
+    const payload = { clientSent: echoed, serverNow: Date.now() };
     if (typeof ack === 'function') return ack(payload);
     socket.emit('time:pong', payload);
   });
@@ -131,22 +193,18 @@ io.on('connection', (socket) => {
   socket.on('host:create_room', (settings = {}) => {
     if (!allow(socket, 'create', 2)) return;
 
-    // A ceiling on top of the rate limit, to raise the cost of walking the code
-    // space. Not a guarantee — this counter lives on the socket, so reconnecting
-    // clears it. What actually closes the exhaustion hole is reaping abandoned
-    // empty lobbies on a short clock (EMPTY_LOBBY_MS); this just makes it slower.
-    socket.data._created = (socket.data._created ?? []).filter((c) => rooms.has(c));
-    if (socket.data._created.length >= MAX_ROOMS_PER_SOCKET) {
-      return socket.emit('error', { message: 'Too many open rooms from this device' });
-    }
+    // The real ceiling, keyed by address so it survives a reconnect. The per-socket
+    // counter this replaces was measured taking the entire code space from one
+    // machine in under a minute.
+    const refusal = checkRoomCreate(rooms, ip);
+    if (refusal) return socket.emit('error', { message: refusal });
 
-    const room = createRoom({ hostSocketId: socket.id, settings });
+    const room = createRoom({ hostSocketId: socket.id, settings, creatorIp: ip });
     if (!room) return socket.emit('error', { message: 'No rooms available right now — try again shortly' });
 
     socket.join(room.code);
     socket.data.roomCode = room.code;
     socket.data.isHost = true;
-    socket.data._created.push(room.code);
     // The token goes to this socket only, never over a broadcast.
     socket.emit('room:created', { code: room.code, settings: room.settings, hostToken: room.hostToken });
     console.log('room created:', room.code);
@@ -165,6 +223,12 @@ io.on('connection', (socket) => {
 
   socket.on('player:join', ({ code, name, pid } = {}) => {
     if (!allow(socket, 'join', 3)) return;
+    // Charged per address here but deliberately NOT on player:rejoin below. A first
+    // join is a stranger guessing at codes; a rejoin is someone who already holds a
+    // seat and whose phone just came back. Refusing the second one to slow the first
+    // strands a player mid-game, which is the failure this whole codebase is built
+    // to avoid — and it is bounded anyway, because a room holds at most 8 seats.
+    if (!checkJoin(ip)) return socket.emit('error', { message: 'Slow down a moment, then try again' });
     if (!isValidCode(code)) return socket.emit('error', { message: 'Room not found' });
     if (!isValidPid(pid)) return socket.emit('error', { message: 'Invalid session — please refresh' });
 
@@ -321,6 +385,10 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
+    // Before any early return below, or the per-IP socket count only ever climbs and
+    // a household is locked out after enough ordinary reconnects.
+    removeSocket(ip);
+
     const code = socket.data?.roomCode;
     if (!code) return;
     const room = getRoom(code);
@@ -383,12 +451,53 @@ setInterval(() => {
 }, 60000).unref?.();
 
 startIdleSweeper();
+startLimitSweeper();
+
+/**
+ * Say goodbye before dying.
+ *
+ * Every room is in memory, so a deploy, a crash-restart or a free-tier spin-down
+ * destroys every live game. That is a known limitation, but the *silent* version of
+ * it is much worse than it needs to be: clients retry forever by design, so without
+ * this a room full of people sits watching a frozen screen reconnect to a server
+ * that has already forgotten them, and only finds out when a phase never advances.
+ *
+ * One frame costs nothing and turns that into an honest message. The client already
+ * treats "Room not found" on the way back as fatal and clears the session.
+ */
+let shuttingDown = false;
+function shutdown(signal) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  console.log(`[shutdown] ${signal} — notifying ${io.engine?.clientsCount ?? 0} clients`);
+  io.emit('server:shutdown', { message: 'The server is restarting — this game cannot continue.' });
+
+  // Let the frame reach the wire before tearing the transport down.
+  setTimeout(() => {
+    io.close(() => server.close(() => process.exit(0)));
+    // Render sends SIGKILL after 30s; leaving well before that avoids a hard kill
+    // mid-write, and there is no state on disk worth waiting for.
+    setTimeout(() => process.exit(0), 3000).unref?.();
+  }, 250);
+}
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
+
+// An unhandled rejection would otherwise take the process down on newer Node with no
+// indication of which room was mid-phase when it happened.
+process.on('unhandledRejection', (err) => {
+  console.error('[unhandledRejection]', err);
+});
 
 const PORT = process.env.PORT || 3001;
 loadQuestions()
   .then((q) => {
     setQuestions(q);
-    server.listen(PORT, () => console.log(`Fajil server on ${PORT} — ${q.length} questions`));
+    server.listen(PORT, () => {
+      console.log(`Fajil server on ${PORT} — ${q.length} questions`);
+      console.log(`[limits] ${describeTrustProxy()}; max ${MAX_ROOMS_GLOBAL} rooms`);
+      console.log(`[cors] ${ALLOWED_ORIGINS.length ? ALLOWED_ORIGINS.join(', ') : 'open (ALLOWED_ORIGINS unset)'}`);
+    });
   })
   .catch((err) => {
     console.error('[questions] failed to load:', err.message);

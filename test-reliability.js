@@ -78,7 +78,9 @@ async function run() {
   host.emit('host:create_room', { rounds: 3, lieSeconds: 45, deck: 'mixed' });
   const created = await once(host, 'room:created');
   const code = created.code;
-  check('room created with a 4-letter code', /^[A-Z]{4}$|^[A-Z]{3}\d$/.test(code), code);
+  // Three tiers: a word, a word+digit, then the random overflow the widened code
+  // space added — all four characters, all uppercase alphanumeric.
+  check('room created with a 4-character code', /^[A-Z0-9]{4}$/.test(code), code);
   check('host token is minted and sent only to the creator', typeof created.hostToken === 'string' && created.hostToken.length > 20);
 
   const names = ['Rumi', 'Tanvir', 'Ayesha', 'Rumi']; // deliberate duplicate
@@ -428,6 +430,125 @@ async function nextPhase(host, players, code) {
   return 'vote';
 }
 
+/**
+ * The abuse ceilings hold across reconnects.
+ *
+ * This is a regression test for a measured outage, not a hypothetical. Every limit
+ * used to live on `socket.data`, so all of them reset for free by disconnecting:
+ * one machine, unauthenticated, took all 432 room codes in under a minute and every
+ * host in the world got "No rooms available" until the sweeper caught up.
+ *
+ * Boots its own server with the loopback exemption off, because otherwise the whole
+ * point of the test is exempted. Isolated on its own port so the scenarios above are
+ * unaffected by the ceilings.
+ */
+async function runLimits() {
+  console.log('\n── abuse limits ──\n');
+
+  const port = PORT + 1;
+  const url = `http://localhost:${port}`;
+  const child = spawn(process.execPath, [path.join(__dirname, 'server', 'src', 'index.js')], {
+    env: {
+      ...process.env,
+      PORT: String(port),
+      LIMIT_EXEMPT_LOOPBACK: '0',
+      MAX_ROOMS_PER_IP: '4',
+    },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  child.stdout.on('data', (d) => process.env.VERBOSE && process.stdout.write(`[limits] ${d}`));
+
+  try {
+    for (let i = 0; i < 60; i++) {
+      try { if ((await fetch(`${url}/health`)).ok) break; } catch { /* not up */ }
+      await sleep(250);
+    }
+
+    // Twelve reconnect cycles, each a brand-new socket asking for a room. Under the
+    // old per-socket counter this yielded a room every time.
+    const codes = new Set();
+    let refusals = 0;
+    for (let i = 0; i < 12; i++) {
+      const s = io(url, { forceNew: true, transports: ['websocket'], reconnection: false });
+      await new Promise((r) => s.once('connect', r));
+      s.emit('host:create_room', {});
+      const outcome = await Promise.race([
+        once(s, 'room:created', 3000).then((p) => ({ code: p.code })).catch(() => ({})),
+        once(s, 'error', 3000).then(() => ({ refused: true })).catch(() => ({})),
+      ]);
+      if (outcome.code) codes.add(outcome.code);
+      if (outcome.refused) refusals++;
+      s.close();
+    }
+
+    check(
+      'room creation is capped per address, not per socket',
+      codes.size <= 4,
+      `${codes.size} rooms from 12 reconnects (cap 4)`,
+    );
+    check('the excess attempts are refused, not silently dropped', refusals > 0, `${refusals} refusals`);
+
+    const health = await (await fetch(`${url}/health`)).json();
+    check('health reports the global room ceiling', Number.isFinite(health.maxRooms), JSON.stringify(health.maxRooms));
+    check('health reports live socket and player counts', 'sockets' in health && 'players' in health);
+  } finally {
+    child.kill();
+  }
+}
+
+/**
+ * A client is told before the server disappears.
+ *
+ * Rooms live in memory, so a deploy destroys every game — and clients retry forever
+ * by design, so without a goodbye frame a room sits watching a phase that will never
+ * advance, reconnected to a server that has forgotten it.
+ *
+ * Skipped on Windows, which has no SIGTERM: `child.kill()` there is TerminateProcess
+ * and no handler ever runs, so the test can only ever produce a false failure. CI and
+ * the deploy target are both Linux, which is where this actually needs to hold.
+ */
+async function runShutdown() {
+  console.log('\n── graceful shutdown ──\n');
+
+  if (process.platform === 'win32') {
+    console.log('  skip  no real SIGTERM on Windows (verified on Linux in CI)');
+    return;
+  }
+
+  const port = PORT + 2;
+  const url = `http://localhost:${port}`;
+  const child = spawn(process.execPath, [path.join(__dirname, 'server', 'src', 'index.js')], {
+    env: { ...process.env, PORT: String(port) },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+
+  try {
+    for (let i = 0; i < 60; i++) {
+      try { if ((await fetch(`${url}/health`)).ok) break; } catch { /* not up */ }
+      await sleep(250);
+    }
+
+    const host = io(url, { forceNew: true, transports: ['websocket'], reconnection: false });
+    await new Promise((r) => host.once('connect', r));
+    host.emit('host:create_room', {});
+    await once(host, 'room:created');
+
+    const goodbye = once(host, 'server:shutdown', 5000).catch(() => null);
+    child.kill('SIGTERM');
+    const frame = await goodbye;
+
+    check('a client is told the server is going away', frame !== null);
+    check(
+      'the goodbye frame explains itself',
+      typeof frame?.message === 'string' && frame.message.length > 0,
+      JSON.stringify(frame),
+    );
+    host.close();
+  } finally {
+    try { child.kill('SIGKILL'); } catch { /* already gone */ }
+  }
+}
+
 // ─── boot ────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -454,6 +575,8 @@ async function main() {
   try {
     await run();
     await runStress();
+    await runLimits();
+    await runShutdown();
   } catch (err) {
     failures.push(`suite threw: ${err.message}`);
     console.log(`  FAIL suite threw — ${err.message}`);

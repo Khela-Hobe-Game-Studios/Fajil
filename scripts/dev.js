@@ -121,9 +121,17 @@ async function up() {
     stdio: ['ignore', serverLog, serverLog],
   });
 
+  // Vite's own JS entry rather than the `npx` shim.
+  //
+  // Node 24 refuses to spawn a `.cmd` without `shell: true` (EINVAL), which is what
+  // `npx.cmd` is on Windows — so this silently stopped starting the client. Adding
+  // `shell: true` would "fix" it while making the recorded PID the shell's rather
+  // than vite's, and dev:stop and the stale-listener check both key off that PID.
+  // Going straight to the entry point keeps one process with one honest PID.
+  const viteBin = path.join(ROOT, 'client', 'node_modules', 'vite', 'bin', 'vite.js');
   const client = spawn(
-    process.platform === 'win32' ? 'npx.cmd' : 'npx',
-    ['vite', '--port', String(CLIENT_PORT), '--strictPort'],
+    process.execPath,
+    [viteBin, '--port', String(CLIENT_PORT), '--strictPort'],
     {
       cwd: path.join(ROOT, 'client'),
       env: { ...process.env, VITE_SERVER_URL: `http://localhost:${SERVER_PORT}` },

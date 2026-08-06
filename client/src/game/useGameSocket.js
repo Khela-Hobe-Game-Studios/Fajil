@@ -246,6 +246,21 @@ export default function useGameSocket() {
     socket.on('error', onError);
 
     /**
+     * The server is going away and every room with it — a deploy, or the free tier
+     * spinning down. Clear the session now rather than letting the socket retry
+     * forever into a server that has forgotten this room: the reconnect would
+     * succeed, the rejoin would fail, and the room would sit on a frozen phase
+     * wondering why nothing advanced.
+     */
+    const onShutdown = (p) => {
+      clearSession();
+      sessionRef.current = null;
+      dispatch({ type: 'leave' });
+      dispatch({ type: 'error', p: { message: p?.message ?? 'The server restarted — start a new game.' } });
+    };
+    socket.on('server:shutdown', onShutdown);
+
+    /**
      * Re-announce on EVERY connect, not just the first.
      *
      * socket.once here looks correct and silently kills every player who
@@ -279,6 +294,7 @@ export default function useGameSocket() {
       socket.off('room:created', onCreated);
       socket.off('player:joined', onJoined);
       socket.off('error', onError);
+      socket.off('server:shutdown', onShutdown);
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
     };

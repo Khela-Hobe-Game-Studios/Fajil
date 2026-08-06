@@ -109,6 +109,19 @@ strips every button's fill.
 **React StrictMode is on.** Effects run twice in dev; every `socket.on` needs a
 matching `socket.off` in cleanup.
 
+**A limit that lives on `socket.data` is not a limit.** Sockets are free to open, so
+anything keyed to one resets by reconnecting. Every abuse ceiling started out this
+way and one laptop took all 432 room codes in under a minute — a worldwide outage,
+since every host anywhere then gets "No rooms available". Anything gating a caller
+who is *not yet in a room* (creating, joining) belongs in `limits.js`, keyed by IP.
+Per-socket is still right for in-room actions like submitting a lie, because the
+spammer already holds a seat there.
+
+**`TRUST_PROXY` is wrong in both directions by default.** Behind a proxy, unset means
+every player in the world shares one rate-limit bucket. With no proxy, set means
+`X-Forwarded-For` is client-controlled and every ceiling is opt-out. The startup log
+prints which mode is live; read it after a deploy rather than assuming.
+
 **Writing `\uXXXX` escapes into source files is unreliable through some tooling** —
 they can arrive as literal control characters and produce a regex that silently
 matches the wrong thing. Both regexes in `lies.js` and `roomManager.js` were bitten

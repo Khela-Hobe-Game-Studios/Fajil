@@ -28,10 +28,31 @@ const IDLE_ROOM_MS = 2 * 60 * 60 * 1000;
 // A room nobody ever joined, whose host is also gone, is abandoned rather than idle.
 // Holding those for the full 2h is what lets repeated create_room calls exhaust the
 // code space and lock everyone out.
-const EMPTY_LOBBY_MS = 10 * 60 * 1000;
+//
+// Three minutes, swept every minute: an abandoned room is one whose host socket is
+// *already gone*, so nothing is being taken away from anyone still looking at a
+// screen. The old ten-minute hold meant a burst of junk rooms held their codes for
+// up to fifteen minutes — long enough that one short attack outlasted most parties.
+const EMPTY_LOBBY_MS = 3 * 60 * 1000;
 
-// Never hand out a code belonging to a live room. Once the bank is exhausted we
-// suffix a digit rather than overwrite: 48 words, +digits gives 480.
+// Unambiguous alphabet for the overflow tier: no I/O/0/1/L, because an overflow code
+// is spelled out rather than said and those are the pairs a room mishears.
+const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+
+/**
+ * Never hand out a code belonging to a live room.
+ *
+ * Three tiers, widest-appeal first. The word bank is what a host actually wants —
+ * "GUJOB" survives a noisy room in a way "QXTL" does not — so it is always tried
+ * first and the overflow only ever appears under load the game has never seen.
+ *
+ * The tiers matter because the first two are tiny: 48 words and 384 word+digit forms
+ * is 432 codes in total, and that was a hard global ceiling on concurrent games.
+ * Reaching it is not a degraded experience, it is a total outage — every host in the
+ * world gets "No rooms available" — and it was reachable from one machine in under a
+ * minute. The random tier is 31^4, so the ceiling that binds is now MAX_ROOMS_GLOBAL,
+ * which refuses politely and bounds memory instead.
+ */
 function generateCode() {
   const available = WORD_BANK.filter((w) => !rooms.has(w));
   if (available.length > 0) {
@@ -41,7 +62,27 @@ function generateCode() {
     const pool = WORD_BANK.map((w) => w.slice(0, 3) + digit).filter((c) => !rooms.has(c));
     if (pool.length > 0) return pool[Math.floor(Math.random() * pool.length)];
   }
-  return null; // every code in use — the caller must surface an error
+  return randomCode();
+}
+
+/**
+ * A random four-character code, guaranteed to contain a digit.
+ *
+ * The digit is not decoration: without it this generator eventually deals a real
+ * four-letter word onto a television in someone's living room, and some of those
+ * words are ones you would not want it to pick. A forced digit breaks the shape of
+ * every one of them.
+ */
+function randomCode(attempts = 200) {
+  const pick = (s) => s[crypto.randomInt(s.length)];
+  const digits = '23456789';
+  for (let i = 0; i < attempts; i++) {
+    const chars = [pick(CODE_ALPHABET), pick(CODE_ALPHABET), pick(CODE_ALPHABET), pick(CODE_ALPHABET)];
+    chars[crypto.randomInt(4)] = pick(digits);
+    const code = chars.join('');
+    if (!rooms.has(code)) return code;
+  }
+  return null; // caller surfaces an error rather than overwriting a live room
 }
 
 const ROUND_OPTIONS = [3, 5, 7];
@@ -64,13 +105,16 @@ function normalizeSettings(raw = {}, base = DEFAULT_SETTINGS) {
   };
 }
 
-function createRoom({ hostSocketId, settings }) {
+function createRoom({ hostSocketId, settings, creatorIp = null }) {
   const code = generateCode();
   if (!code) return null;
 
   const room = {
     code,
     hostSocketId,
+    // The address that opened this room, so the per-IP ceiling can be counted by
+    // scanning live rooms rather than by a running total that drifts. Never emitted.
+    creatorIp,
     // The host's half of what a player's pid already is: a secret the client holds,
     // minted here, required back on rejoin. Codes are 48 dictionary words, so
     // granting host control on the code alone means anyone who guesses one takes
@@ -201,7 +245,7 @@ function deleteRoom(code) {
   rooms.delete(code);
 }
 
-function startIdleSweeper(intervalMs = 5 * 60 * 1000) {
+function startIdleSweeper(intervalMs = 60 * 1000) {
   const timer = setInterval(() => {
     const now = Date.now();
     for (const [code, room] of rooms) {
@@ -225,6 +269,8 @@ function startIdleSweeper(intervalMs = 5 * 60 * 1000) {
 module.exports = {
   rooms,
   WORD_BANK,
+  CODE_ALPHABET,
+  generateCode,
   MAX_PLAYERS,
   MIN_PLAYERS,
   DEFAULT_SETTINGS,

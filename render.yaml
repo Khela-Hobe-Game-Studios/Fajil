@@ -10,6 +10,18 @@
 #
 # One instance only. Scaling past one needs sticky sessions AND a shared room
 # store; until then, a second instance simply loses half the players.
+#
+# Measured capacity of one instance: 20 concurrent games (120 sockets) played end to
+# end cost 73MB RSS and answered every submit with a p99 of 2ms. Compute is nowhere
+# near the limit — the ceilings that bind are memory (MAX_ROOMS_GLOBAL) and the fact
+# that a restart drops every live room.
+#
+# `region` is the one setting worth revisiting before a worldwide launch. Oregon is
+# roughly 250ms round-trip from Dhaka, and this game puts a 25-second vote timer on
+# top of that. The clock protocol already absorbs the offset so nobody's timer is
+# *wrong*, but taps still feel slow. Singapore or Frankfurt is a better centre of
+# mass for a Bangladesh-and-diaspora audience; there is no multi-region story while
+# rooms live in one process's memory.
 services:
   - type: web
     name: fajil
@@ -23,6 +35,30 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 20
+
+      # Render fronts every request with a proxy, so the socket's own address is the
+      # proxy's. Without this every player in the world shares one rate-limit bucket
+      # and the abuse ceilings lock the game out. Inferred from Render's own RENDER
+      # var, set here so it is visible rather than magic. The startup log states
+      # which mode is live — check it after the first deploy.
+      - key: TRUST_PROXY
+        value: "1"
+
+      # The origins allowed to drive this backend. Unset means open to any page on
+      # the internet. Set it to the deployed client — comma-separated if a custom
+      # domain runs alongside the github.io URL.
+      - key: ALLOWED_ORIGINS
+        sync: false
+
+      # Ceilings. The defaults (5000 rooms, 8 per address, 40 sockets per address)
+      # suit a single free/starter instance; raise MAX_ROOMS_PER_IP only if players
+      # are genuinely behind one NAT, since it is the ceiling that stops one machine
+      # taking the whole code space.
+      - key: MAX_ROOMS_GLOBAL
+        sync: false
+      - key: MAX_ROOMS_PER_IP
+        sync: false
+
       # Optional: a Google Sheet published as CSV, so the bank can grow without a
       # redeploy. Falls back to questions/questions.json when unset or unreachable.
       - key: QUESTIONS_SHEET_URL
