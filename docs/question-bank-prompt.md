@@ -7,8 +7,14 @@ across games** — so repeats are random, not exhaustive. Twelve 7-round games i
 draws, and for it not to *feel* repetitive the pool wants to be several times that. A
 single-tier deck (`desh` alone) also has to carry 7 rounds by itself.
 
-**Target ~320: 140 `desh`, 130 `probash`, 50 `shared`.** Currently 74, so about 250
-more.
+**Target ~320: 140 `desh`, 130 `probash`, 50 `shared`.**
+
+**Status: all fifteen batches below have been run.** The bank went from 74 to 556 —
+317 `desh`, 180 `probash`, 59 `shared`, comfortably past the target. Five of the
+`probash` batches came in under their row's aim (East London 22, UK-beyond-London 25,
+USA 30, Canada/Australia/Europe 20, Gulf & Asia 24) because the territory ran out of
+facts worth being confident about; the shortfall went to `questions/NEEDS-CHECKING.md`
+rather than into filler. The prompt below stays here for topping up a territory later.
 
 ## Do it in batches, on separate territories
 
