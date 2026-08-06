@@ -325,6 +325,17 @@ async function runAtCap() {
   });
   check('the truth card is on screen when it lands', truthVisible && inView);
 
+  // The "why it matters" panel appears after the last card and takes height from
+  // the card list. The answer must not slide out of view underneath a paragraph
+  // explaining the answer.
+  await host.locator('.hs-why').waitFor({ timeout: 30000 });
+  await host.waitForTimeout(700);
+  const stillInView = await host.locator('.hs-card--truth').evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    return r.top >= 0 && r.bottom <= window.innerHeight + 1;
+  });
+  check('the truth stays in view once the why panel arrives', stillInView);
+
   await host.locator('.hs-table').waitFor({ timeout: 40000 });
   await host.waitForTimeout(400);
   await shot(host, '23-host-scoreboard-8');

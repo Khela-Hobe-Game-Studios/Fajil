@@ -33,7 +33,7 @@ export default function HostReveal({ state, actions }) {
 
         <ul className="hs-cards pr-scroll">
           {r.steps.slice(0, shown).map((s, i) => (
-            <RevealCard key={s.id} step={s} active={i === activeIndex} />
+            <RevealCard key={s.id} step={s} active={i === activeIndex} showWhy={showWhy} />
           ))}
         </ul>
 
@@ -53,7 +53,7 @@ export default function HostReveal({ state, actions }) {
   );
 }
 
-function RevealCard({ step, active }) {
+function RevealCard({ step, active, showWhy }) {
   const { truth, house, authors, voters, points } = step;
   const ref = useRef(null);
 
@@ -64,12 +64,17 @@ function RevealCard({ step, active }) {
    * anyone can read across a room — so the list scrolls and follows the beat. Left
    * to itself the payoff happens below the fold and the room watches a static page
    * while the interesting part is off-screen.
+   *
+   * `showWhy` is a dependency because the "why it matters" panel appears *after*
+   * the last card and takes height from this list. Without re-scrolling, the truth
+   * card slid out of view at the exact moment the round was being explained — the
+   * answer off-screen underneath a paragraph about the answer.
    */
   useEffect(() => {
     if (!active || !ref.current) return;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     ref.current.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' });
-  }, [active]);
+  }, [active, showWhy]);
 
   return (
     <li

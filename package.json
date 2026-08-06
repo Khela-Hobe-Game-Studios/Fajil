@@ -10,6 +10,7 @@
     "verify": "node scripts/verify.js",
     "test:reliability": "node test-reliability.js",
     "test:browser": "node test-browser.js",
+    "screens": "node capture-screens.js",
     "questions:lint": "node questions/lint.js",
     "build": "npm run build --prefix client",
     "install:all": "npm install && npm install --prefix server && npm install --prefix client"
