@@ -1,16 +1,67 @@
 # Prompt for generating Fajil questions
 
-Paste everything below the line into a fresh Claude session. Edit the **ORDER** block
-at the end to say how many you want and which tier.
+## How many, and why
 
-Then:
+A game is at most 7 rounds, and the deck is redrawn fresh each game with **no memory
+across games** — so repeats are random, not exhaustive. Twelve 7-round games is 84
+draws, and for it not to *feel* repetitive the pool wants to be several times that. A
+single-tier deck (`desh` alone) also has to carry 7 rounds by itself.
+
+**Target ~320: 140 `desh`, 130 `probash`, 50 `shared`.** Currently 74, so about 250
+more.
+
+## Do it in batches, on separate territories
+
+Do **not** ask one session for 250 questions. Quality falls off, facts get shakier,
+and it will repeat itself. Worse, six sessions each asked for "40 probash questions"
+will each hand you Brick Lane, Jackson Heights and chicken tikka masala.
+
+So each batch gets **one assigned territory** and a digest of what already exists.
 
 ```bash
-# save the output as questions/new-batch.json, or merge into questions.json
+node questions/digest.js            # paste this into the session
+node questions/digest.js probash    # or just one tier
+```
+
+### Batch plan
+
+| # | Tier | Territory | Aim |
+|---|---|---|---|
+| 1 | desh | **Food & drink** — dishes, regional sweets, street food, tea, fish, fruit, cooking method | 45 |
+| 2 | desh | **Land & nature** — rivers, districts, forests, islands, wildlife, weather, chars | 40 |
+| 3 | desh | **History & heritage before 1947** — Pala/Buddhist, Sultanate, Mughal, British Bengal, muslin, indigo, archaeology | 40 |
+| 4 | desh | **Language, literature, music, film** — Bangla itself, poets, Baul, folk forms, jatra, cinema, songs | 35 |
+| 5 | desh | **Craft & material culture** — jamdani, kantha, pottery, boats, rickshaw art, brass, bamboo, dress | 30 |
+| 6 | desh | **Beyond Dhaka** — Sylhet, Chittagong & the Hill Tracts, Barishal, Khulna, Rajshahi, Rangpur, Mymensingh; Chakma, Marma, Mro, Garo, Santal; Bengali Hindu, Buddhist and Christian life | 45 |
+| 7 | desh | **Modern life & institutions** — cricket and sport, the garments industry, universities, transport, science, NGOs, everyday urban Dhaka | 35 |
+| 8 | probash | **UK, East London** — Sylheti settlement, Tower Hamlets, Brick Lane, mosques, schools, local politics, housing | 35 |
+| 9 | probash | **UK beyond London** — Birmingham, Manchester, Bradford, Luton, Oldham, Newcastle, Cardiff, Glasgow; the curry trade nationally | 35 |
+| 10 | probash | **USA** — New York, Michigan, Chicago, Los Angeles, New Jersey, Texas, Florida, Atlanta; civic life, ballots, street names | 40 |
+| 11 | probash | **Canada, Australia & Europe** — Toronto, Montreal, Sydney, Melbourne; Italy, Spain, Portugal, France, Germany, Sweden, Greece | 35 |
+| 12 | probash | **Gulf & Asia** — Saudi, UAE, Qatar, Kuwait, Oman, Bahrain, Malaysia, Singapore, Japan, Korea, Maldives; labour migration, remittances, recruitment | 35 |
+| 13 | probash | **Second-generation life** — language loss, Bangla school, weddings abroad, food adaptation, identity and slang, diaspora media, associations, sport | 40 |
+| 14 | shared | **Eid, Ramadan & festivals** across Muslim, Hindu, Buddhist and Christian Bangladeshi life | 25 |
+| 15 | shared | **Home & family** — weddings, kinship terms, manners, superstition, idiom, household objects, everyday food habits | 30 |
+
+Run them in any order. After each batch:
+
+```bash
+node questions/merge.js questions/batch-N.json      # dry run, refuses duplicates
+node questions/merge.js questions/batch-N.json --write
 node questions/lint.js
 ```
 
-The lint is the contract. If it passes, the questions will work in the game.
+## Accuracy is the real risk at this volume
+
+250 questions is 250 chances to enshrine a wrong fact, and a wrong fact survives every
+playtest because nobody in the room knows either. The prompt below tells the model to
+put anything it is unsure of under **NEEDS CHECKING** instead of in the JSON — hold it
+to that, and treat a batch that returns an empty NEEDS CHECKING list with suspicion
+rather than relief.
+
+---
+
+Paste everything below into a fresh session, filling in the **ORDER** block at the end.
 
 ---
 
@@ -218,7 +269,11 @@ Before you output, check each entry against this list:
 
 ## ORDER
 
-Write **40** new questions: **20 `probash`, 15 `desh`, 5 `shared`**.
+Write **45** new questions, all on the assigned territory below and nothing outside it.
 
-For `desh`, at least half must be outside Dhaka. For `probash`, cover at least four
-different countries. Avoid the subjects already in the bank if it was provided.
+**TERRITORY:** _(paste one row from the batch plan here)_
+
+**ALREADY COVERED:** _(paste the output of `node questions/digest.js` here)_
+
+Do not repeat any subject in that list. If an obvious question on your territory is
+already taken, go one level more specific rather than rephrasing it.
