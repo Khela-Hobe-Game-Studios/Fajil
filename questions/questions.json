@@ -373,32 +373,6 @@
     "era": "modern"
   },
   {
-    "id": "bd-ors",
-    "q": "A cheap oral rehydration formula that has saved tens of millions of lives worldwide was refined and proven in the field in ___.",
-    "a": "bangladesh",
-    "show": "Bangladesh",
-    "alt": [
-      "east pakistan",
-      "bengal",
-      "dhaka"
-    ],
-    "decoys": [
-      "India",
-      "Egypt",
-      "Switzerland",
-      "The Philippines"
-    ],
-    "filler": [
-      "India",
-      "Britain",
-      "Egypt"
-    ],
-    "why": "Researchers in Dhaka and Kolkata developed it, and the icddr,b in Dhaka remains a world centre for it. Sugar, salt, water, correct proportions — The Lancet once called it potentially the most important medical advance of the century.",
-    "tier": "desh",
-    "region": "national",
-    "era": "modern"
-  },
-  {
     "id": "bd-jamdani",
     "q": "The handwoven Dhaka muslin figured fabric on UNESCO's intangible heritage list is ___.",
     "a": "jamdani",
@@ -711,34 +685,6 @@
       "Panthers"
     ],
     "why": "After the Royal Bengal tiger. The team's supporters bring actual tiger costumes to grounds, which has made the nickname unusually literal.",
-    "tier": "desh",
-    "region": "national",
-    "era": "modern"
-  },
-  {
-    "id": "bd-padma-bridge",
-    "q": "The Padma Bridge, opened in 2022, was built primarily with ___.",
-    "a": "bangladesh's own funding",
-    "show": "Bangladesh's own funding",
-    "alt": [
-      "own funds",
-      "domestic funding",
-      "self funding",
-      "government funds",
-      "own money"
-    ],
-    "decoys": [
-      "A World Bank loan",
-      "Japanese aid",
-      "Chinese grant money",
-      "An IMF facility"
-    ],
-    "filler": [
-      "World Bank money",
-      "Japanese aid",
-      "Foreign loans"
-    ],
-    "why": "The World Bank withdrew from the project and the government built it anyway. Whatever you think of the politics, the bridge cut a day-long ferry crossing to minutes for the whole southwest.",
     "tier": "desh",
     "region": "national",
     "era": "modern"
@@ -1457,32 +1403,6 @@
     "era": "modern"
   },
   {
-    "id": "pr-remittance",
-    "q": "Money sent home by Bangladeshis working abroad is called ___.",
-    "a": "remittance",
-    "show": "Remittances",
-    "alt": [
-      "remittances",
-      "remitance",
-      "foreign remittance"
-    ],
-    "decoys": [
-      "Foreign reserve",
-      "Hundi",
-      "Export earnings",
-      "Aid"
-    ],
-    "filler": [
-      "Aid",
-      "Investment",
-      "Savings"
-    ],
-    "why": "One of the largest sources of foreign currency in the country, and Bangladesh is consistently among the world's top receiving nations. Most of it comes from workers in the Gulf, not from the West.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
     "id": "pr-gulf",
     "q": "The largest number of Bangladeshi migrant workers abroad are in ___.",
     "a": "the gulf states",
@@ -1618,32 +1538,6 @@
     "era": "modern"
   },
   {
-    "id": "pr-nyc-ballot",
-    "q": "In New York City, Bengali became the first ___ language offered on official election ballots.",
-    "a": "south asian",
-    "show": "South Asian",
-    "alt": [
-      "southasian",
-      "south-asian",
-      "indian subcontinent"
-    ],
-    "decoys": [
-      "European",
-      "African",
-      "East Asian",
-      "Middle Eastern"
-    ],
-    "filler": [
-      "Asian",
-      "European",
-      "African"
-    ],
-    "why": "Introduced in Queens under the federal Voting Rights Act, which requires translated ballots once a language group passes a threshold. Bengali got there before Hindi, Urdu or Punjabi.",
-    "tier": "probash",
-    "region": "usa",
-    "era": "modern"
-  },
-  {
     "id": "pr-curry-mile",
     "q": "Manchester's 'Curry Mile' runs through the district of ___.",
     "a": "rusholme",
@@ -1720,32 +1614,6 @@
     "era": "modern"
   },
   {
-    "id": "pr-sylheti-language",
-    "q": "Linguists generally hold that Sylheti and standard Bengali are not fully ___.",
-    "a": "mutually intelligible",
-    "show": "Mutually intelligible",
-    "alt": [
-      "mutually intelligible",
-      "intelligible",
-      "understandable to each other"
-    ],
-    "decoys": [
-      "Written the same way",
-      "Related",
-      "Spoken in Britain",
-      "Taught in schools"
-    ],
-    "filler": [
-      "Related",
-      "Written alike",
-      "Spoken abroad"
-    ],
-    "why": "It matters practically: a British Bangladeshi family needing an interpreter is often badly served by a standard Bengali one, which has caused real problems in hospitals and courts.",
-    "tier": "probash",
-    "region": "uk",
-    "era": "modern"
-  },
-  {
     "id": "pr-rome",
     "q": "Italy's largest Bangladeshi community is concentrated in ___.",
     "a": "rome",
@@ -1769,31 +1637,6 @@
     "why": "Centred on Torpignattara, to the point that the neighbourhood is nicknamed Banglatown. Italy has one of the largest Bangladeshi populations in Europe after Britain.",
     "tier": "probash",
     "region": "europe",
-    "era": "modern"
-  },
-  {
-    "id": "pr-gcse",
-    "q": "British students can sit a GCSE, a national school qualification, in the ___ language.",
-    "a": "bengali",
-    "show": "Bengali",
-    "alt": [
-      "bangla",
-      "bengali language"
-    ],
-    "decoys": [
-      "Sylheti",
-      "Urdu only",
-      "Hindi only",
-      "Tamil"
-    ],
-    "filler": [
-      "Sylheti",
-      "Hindi",
-      "Punjabi"
-    ],
-    "why": "A direct consequence of community size. It is also a small annual comedy: the exam is in standard Bengali, and a great many of the candidates grew up speaking Sylheti at home.",
-    "tier": "probash",
-    "region": "uk",
     "era": "modern"
   },
   {
@@ -1878,34 +1721,6 @@
     "era": "modern"
   },
   {
-    "id": "pr-luggage",
-    "q": "The universal diaspora anxiety before flying home is the airline's ___ allowance.",
-    "a": "baggage",
-    "show": "Baggage allowance",
-    "alt": [
-      "luggage",
-      "baggage",
-      "weight",
-      "baggage allowance",
-      "luggage allowance"
-    ],
-    "decoys": [
-      "Seat",
-      "Meal",
-      "Legroom",
-      "Visa"
-    ],
-    "filler": [
-      "Seat",
-      "Meal",
-      "Legroom"
-    ],
-    "why": "Two suitcases of gifts, weighed on a bathroom scale the night before, repacked twice. Everyone in the family has an opinion and at least one item gets left on the hallway floor.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
     "id": "pr-malaysia",
     "q": "Outside the Gulf, the single largest destination for Bangladeshi migrant workers has been ___.",
     "a": "malaysia",
@@ -1926,34 +1741,6 @@
       "Australia"
     ],
     "why": "Plantations, factories and construction, on recruitment schemes that have been repeatedly suspended and restarted over allegations of exploitation. Singapore's shipyards are the other large Southeast Asian draw.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
-    "id": "pr-probash-meaning",
-    "q": "The Bengali word 'probash', as in the probashi community, means living ___.",
-    "a": "abroad",
-    "show": "Abroad (away from home)",
-    "alt": [
-      "abroad",
-      "away from home",
-      "overseas",
-      "foreign land",
-      "in exile"
-    ],
-    "decoys": [
-      "Together",
-      "In the city",
-      "By the sea",
-      "In the village"
-    ],
-    "filler": [
-      "In the city",
-      "Together",
-      "Nearby"
-    ],
-    "why": "It carries a faint ache that 'diaspora' does not — the word assumes a home you are away from, which is exactly the argument the second generation tends to have with the first.",
     "tier": "probash",
     "region": "global",
     "era": "modern"
@@ -3680,32 +3467,6 @@
     "era": "colonial"
   },
   {
-    "id": "pr-nyc-bengali-word",
-    "q": "Asked what they are, Bangladeshis in New York will usually answer, in English, ___.",
-    "a": "bengali",
-    "show": "Bengali",
-    "alt": [
-      "bangali",
-      "bengalee",
-      "bangalee"
-    ],
-    "decoys": [
-      "Bangladeshi",
-      "Desi",
-      "South Asian",
-      "Bengalese"
-    ],
-    "filler": [
-      "Bangladeshi",
-      "Desi",
-      "South Asian"
-    ],
-    "why": "In London the same person says Bangladeshi, and 'Bengali' would sound like a claim about India. In New York it is simply the word — it is what is printed on the ballot papers and the school forms as well.",
-    "tier": "probash",
-    "region": "usa",
-    "era": "modern"
-  },
-  {
     "id": "pr-michigan-congressman",
     "q": "The first member of the US Congress with a Bangladeshi father represented the state of ___.",
     "a": "michigan",
@@ -3834,32 +3595,6 @@
       "Investor"
     ],
     "why": "Which is why the first generation in America skews so heavily to engineers, doctors and academics, and why the community's oldest associations were founded on university campuses rather than above shops.",
-    "tier": "probash",
-    "region": "usa",
-    "era": "modern"
-  },
-  {
-    "id": "pr-1965-quotas",
-    "q": "South Asians could only migrate to America in numbers once Washington abolished its national-origin ___.",
-    "a": "quotas",
-    "show": "Quotas",
-    "alt": [
-      "quota",
-      "quota system",
-      "national origin quotas"
-    ],
-    "decoys": [
-      "Literacy test",
-      "Colour bar",
-      "Landing tax",
-      "Bond scheme"
-    ],
-    "filler": [
-      "Literacy test",
-      "Colour bar",
-      "Landing tax"
-    ],
-    "why": "The 1965 act replaced a system that had effectively barred Asians for forty years. Almost every Bangladeshi American family's story begins after it, which is why the community is so young and so concentrated in a handful of cities.",
     "tier": "probash",
     "region": "usa",
     "era": "modern"
@@ -4777,60 +4512,6 @@
     "era": "modern"
   },
   {
-    "id": "bd-tropic-cancer",
-    "q": "The line of latitude that runs straight across the middle of Bangladesh is the Tropic of ___.",
-    "a": "cancer",
-    "show": "Tropic of Cancer",
-    "alt": [
-      "tropic of cancer",
-      "kôrkôtkranti",
-      "karkatkranti"
-    ],
-    "decoys": [
-      "Capricorn",
-      "Leo",
-      "Scorpio",
-      "Aries"
-    ],
-    "filler": [
-      "Capricorn",
-      "Leo",
-      "Aries"
-    ],
-    "why": "It passes just about through the middle of the country, which is why the sun is very nearly overhead in June and why the shadows in a Dhaka courtyard almost disappear at midday that month.",
-    "tier": "desh",
-    "region": "national",
-    "era": "modern"
-  },
-  {
-    "id": "bd-chhitmohol",
-    "q": "Until 2015, the scraps of one country stranded inside the other along the northern border were called ___.",
-    "a": "chhitmohol",
-    "show": "Chhitmohol (ছিটমহল) — enclaves",
-    "alt": [
-      "chitmohol",
-      "chit mahal",
-      "enclave",
-      "enclaves",
-      "ছিটমহল"
-    ],
-    "decoys": [
-      "Char land",
-      "No man's land",
-      "Zero point",
-      "Corridor"
-    ],
-    "filler": [
-      "Char land",
-      "No man's land",
-      "Zero point"
-    ],
-    "why": "More than a hundred of them, some only a few fields across, with residents who for decades had no legal country, no school and no police. They were swapped by treaty in 2015 and the inhabitants chose which side to be on.",
-    "tier": "desh",
-    "region": "rangpur",
-    "era": "modern"
-  },
-  {
     "id": "bd-barind",
     "q": "The dry, red-soil upland of the north-west, unusually short of water, is the ___ Tract.",
     "a": "barind",
@@ -5367,32 +5048,6 @@
     "era": "modern"
   },
   {
-    "id": "pr-no-visa-required",
-    "q": "A foreign passport holder of Bangladeshi origin gets a stamp in it reading 'No Visa ___'.",
-    "a": "required",
-    "show": "No Visa Required",
-    "alt": [
-      "no visa required",
-      "nvr",
-      "needed"
-    ],
-    "decoys": [
-      "Necessary",
-      "Charged",
-      "Issued",
-      "Expiry"
-    ],
-    "filler": [
-      "Necessary",
-      "Charged",
-      "Issued"
-    ],
-    "why": "A seal that says, in effect, you never stopped belonging. It saves an hour at the airport and means rather more than that to the person carrying it.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
     "id": "pr-after-school-quran",
     "q": "After the state school day, a great many diaspora Bangladeshi children went straight on to the ___.",
     "a": "madrasa",
@@ -5557,59 +5212,6 @@
     "era": "modern"
   },
   {
-    "id": "pr-nikah-registration",
-    "q": "In England, a mosque nikah alone is not legally a marriage unless the couple also complete a civil ___.",
-    "a": "registration",
-    "show": "Civil registration",
-    "alt": [
-      "register",
-      "registry",
-      "civil marriage",
-      "registration"
-    ],
-    "decoys": [
-      "Blessing",
-      "Declaration",
-      "Notice",
-      "Contract"
-    ],
-    "filler": [
-      "Blessing",
-      "Declaration",
-      "Notice"
-    ],
-    "why": "Plenty of couples have found this out years later, at the worst possible moment, because the hall was not a registered building. It is now on the agenda of every community organisation in the country.",
-    "tier": "probash",
-    "region": "uk",
-    "era": "modern"
-  },
-  {
-    "id": "pr-standard-vs-sylheti",
-    "q": "Bangla school abroad teaches standard Bengali, which is not the language the children's grandparents actually ___.",
-    "a": "speak",
-    "show": "Speak",
-    "alt": [
-      "spoke",
-      "talk",
-      "speak at home"
-    ],
-    "decoys": [
-      "Read",
-      "Wrote",
-      "Sang",
-      "Prayed in"
-    ],
-    "filler": [
-      "Read",
-      "Wrote",
-      "Sang"
-    ],
-    "why": "The classroom teaches Dhaka's Bengali to children whose home language is Sylheti — near enough to be confusing, far enough that the grandmother's sentences still do not parse. Two languages' worth of effort for one imperfect result.",
-    "tier": "probash",
-    "region": "uk",
-    "era": "modern"
-  },
-  {
     "id": "pr-rice-cooker",
     "q": "The appliance that never gets put away in a diaspora Bangladeshi kitchen is the ___.",
     "a": "rice cooker",
@@ -5684,32 +5286,6 @@
       "Nikahnama"
     ],
     "why": "Height, education, complexion, family, and one photograph taken against a curtain. It is a CV for a person's whole life, forwarded through aunts, and the format has survived every dating app so far.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
-    "id": "pr-wage-earner-bond",
-    "q": "Bangladesh sells a savings bond only to its citizens working abroad: the Wage Earner ___ Bond.",
-    "a": "development",
-    "show": "Wage Earner Development Bond",
-    "alt": [
-      "development bond",
-      "wage earner development bond",
-      "wedb"
-    ],
-    "decoys": [
-      "Welfare",
-      "Premium",
-      "Sanchay",
-      "Foreign"
-    ],
-    "filler": [
-      "Welfare",
-      "Premium",
-      "Sanchay"
-    ],
-    "why": "A government instrument that exists purely because remittances are too important to leave to sentiment. Buy it with foreign currency, earn interest at home, and the state gets to keep the dollars.",
     "tier": "probash",
     "region": "global",
     "era": "modern"
@@ -6250,32 +5826,6 @@
       "Shakuntala"
     ],
     "why": "The missionary who published the translation, James Long, was fined and imprisoned for a month — and a Bengali writer paid the fine on the spot in open court. The play is mediocre theatre and enormous history.",
-    "tier": "desh",
-    "region": "national",
-    "era": "colonial"
-  },
-  {
-    "id": "bd-permanent-settlement",
-    "q": "The 1793 law that turned Bengal's revenue collectors into hereditary landlords was the ___ Settlement.",
-    "a": "permanent",
-    "show": "Permanent Settlement",
-    "alt": [
-      "permanent settlement",
-      "chirosthayi bandobasto",
-      "the permanent settlement"
-    ],
-    "decoys": [
-      "Ryotwari",
-      "Mahalwari",
-      "Provincial",
-      "Bengal"
-    ],
-    "filler": [
-      "Ryotwari",
-      "Mahalwari",
-      "Provincial"
-    ],
-    "why": "The revenue demand was fixed forever, which sounded generous and was not — it was fixed high, and any zamindar who missed a payment lost the estate at auction. It created a landlord class that shaped rural Bengal until the 1950s.",
     "tier": "desh",
     "region": "national",
     "era": "colonial"
@@ -7137,33 +6687,6 @@
     "era": "colonial"
   },
   {
-    "id": "pr-1962-vouchers",
-    "q": "Men hurried into Britain ahead of the 1962 Act, which made a new arrival need an entry ___.",
-    "a": "voucher",
-    "show": "Employment voucher",
-    "alt": [
-      "vouchers",
-      "employment voucher",
-      "work voucher",
-      "entry voucher"
-    ],
-    "decoys": [
-      "Permit",
-      "Bond",
-      "Sponsor",
-      "Quota"
-    ],
-    "filler": [
-      "Permit",
-      "Bond",
-      "Sponsor"
-    ],
-    "why": "The threat of the door closing brought more people through it than an open door ever had. Men who had intended to work a few years and go home instead sent for their families, and a labour migration turned into a community.",
-    "tier": "probash",
-    "region": "uk",
-    "era": "modern"
-  },
-  {
     "id": "pr-housing-squat",
     "q": "In the late 1970s Bengali families in the East End won housing by organising to ___ empty council flats.",
     "a": "squat",
@@ -7186,32 +6709,6 @@
       "Boycott"
     ],
     "why": "Families were being placed on estates where they did not feel safe, and refusing them meant being marked as intentionally homeless. Organising to occupy blocks together, rather than take flats singly, was the answer they arrived at, and it worked.",
-    "tier": "probash",
-    "region": "uk",
-    "era": "modern"
-  },
-  {
-    "id": "pr-th-schools",
-    "q": "Tower Hamlets' schools went, within a generation, from the bottom of England's league tables to ___ average.",
-    "a": "above",
-    "show": "Above average",
-    "alt": [
-      "above average",
-      "over",
-      "better than"
-    ],
-    "decoys": [
-      "Around",
-      "Below",
-      "Bottom of",
-      "Twice the"
-    ],
-    "filler": [
-      "Around",
-      "Below",
-      "Twice the"
-    ],
-    "why": "One of the more remarkable turnarounds in English education, and it happened in the poorest borough in the country with the highest share of pupils learning English as a second language. Studied endlessly and copied unsuccessfully.",
     "tier": "probash",
     "region": "uk",
     "era": "modern"
@@ -7322,32 +6819,6 @@
     "era": "modern"
   },
   {
-    "id": "pr-th-mayor",
-    "q": "Tower Hamlets is one of the few English councils to be run by a directly elected ___.",
-    "a": "mayor",
-    "show": "An executive mayor",
-    "alt": [
-      "executive mayor",
-      "elected mayor",
-      "borough mayor"
-    ],
-    "decoys": [
-      "Assembly",
-      "Board",
-      "Commissioner",
-      "Council leader"
-    ],
-    "filler": [
-      "Assembly",
-      "Board",
-      "Commissioner"
-    ],
-    "why": "Most boroughs are run by a leader chosen by the councillors; here the whole borough votes for one person directly. In a place where the community organises hard and turns out heavily, that has made local politics unusually intense.",
-    "tier": "probash",
-    "region": "uk",
-    "era": "modern"
-  },
-  {
     "id": "pr-th-name",
     "q": "Tower Hamlets is named for the hamlets that once owed service to the ___.",
     "a": "tower of london",
@@ -7374,33 +6845,6 @@
     "era": "precolonial"
   },
   {
-    "id": "pr-spitalfields-name",
-    "q": "Spitalfields takes its name from the fields beside a medieval ___.",
-    "a": "hospital",
-    "show": "A hospital (priory of St Mary Spital)",
-    "alt": [
-      "priory",
-      "st mary spital",
-      "hospital priory",
-      "spital"
-    ],
-    "decoys": [
-      "Market",
-      "Monastery gate",
-      "Gallows",
-      "Sheep pen"
-    ],
-    "filler": [
-      "Market",
-      "Monastery gate",
-      "Sheep pen"
-    ],
-    "why": "'Spital' is simply hospital with the front worn off. The priory is gone, but its burial ground turned up under the market and produced one of the largest medieval excavations ever done in London.",
-    "tier": "probash",
-    "region": "uk",
-    "era": "precolonial"
-  },
-  {
     "id": "pr-london-mosque-fund",
     "q": "The East London Mosque began life in 1910 as an endowment called the London Mosque ___.",
     "a": "fund",
@@ -7422,31 +6866,6 @@
       "Committee"
     ],
     "why": "Decades of rented rooms and temporary halls before there was a building, let alone the one on Whitechapel Road now. It predates the Bangladeshi community that fills it by about half a century.",
-    "tier": "probash",
-    "region": "uk",
-    "era": "colonial"
-  },
-  {
-    "id": "pr-boundary-estate",
-    "q": "Britain's first council housing estate, now in the middle of Bangladeshi Tower Hamlets, is the ___ Estate.",
-    "a": "boundary",
-    "show": "The Boundary Estate",
-    "alt": [
-      "boundary estate",
-      "the boundary"
-    ],
-    "decoys": [
-      "Chicksand",
-      "Ocean",
-      "Lansbury",
-      "Peabody"
-    ],
-    "filler": [
-      "Chicksand",
-      "Ocean",
-      "Lansbury"
-    ],
-    "why": "Built in the 1890s on the cleared site of one of London's worst slums, laid out as streets radiating from a raised bandstand made of the rubble. A century later it houses the families the borough is now known for.",
     "tier": "probash",
     "region": "uk",
     "era": "colonial"
@@ -10097,33 +9516,6 @@
     "era": "modern"
   },
   {
-    "id": "bd-santali-family",
-    "q": "Santali is not related to Bengali at all — it belongs to the ___ family of languages.",
-    "a": "munda",
-    "show": "Munda (Austroasiatic)",
-    "alt": [
-      "austroasiatic",
-      "austro-asiatic",
-      "mundari",
-      "munda family"
-    ],
-    "decoys": [
-      "Dravidian",
-      "Tibeto-Burman",
-      "Indo-Aryan",
-      "Tai"
-    ],
-    "filler": [
-      "Dravidian",
-      "Tibeto-Burman",
-      "Tai"
-    ],
-    "why": "Its nearest relatives are spoken in Cambodia and Vietnam, which puts it further from Bengali than English is. It is also one of very few languages in the world with an alphabet invented specifically for it in the 20th century.",
-    "tier": "desh",
-    "region": "rajshahi",
-    "era": "modern"
-  },
-  {
     "id": "bd-manipuri-raas",
     "q": "The Sylhet community whose autumn Raas dance festival draws visitors from across the country is the ___.",
     "a": "manipuri",
@@ -10370,33 +9762,6 @@
     "era": "modern"
   },
   {
-    "id": "bd-chakma-script",
-    "q": "Unlike most Indigenous languages of Bangladesh, Chakma is written in its own ___.",
-    "a": "script",
-    "show": "Its own script (Ajhapath)",
-    "alt": [
-      "alphabet",
-      "chakma script",
-      "ajhapath",
-      "own script"
-    ],
-    "decoys": [
-      "Bengali letters",
-      "Burmese letters",
-      "Roman letters",
-      "Devanagari"
-    ],
-    "filler": [
-      "Bengali letters",
-      "Burmese letters",
-      "Roman letters"
-    ],
-    "why": "A rounded alphabet related to the Burmese family, once close to extinct and now taught again in primary schools. Chakma itself is an Indo-Aryan language, a cousin of Bengali, written in a script from an entirely different tradition.",
-    "tier": "desh",
-    "region": "chittagong",
-    "era": "precolonial"
-  },
-  {
     "id": "bd-barua",
     "q": "Bangladesh's Bengali-speaking Buddhist community, concentrated around Chittagong, are the ___.",
     "a": "barua",
@@ -10419,33 +9784,6 @@
       "Chak"
     ],
     "why": "Buddhists who speak Bengali, carry a Bengali surname and are often assumed to be from the hills, which they are not. They are usually described as the last unbroken thread back to the Buddhist Bengal of the Pala centuries.",
-    "tier": "desh",
-    "region": "chittagong",
-    "era": "modern"
-  },
-  {
-    "id": "bd-chatgaiya",
-    "q": "The language of Chittagong is so far from standard Bengali that Dhaka speakers cannot ___ it.",
-    "a": "understand",
-    "show": "Understand it",
-    "alt": [
-      "understand",
-      "follow",
-      "comprehend",
-      "understand it"
-    ],
-    "decoys": [
-      "Write",
-      "Read",
-      "Pronounce",
-      "Translate"
-    ],
-    "filler": [
-      "Write",
-      "Read",
-      "Pronounce"
-    ],
-    "why": "Chatgaiya keeps sounds and words standard Bengali dropped centuries ago, plus a layer of Arakanese and Portuguese. Like Sylheti, it is treated as a dialect for political reasons and behaves like a separate language in a room.",
     "tier": "desh",
     "region": "chittagong",
     "era": "modern"
@@ -11011,33 +10349,6 @@
     "era": "modern"
   },
   {
-    "id": "pr-kafala",
-    "q": "In the Gulf, a migrant worker's right to stay is tied to one named employer under the ___ system.",
-    "a": "kafala",
-    "show": "Kafala (kafeel sponsorship)",
-    "alt": [
-      "kafalah",
-      "kefala",
-      "sponsorship",
-      "kafeel system"
-    ],
-    "decoys": [
-      "Iqama",
-      "Hawala",
-      "Tanfeez",
-      "Wasta"
-    ],
-    "filler": [
-      "Iqama",
-      "Hawala",
-      "Wasta"
-    ],
-    "why": "The sponsor — the kafeel — holds the visa, so changing jobs or leaving the country has historically needed his signature. Several Gulf states have been loosening it; the word is still the first one any returning worker will use.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
     "id": "pr-dalal",
     "q": "The village middleman who arranges a Gulf job, for a fee that takes years to repay, is the ___.",
     "a": "dalal",
@@ -11060,86 +10371,6 @@
       "Mahajan"
     ],
     "why": "Land is sold or mortgaged to pay him, so the first two years abroad earn nothing at all. He is usually from the same village, which is exactly why people trust him and exactly why the debt is so hard to argue about afterwards.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
-    "id": "pr-manpower-export",
-    "q": "Bangladesh officially describes its labour migration as the export of ___.",
-    "a": "manpower",
-    "show": "Manpower",
-    "alt": [
-      "man power",
-      "manpower export",
-      "human resources"
-    ],
-    "decoys": [
-      "Labour",
-      "Talent",
-      "Skills",
-      "Workers"
-    ],
-    "filler": [
-      "Labour",
-      "Talent",
-      "Skills"
-    ],
-    "why": "It is in the name of the government bureau, in the newspaper headlines and in the ministry's targets. A country that exports garments, fish and manpower, listed in that order and in the same sentence.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
-    "id": "pr-iqama",
-    "q": "In Saudi Arabia, the residence permit a Bangladeshi worker's whole life depends on is the ___.",
-    "a": "iqama",
-    "show": "Iqama (আকামা)",
-    "alt": [
-      "akama",
-      "akamah",
-      "iqamah",
-      "আকামা"
-    ],
-    "decoys": [
-      "Kafala",
-      "Tasreeh",
-      "Bitaqa",
-      "Hawiyya"
-    ],
-    "filler": [
-      "Kafala",
-      "Tasreeh",
-      "Bitaqa"
-    ],
-    "why": "Bengali has borrowed it as 'akama' and uses it as a verb, a worry and a greeting — the first question asked of anyone home on leave is whether theirs is in order. Without a valid one you cannot rent, bank, travel or be treated in a hospital.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
-    "id": "pr-bmet",
-    "q": "Before flying out to work, a Bangladeshi migrant must be cleared by the government bureau known as ___.",
-    "a": "bmet",
-    "show": "BMET (Bureau of Manpower, Employment and Training)",
-    "alt": [
-      "b.m.e.t",
-      "bureau of manpower",
-      "manpower bureau",
-      "bmet clearance"
-    ],
-    "decoys": [
-      "BRAC",
-      "BIWTA",
-      "BEPZA",
-      "BTRC"
-    ],
-    "filler": [
-      "BRAC",
-      "BIWTA",
-      "BEPZA"
-    ],
-    "why": "A card, a fingerprint, a fee and a briefing, and without it the airport will not let you board. It is also the only complete record of who has gone where, which is why every migration statistic in the country traces back to it.",
     "tier": "probash",
     "region": "global",
     "era": "modern"
@@ -11171,60 +10402,6 @@
     "era": "modern"
   },
   {
-    "id": "pr-labour-camp",
-    "q": "Gulf employers house their Bangladeshi workers in shared accommodation universally called a labour ___.",
-    "a": "camp",
-    "show": "Labour camp",
-    "alt": [
-      "camp",
-      "labor camp",
-      "labour camp",
-      "campo"
-    ],
-    "decoys": [
-      "Colony",
-      "Quarter",
-      "Barrack",
-      "Village"
-    ],
-    "filler": [
-      "Colony",
-      "Quarter",
-      "Barrack"
-    ],
-    "why": "Eight or twelve to a room, an hour outside the city, with a bus at five in the morning. It is also where the cooking rota, the football team and the money-lending circle happen, so the word carries rather more than the conditions suggest.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
-    "id": "pr-chuti",
-    "q": "A Gulf worker's contract typically allows him to go home on leave once every ___.",
-    "a": "two years",
-    "show": "Two years",
-    "alt": [
-      "2 years",
-      "two year",
-      "second year",
-      "couple of years"
-    ],
-    "decoys": [
-      "Six months",
-      "Five years",
-      "Year",
-      "Decade"
-    ],
-    "filler": [
-      "Six months",
-      "Five years",
-      "Year"
-    ],
-    "why": "Which means children are met at two-year intervals and grow in jumps. The month of leave is spent almost entirely on other people's obligations, and the flight back is the hardest part of the whole arrangement.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
     "id": "pr-oil-boom",
     "q": "Bangladeshi labour migration to the Gulf began in earnest after the 1970s ___ boom.",
     "a": "oil",
@@ -11247,62 +10424,6 @@
       "Property"
     ],
     "why": "Money arrived in the Gulf faster than people did, and the building had to be done by somebody. Within a decade a country that had almost no history of labour migration had one of the largest workforces abroad in Asia.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
-    "id": "pr-remittance-second",
-    "q": "Remittances are Bangladesh's second largest source of foreign currency, behind ___.",
-    "a": "garments",
-    "show": "Garments (ready-made clothing)",
-    "alt": [
-      "rmg",
-      "clothing",
-      "ready made garments",
-      "textiles",
-      "garment exports"
-    ],
-    "decoys": [
-      "Jute",
-      "Shrimp",
-      "Tea",
-      "Leather"
-    ],
-    "filler": [
-      "Jute",
-      "Shrimp",
-      "Tea"
-    ],
-    "why": "Two enormous flows, one made by women in factories at home and the other by men on building sites abroad, and between them they hold up the currency. Everything else the country exports is a rounding error against those two.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
-    "id": "pr-women-domestic",
-    "q": "The large majority of Bangladeshi women who migrate to the Gulf go as ___ workers.",
-    "a": "domestic",
-    "show": "Domestic workers",
-    "alt": [
-      "housemaid",
-      "maid",
-      "domestic",
-      "household",
-      "house workers"
-    ],
-    "decoys": [
-      "Factory",
-      "Nursing",
-      "Retail",
-      "Hotel"
-    ],
-    "filler": [
-      "Factory",
-      "Nursing",
-      "Retail"
-    ],
-    "why": "Live-in work inside a private house, which puts it outside most labour law and out of sight of any inspector. It is the one category of migration Bangladesh has repeatedly restricted, lifted and restricted again.",
     "tier": "probash",
     "region": "global",
     "era": "modern"
@@ -11386,33 +10507,6 @@
     "era": "modern"
   },
   {
-    "id": "pr-singapore-poetry",
-    "q": "Singapore runs an annual poetry competition for migrant workers, which Bangladeshis have repeatedly ___.",
-    "a": "won",
-    "show": "Won it",
-    "alt": [
-      "won",
-      "win",
-      "taken",
-      "topped"
-    ],
-    "decoys": [
-      "Judged",
-      "Boycotted",
-      "Hosted",
-      "Translated"
-    ],
-    "filler": [
-      "Judged",
-      "Boycotted",
-      "Translated"
-    ],
-    "why": "Poems written in Bengali, on a phone, in a dormitory bunk, about being somewhere else. Several of the winners have gone on to publish books, which is not what the recruitment brochure promises anybody.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
     "id": "pr-maldives",
     "q": "The country where Bangladeshi migrants make up the largest foreign community relative to its own population is ___.",
     "a": "the maldives",
@@ -11462,85 +10556,6 @@
       "Television"
     ],
     "why": "Bought at auction in Japan, shipped to Chittagong, and sold with the Japanese owner's parking sticker still in the window. A large share of the private cars on a Dhaka road began life on the other side of the continent.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
-    "id": "pr-korea-eps",
-    "q": "To get a work permit for South Korea, a Bangladeshi applicant must first pass a test in the ___ language.",
-    "a": "korean",
-    "show": "Korean",
-    "alt": [
-      "korean language",
-      "hangul",
-      "korea"
-    ],
-    "decoys": [
-      "English",
-      "Japanese",
-      "Chinese",
-      "Arabic"
-    ],
-    "filler": [
-      "English",
-      "Japanese",
-      "Chinese"
-    ],
-    "why": "Which has produced Korean language schools in Dhaka with waiting lists, and a route abroad that rewards study rather than a broker's fee. The places are limited and the competition is ferocious.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
-    "id": "pr-malaysia-second-home",
-    "q": "Wealthy Bangladeshis buy long-stay residency through a scheme called 'Malaysia My Second ___'.",
-    "a": "home",
-    "show": "Malaysia My Second Home",
-    "alt": [
-      "home",
-      "my second home",
-      "mm2h"
-    ],
-    "decoys": [
-      "Country",
-      "Address",
-      "Chance",
-      "City"
-    ],
-    "filler": [
-      "Country",
-      "Address",
-      "City"
-    ],
-    "why": "A flat in Kuala Lumpur and a visa, at the other end of the same migration corridor that sends men to palm oil plantations. Two entirely different Bangladeshi communities in one country, who never meet.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
-    "id": "pr-hajj-quota",
-    "q": "The number of Bangladeshis who can perform Hajj each year is fixed by a ___ agreed with Saudi Arabia.",
-    "a": "quota",
-    "show": "A quota",
-    "alt": [
-      "quota",
-      "cap",
-      "allocation",
-      "limit"
-    ],
-    "decoys": [
-      "Lottery",
-      "Auction",
-      "Tender",
-      "Treaty"
-    ],
-    "filler": [
-      "Lottery",
-      "Auction",
-      "Tender"
-    ],
-    "why": "Roughly proportional to a country's Muslim population, and Bangladesh's is filled long before the deadline every year. Registration, agents and waiting lists have become an industry in their own right.",
     "tier": "probash",
     "region": "global",
     "era": "modern"
@@ -11622,32 +10637,6 @@
       "Sardar"
     ],
     "why": "It goes on the signboard, the letterhead and eventually the gravestone, and it precedes the name for the rest of his life. In a village it is the single clearest marker that a family's Gulf years paid off.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
-    "id": "pr-gulf-bangladesh-school",
-    "q": "Gulf cities with large Bangladeshi communities run their own Bangladesh ___ Schools, teaching the Dhaka syllabus.",
-    "a": "international",
-    "show": "Bangladesh International School",
-    "alt": [
-      "international",
-      "international school",
-      "intl"
-    ],
-    "decoys": [
-      "Community",
-      "Embassy",
-      "Bangla",
-      "Model"
-    ],
-    "filler": [
-      "Community",
-      "Embassy",
-      "Model"
-    ],
-    "why": "Same textbooks, same board exams, same February observances, several thousand miles away — so a child can be moved back to Dhaka mid-schooling without losing a year. It is a piece of infrastructure the diaspora in the West never built.",
     "tier": "probash",
     "region": "global",
     "era": "modern"
@@ -12349,59 +11338,6 @@
     "era": "precolonial"
   },
   {
-    "id": "bd-bangla-academy",
-    "q": "The state body that standardises Bengali, publishes its dictionaries and runs the February fair is the Bangla ___.",
-    "a": "academy",
-    "show": "Bangla Academy (বাংলা একাডেমি)",
-    "alt": [
-      "academy",
-      "bangla academy",
-      "bangla academi",
-      "বাংলা একাডেমি"
-    ],
-    "decoys": [
-      "Parishad",
-      "Sangsad",
-      "Institute",
-      "Sahitya Sabha"
-    ],
-    "filler": [
-      "Parishad",
-      "Sangsad",
-      "Institute"
-    ],
-    "why": "Founded in the 1950s in a Mughal-era garden house, and it has been arguing about spelling reform ever since. Its literary prize is the one Bangladeshi writers actually want.",
-    "tier": "desh",
-    "region": "dhaka",
-    "era": "modern"
-  },
-  {
-    "id": "bd-ekushey-padak",
-    "q": "The state award handed out each February for services to Bengali culture is the Ekushey ___.",
-    "a": "padak",
-    "show": "Ekushey Padak (একুশে পদক)",
-    "alt": [
-      "padak",
-      "ekushey padak",
-      "একুশে পদক"
-    ],
-    "decoys": [
-      "Puroshkar",
-      "Sanman",
-      "Ratna",
-      "Bhushan"
-    ],
-    "filler": [
-      "Puroshkar",
-      "Sanman",
-      "Ratna"
-    ],
-    "why": "Named for the twenty-first of February and given to writers, singers, teachers and the occasional folk performer who has never been indoors on a stage before. The list is announced just before the book fair opens and is argued about for the rest of the month.",
-    "tier": "desh",
-    "region": "national",
-    "era": "modern"
-  },
-  {
     "id": "bd-satyajit-kishoreganj",
     "q": "Satyajit Ray's ancestral family home stands in the Bangladeshi district of ___.",
     "a": "kishoreganj",
@@ -12662,33 +11598,6 @@
       "Flemingdon"
     ],
     "why": "A cluster of high-rises built in the 1970s where a whole community arrived building by building, because the first families told the next ones where the cheap rent was. The lifts are the noticeboard.",
-    "tier": "probash",
-    "region": "global",
-    "era": "modern"
-  },
-  {
-    "id": "pr-canada-points",
-    "q": "Bangladeshis mostly reach Canada through its skilled-migration ___ system.",
-    "a": "points",
-    "show": "The points system",
-    "alt": [
-      "point",
-      "points based",
-      "points system",
-      "express entry"
-    ],
-    "decoys": [
-      "Lottery",
-      "Sponsor",
-      "Quota",
-      "Investor"
-    ],
-    "filler": [
-      "Lottery",
-      "Sponsor",
-      "Quota"
-    ],
-    "why": "Degrees, English, age and work experience, scored — which selects for exactly the people Bangladesh most wants to keep. The community in Canada is consequently one of the most highly qualified anywhere in the diaspora.",
     "tier": "probash",
     "region": "global",
     "era": "modern"
@@ -13739,33 +12648,6 @@
     "era": "modern"
   },
   {
-    "id": "bd-jamdani-loom",
-    "q": "Jamdani's patterns are not woven by machine or jacquard — they are inserted by hand, thread by thread, by ___ weavers on one loom.",
-    "a": "two",
-    "show": "Two weavers",
-    "alt": [
-      "2",
-      "a pair of",
-      "two",
-      "two people"
-    ],
-    "decoys": [
-      "Four",
-      "One",
-      "Six",
-      "Eight"
-    ],
-    "filler": [
-      "Four",
-      "One",
-      "Six"
-    ],
-    "why": "They sit side by side and work from memory, counting warp threads, with no drawing to follow. A dense sari can take the pair of them the better part of a year, which is the entire explanation of the price.",
-    "tier": "desh",
-    "region": "dhaka",
-    "era": "precolonial"
-  },
-  {
     "id": "bd-kantha-stitch",
     "q": "A nakshi kantha is held together entirely by one simple stitch: the ___ stitch.",
     "a": "running",
@@ -13953,32 +12835,6 @@
     "era": "modern"
   },
   {
-    "id": "bd-bpl",
-    "q": "Bangladesh's franchise Twenty20 competition, played in the winter, is the Bangladesh Premier ___.",
-    "a": "league",
-    "show": "Bangladesh Premier League (BPL)",
-    "alt": [
-      "league",
-      "bpl",
-      "premier league"
-    ],
-    "decoys": [
-      "Cup",
-      "Series",
-      "Trophy",
-      "Challenge"
-    ],
-    "filler": [
-      "Cup",
-      "Series",
-      "Trophy"
-    ],
-    "why": "Franchises that change owner and sometimes city between seasons, foreign players arriving mid-tournament, and enormous crowds regardless. It is where a teenager from a district team gets seen by the selectors.",
-    "tier": "desh",
-    "region": "national",
-    "era": "modern"
-  },
-  {
     "id": "bd-chess-gm",
     "q": "The game in which Bangladesh produced South Asia's first grandmaster is ___.",
     "a": "chess",
@@ -14000,33 +12856,6 @@
       "Snooker"
     ],
     "why": "Niaz Murshed took the title in 1987, before any Indian player had. Bangladesh has produced a handful of grandmasters since, on essentially no funding and a great deal of adda in Dhaka's chess clubs.",
-    "tier": "desh",
-    "region": "national",
-    "era": "modern"
-  },
-  {
-    "id": "bd-olympic-medal",
-    "q": "Bangladesh is the most populous country on earth never to have won an Olympic ___.",
-    "a": "medal",
-    "show": "An Olympic medal",
-    "alt": [
-      "medal",
-      "gold",
-      "any medal",
-      "olympic medal"
-    ],
-    "decoys": [
-      "Final",
-      "Qualifying place",
-      "Gold in athletics",
-      "Team event"
-    ],
-    "filler": [
-      "Final",
-      "Qualifying place",
-      "Team event"
-    ],
-    "why": "It usually competes on wildcard entries in swimming and athletics, in a country where sport means cricket and everything else is a hobby. Archery has come closest to changing that.",
     "tier": "desh",
     "region": "national",
     "era": "modern"
@@ -14135,33 +12964,6 @@
     "why": "In 1979 a Bangladeshi firm sent a group of workers to Korea to be trained by Daewoo. Most of them left within a few years to start factories of their own, which is precisely how an industry gets seeded and precisely what the contract had not anticipated.",
     "tier": "desh",
     "region": "national",
-    "era": "modern"
-  },
-  {
-    "id": "bd-epz",
-    "q": "Bangladesh's fenced industrial zones with their own rules for foreign investors are the ___.",
-    "a": "epz",
-    "show": "EPZ (Export Processing Zone)",
-    "alt": [
-      "export processing zone",
-      "e.p.z",
-      "epzs",
-      "export processing zones"
-    ],
-    "decoys": [
-      "SEZ",
-      "Free port",
-      "Bonded park",
-      "Industrial estate"
-    ],
-    "filler": [
-      "SEZ",
-      "Free port",
-      "Bonded park"
-    ],
-    "why": "Chittagong's came first, in the early 1980s, offering tax holidays and simplified customs behind a wall. Whole towns have grown around their gates, and the buses at shift change are one of the sights of the country.",
-    "tier": "desh",
-    "region": "chittagong",
     "era": "modern"
   },
   {
@@ -14321,33 +13123,6 @@
     "why": "A few thousand seats against tens of thousands of candidates, and a coaching industry built entirely around one afternoon. Its graduates are disproportionately represented in every Bangladeshi engineering diaspora on earth.",
     "tier": "desh",
     "region": "dhaka",
-    "era": "modern"
-  },
-  {
-    "id": "bd-ssc-hsc",
-    "q": "Bangladeshi students sit two great public examinations: the SSC and then the ___.",
-    "a": "hsc",
-    "show": "HSC (Higher Secondary Certificate)",
-    "alt": [
-      "h.s.c",
-      "higher secondary certificate",
-      "hsc exam",
-      "intermediate"
-    ],
-    "decoys": [
-      "PSC",
-      "JSC",
-      "BCS",
-      "MBA"
-    ],
-    "filler": [
-      "PSC",
-      "JSC",
-      "BCS"
-    ],
-    "why": "Results are announced nationally on a fixed day, published by school, and celebrated or mourned in public. A whole household's plans for the next decade have been known to turn on one of these.",
-    "tier": "desh",
-    "region": "national",
     "era": "modern"
   },
   {
@@ -14538,33 +13313,6 @@
     "era": "modern"
   },
   {
-    "id": "bd-satellite",
-    "q": "In 2018 Bangladesh joined the small group of countries that own their own ___.",
-    "a": "satellite",
-    "show": "A communications satellite",
-    "alt": [
-      "communications satellite",
-      "satelite",
-      "space satellite",
-      "orbital satellite"
-    ],
-    "decoys": [
-      "Nuclear plant",
-      "Aircraft carrier",
-      "Undersea cable",
-      "Space centre"
-    ],
-    "filler": [
-      "Nuclear plant",
-      "Undersea cable",
-      "Space centre"
-    ],
-    "why": "Launched from Florida into a leased orbital slot, and used mostly to carry the country's own television channels rather than pay foreign operators for the capacity. Whether it earns back what it cost is a permanent argument.",
-    "tier": "desh",
-    "region": "national",
-    "era": "modern"
-  },
-  {
     "id": "bd-solar-home",
     "q": "Before the grid reached everywhere, Bangladesh ran the world's largest programme of household ___.",
     "a": "solar panels",
@@ -14670,33 +13418,6 @@
     "era": "modern"
   },
   {
-    "id": "bd-dhaka-density",
-    "q": "By almost every measure, Dhaka is among the world's most densely ___ cities.",
-    "a": "populated",
-    "show": "Densely populated",
-    "alt": [
-      "populated",
-      "crowded",
-      "peopled",
-      "populous"
-    ],
-    "decoys": [
-      "Built",
-      "Flooded",
-      "Wired",
-      "Polluted"
-    ],
-    "filler": [
-      "Built",
-      "Flooded",
-      "Wired"
-    ],
-    "why": "The city grew by absorbing the villages around it rather than by planning, and it keeps absorbing people from every district in the country. Ask anyone in Dhaka where they are from and almost nobody says Dhaka.",
-    "tier": "desh",
-    "region": "dhaka",
-    "era": "modern"
-  },
-  {
     "id": "bd-flag-offset",
     "q": "The red disc on Bangladesh's flag is deliberately set off-centre so that it looks centred when the flag is ___.",
     "a": "flying",
@@ -14752,62 +13473,6 @@
     "era": "precolonial"
   },
   {
-    "id": "bd-union-parishad",
-    "q": "The lowest elected tier of Bangladeshi local government is the union ___.",
-    "a": "parishad",
-    "show": "Union Parishad (ইউনিয়ন পরিষদ)",
-    "alt": [
-      "porishod",
-      "parishad",
-      "council",
-      "union council",
-      "পরিষদ"
-    ],
-    "decoys": [
-      "Sabha",
-      "Samity",
-      "Panchayat",
-      "Sangsad"
-    ],
-    "filler": [
-      "Sabha",
-      "Samity",
-      "Panchayat"
-    ],
-    "why": "A chairman, elected members and a handful of reserved seats for women, covering a few villages. It handles birth certificates, relief cards and the endless business of certifying that somebody is who they say they are.",
-    "tier": "desh",
-    "region": "national",
-    "era": "colonial"
-  },
-  {
-    "id": "bd-upazila",
-    "q": "Between the district and the union, Bangladesh's administration has a tier called the ___.",
-    "a": "upazila",
-    "show": "Upazila (উপজেলা)",
-    "alt": [
-      "upazilla",
-      "thana",
-      "sub district",
-      "upo zila",
-      "উপজেলা"
-    ],
-    "decoys": [
-      "Paurashava",
-      "Mouza",
-      "Tehsil",
-      "Division"
-    ],
-    "filler": [
-      "Paurashava",
-      "Mouza",
-      "Tehsil"
-    ],
-    "why": "It was called a thana until the 1980s, which is why older people still give directions by police station. The upazila office is where a rural Bangladeshi's dealings with the state actually happen — land records, schools, agriculture, relief.",
-    "tier": "desh",
-    "region": "national",
-    "era": "modern"
-  },
-  {
     "id": "bd-boat-schools",
     "q": "In the flood-prone north, Bangladesh runs primary schools that are literally ___.",
     "a": "boats",
@@ -14832,6 +13497,1201 @@
     "why": "Solar-powered, with a library and internet on board, collecting children from the bank and teaching while moored. It was designed for a place where the school cannot be built above the water, so it goes to the children instead.",
     "tier": "desh",
     "region": "rangpur",
+    "era": "modern"
+  },
+  {
+    "id": "pr-biscuit-tin",
+    "q": "The blue tin of Danish butter cookies in a diaspora kitchen is opened to reveal ___.",
+    "a": "a sewing kit",
+    "show": "A sewing kit",
+    "alt": [
+      "sewing kit",
+      "sewing things",
+      "needles and thread",
+      "thread and needles",
+      "sewing box"
+    ],
+    "decoys": [
+      "Spare keys",
+      "Loose change",
+      "Old photographs",
+      "Batteries"
+    ],
+    "filler": [
+      "Loose change",
+      "Spare buttons"
+    ],
+    "why": "The tin outlives the biscuits by about twenty years, and every child in the house learns the disappointment exactly once.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-sofa-plastic",
+    "q": "The good sofa in a diaspora Bangladeshi front room spent years under a sheet of ___.",
+    "a": "plastic",
+    "show": "Plastic",
+    "alt": [
+      "plastic sheet",
+      "plastic cover",
+      "polythene"
+    ],
+    "decoys": [
+      "A bedsheet",
+      "A crocheted cover",
+      "A towel",
+      "Newspaper"
+    ],
+    "filler": [
+      "A bedsheet",
+      "A towel"
+    ],
+    "why": "Bought for guests, protected from guests, and eventually thrown out still perfect. The furniture was never really for sitting on.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-icecream-tub",
+    "q": "In a diaspora Bangladeshi freezer, the curry is kept in an old ___ tub.",
+    "a": "ice cream",
+    "show": "Ice cream",
+    "alt": [
+      "icecream",
+      "ice-cream",
+      "ice cream tub"
+    ],
+    "decoys": [
+      "Yoghurt",
+      "Margarine",
+      "Takeaway",
+      "Biscuit"
+    ],
+    "filler": [
+      "Yoghurt",
+      "Margarine"
+    ],
+    "why": "No diaspora child has ever opened one and found ice cream. The label is a lie the whole household agrees to keep.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-bag-of-bags",
+    "q": "Under the sink in a diaspora Bangladeshi kitchen there is always a bag full of ___.",
+    "a": "plastic bags",
+    "show": "Plastic bags",
+    "alt": [
+      "bags",
+      "carrier bags",
+      "shopping bags",
+      "polythene bags"
+    ],
+    "decoys": [
+      "Rubber bands",
+      "Takeaway containers",
+      "Old newspapers",
+      "Empty jars"
+    ],
+    "filler": [
+      "Rubber bands",
+      "Old newspapers"
+    ],
+    "why": "It is never emptied and never full, and the day somebody throws it out is the day four people need a bag.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-eid-outfit-big",
+    "q": "A child's Eid outfit is bought a size too big so that it will still fit ___.",
+    "a": "next year",
+    "show": "Next year",
+    "alt": [
+      "next eid",
+      "the year after",
+      "next time"
+    ],
+    "decoys": [
+      "Their brother",
+      "Their cousin",
+      "After the meal",
+      "By Eid"
+    ],
+    "filler": [
+      "Their brother",
+      "After the meal"
+    ],
+    "why": "Which is how a generation of Eid photographs came to feature children with their hands lost somewhere inside their sleeves.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-rooh-afza",
+    "q": "The bright red syrup stirred into milk or water at iftar tables across the diaspora is ___.",
+    "a": "rooh afza",
+    "show": "Rooh Afza (রুহ আফজা)",
+    "alt": [
+      "roohafza",
+      "rooh-afza",
+      "ruh afza",
+      "রুহ আফজা"
+    ],
+    "decoys": [
+      "Tang",
+      "Ribena",
+      "Grenadine",
+      "Rose water"
+    ],
+    "filler": [
+      "Tang",
+      "Ribena"
+    ],
+    "why": "A rose-and-herb cordial from the 1900s that somehow became the taste of Ramadan for millions of people who could not tell you a single ingredient.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-curry-chillies",
+    "q": "A British curry house menu warns you how hot a dish is by printing little ___ beside it.",
+    "a": "chillies",
+    "show": "Chillies",
+    "alt": [
+      "chilies",
+      "chilli",
+      "chili",
+      "red chillies",
+      "chilli symbols"
+    ],
+    "decoys": [
+      "Flames",
+      "Stars",
+      "Skulls",
+      "Dots"
+    ],
+    "filler": [
+      "Flames",
+      "Stars"
+    ],
+    "why": "Three is a dare and four is a decision. The scale has no standard whatsoever and varies wildly from one street to the next.",
+    "tier": "probash",
+    "region": "uk",
+    "era": "modern"
+  },
+  {
+    "id": "pr-general-secretary",
+    "q": "The committee post a diaspora Bangladeshi association argues hardest over is ___.",
+    "a": "general secretary",
+    "show": "General Secretary",
+    "alt": [
+      "gen secretary",
+      "secretary general",
+      "the general secretary",
+      "gs"
+    ],
+    "decoys": [
+      "President",
+      "Treasurer",
+      "Chairman",
+      "Vice president"
+    ],
+    "filler": [
+      "President",
+      "Treasurer"
+    ],
+    "why": "The president cuts ribbons; the general secretary controls the letterhead, the bank card and the WhatsApp group. Everybody knows which one is power.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-mango-box",
+    "q": "In July a diaspora Bangladeshi will drive for hours and pay anything for a box of ___.",
+    "a": "mangoes",
+    "show": "Mangoes (আম)",
+    "alt": [
+      "mango",
+      "aam",
+      "am",
+      "আম"
+    ],
+    "decoys": [
+      "Hilsa",
+      "Lychees",
+      "Jackfruit",
+      "Guavas"
+    ],
+    "filler": [
+      "Lychees",
+      "Guavas"
+    ],
+    "why": "The box is opened on the kitchen floor, inspected fruit by fruit, and half of it is on its way to somebody else's house by evening.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-grocery-rice-sack",
+    "q": "A Bangladeshi grocery abroad is recognisable from the street by a window full of sacks of ___.",
+    "a": "rice",
+    "show": "Rice",
+    "alt": [
+      "chal",
+      "rice sacks",
+      "চাল"
+    ],
+    "decoys": [
+      "Onions",
+      "Lentils",
+      "Flour",
+      "Potatoes"
+    ],
+    "filler": [
+      "Onions",
+      "Lentils"
+    ],
+    "why": "Nobody buys it in a bag. It is bought in a sack, carried on a shoulder, and stored in a bin that has been in the family longer than the children.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-cricket-park",
+    "q": "When a diaspora Bangladeshi community books an entire park for the day, the sport is ___.",
+    "a": "cricket",
+    "show": "Cricket",
+    "alt": [
+      "cricket match",
+      "cricket tournament"
+    ],
+    "decoys": [
+      "Football",
+      "Kabaddi",
+      "Badminton",
+      "Volleyball"
+    ],
+    "filler": [
+      "Football",
+      "Badminton"
+    ],
+    "why": "The tournament runs from morning to dark, the trophy is enormous, and the catering is a car boot full of biryani.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-second-freezer",
+    "q": "The appliance a diaspora Bangladeshi family keeps out in the garage is a second ___.",
+    "a": "freezer",
+    "show": "Freezer",
+    "alt": [
+      "chest freezer",
+      "deep freezer",
+      "deep freeze"
+    ],
+    "decoys": [
+      "Cooker",
+      "Microwave",
+      "Washing machine",
+      "Rice cooker"
+    ],
+    "filler": [
+      "Cooker",
+      "Microwave"
+    ],
+    "why": "It holds a year of fish, a wedding's worth of meat and at least one thing nobody can identify or is willing to throw away.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-name-pronounce",
+    "q": "On the first day of term, a diaspora Bangladeshi child dreads the teacher attempting their ___.",
+    "a": "name",
+    "show": "Name",
+    "alt": [
+      "full name",
+      "first name",
+      "their name"
+    ],
+    "decoys": [
+      "Address",
+      "Nickname",
+      "Village name",
+      "Middle name"
+    ],
+    "filler": [
+      "Address",
+      "Nickname"
+    ],
+    "why": "A whole generation quietly accepted a shortened, mangled version of their own name rather than correct a register in front of thirty people.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-doctor-engineer",
+    "q": "The two careers a diaspora Bangladeshi parent accepts without argument are doctor and ___.",
+    "a": "engineer",
+    "show": "Engineer",
+    "alt": [
+      "engineering",
+      "an engineer"
+    ],
+    "decoys": [
+      "Lawyer",
+      "Accountant",
+      "Pharmacist",
+      "Dentist"
+    ],
+    "filler": [
+      "Lawyer",
+      "Accountant"
+    ],
+    "why": "Both are jobs that can be explained in one word to a relative in Bangladesh over a bad phone line, which is most of the appeal.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-whatsapp-group",
+    "q": "A diaspora Bangladeshi extended family is held together, and driven mad, by one enormous ___ group.",
+    "a": "whatsapp",
+    "show": "WhatsApp",
+    "alt": [
+      "whats app",
+      "whatsup",
+      "whatsapp group"
+    ],
+    "decoys": [
+      "Viber",
+      "Messenger",
+      "Imo",
+      "Telegram"
+    ],
+    "filler": [
+      "Viber",
+      "Messenger"
+    ],
+    "why": "Forty people across five time zones, nobody leaves, and every morning begins with the same good-morning flower picture from an uncle.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-tarawih",
+    "q": "In Ramadan a diaspora mosque fills every night for the long optional night prayer called ___.",
+    "a": "tarawih",
+    "show": "Tarawih (তারাবিহ)",
+    "alt": [
+      "taraweeh",
+      "tarabih",
+      "tarabi",
+      "তারাবিহ"
+    ],
+    "decoys": [
+      "Tahajjud",
+      "Witr",
+      "Qiyam",
+      "Ishraq"
+    ],
+    "filler": [
+      "Tahajjud",
+      "Witr"
+    ],
+    "why": "It is the one month of the year when a diaspora mosque runs out of parking, shoe racks and patience all at once.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-cash-only",
+    "q": "The sign in the window of an old-school British curry house that outlasted every trend reads '___ only'.",
+    "a": "cash",
+    "show": "Cash",
+    "alt": [
+      "cash only",
+      "cash payment"
+    ],
+    "decoys": [
+      "Booking",
+      "Takeaway",
+      "Members",
+      "Adults"
+    ],
+    "filler": [
+      "Booking",
+      "Takeaway"
+    ],
+    "why": "The card machine has been broken since roughly 2004 and there is a cash point two doors down that everybody knows about.",
+    "tier": "probash",
+    "region": "uk",
+    "era": "modern"
+  },
+  {
+    "id": "pr-lime-pickle",
+    "q": "The tray brought out with poppadoms holds mango chutney, onion salad, raita and ___ pickle.",
+    "a": "lime",
+    "show": "Lime pickle",
+    "alt": [
+      "lime pickle",
+      "limes",
+      "nimbu"
+    ],
+    "decoys": [
+      "Chilli",
+      "Garlic",
+      "Aubergine",
+      "Mixed"
+    ],
+    "filler": [
+      "Chilli",
+      "Garlic"
+    ],
+    "why": "Almost nobody finishes it, almost nobody sends it back, and it is doing more work than the poppadom in making the meal feel like an occasion.",
+    "tier": "probash",
+    "region": "uk",
+    "era": "modern"
+  },
+  {
+    "id": "pr-birthday-biryani",
+    "q": "A diaspora Bangladeshi child's birthday party is catered with a cake and an enormous tray of ___.",
+    "a": "biryani",
+    "show": "Biryani",
+    "alt": [
+      "biriyani",
+      "biriani",
+      "beriani",
+      "kacchi"
+    ],
+    "decoys": [
+      "Samosas",
+      "Sandwiches",
+      "Pizza",
+      "Kebabs"
+    ],
+    "filler": [
+      "Samosas",
+      "Sandwiches"
+    ],
+    "why": "Ordered for forty when twenty are coming, because sending guests home without leftovers is a failure the host will hear about for years.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-sylheti-at-home",
+    "q": "British Bangladeshi children learn standard Bengali at weekend school and speak ___ at home.",
+    "a": "sylheti",
+    "show": "Sylheti (সিলেটি)",
+    "alt": [
+      "sylhoti",
+      "sileti",
+      "সিলেটি"
+    ],
+    "decoys": [
+      "Chatgaiya",
+      "Barishali",
+      "Noakhailla",
+      "Hindi"
+    ],
+    "filler": [
+      "Chatgaiya",
+      "Barishali"
+    ],
+    "why": "Which is why so many of them can read a textbook aloud to a teacher and still not follow a conversation between their own grandparents.",
+    "tier": "probash",
+    "region": "uk",
+    "era": "modern"
+  },
+  {
+    "id": "pr-jummah-parking",
+    "q": "The one hour of the week when parking anywhere near a diaspora mosque is hopeless is ___.",
+    "a": "jummah",
+    "show": "Jummah (Friday prayer)",
+    "alt": [
+      "jumma",
+      "juma",
+      "friday prayer",
+      "friday prayers",
+      "friday"
+    ],
+    "decoys": [
+      "Maghrib",
+      "Sunday afternoon",
+      "Saturday evening",
+      "Bangla school pick-up"
+    ],
+    "filler": [
+      "Maghrib",
+      "Sunday afternoon"
+    ],
+    "why": "Every neighbouring shop, side street and understanding driveway is spoken for, and the traffic warden knows the timetable better than most of the congregation.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-brick-lane-touts",
+    "q": "Walking the length of Brick Lane, you are stopped every few metres by restaurant ___.",
+    "a": "touts",
+    "show": "Touts",
+    "alt": [
+      "tout",
+      "greeters",
+      "hustlers"
+    ],
+    "decoys": [
+      "Waiters",
+      "Musicians",
+      "Leafleters",
+      "Photographers"
+    ],
+    "filler": [
+      "Waiters",
+      "Leafleters"
+    ],
+    "why": "Each one will beat the last one's offer without being told what it was, which tells you roughly what the printed menu prices mean.",
+    "tier": "probash",
+    "region": "uk",
+    "era": "modern"
+  },
+  {
+    "id": "pr-halal-butcher",
+    "q": "The shop a diaspora Bangladeshi family will drive right across town for is the halal ___.",
+    "a": "butcher",
+    "show": "Butcher",
+    "alt": [
+      "butchers",
+      "meat shop",
+      "butcher shop"
+    ],
+    "decoys": [
+      "Bakery",
+      "Grocer",
+      "Sweet shop",
+      "Restaurant"
+    ],
+    "filler": [
+      "Bakery",
+      "Grocer"
+    ],
+    "why": "Two miles further, ten minutes of parking, and a conversation about the mince that could have been had anywhere. That is not really what the trip is for.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-taweez",
+    "q": "The small cloth-wrapped amulet pinned inside a diaspora baby's clothes is a ___.",
+    "a": "taweez",
+    "show": "Taweez (তাবিজ)",
+    "alt": [
+      "tabiz",
+      "tabij",
+      "taviz",
+      "তাবিজ"
+    ],
+    "decoys": [
+      "Blue bead",
+      "Locket",
+      "Silver bangle",
+      "Black thread"
+    ],
+    "filler": [
+      "Blue bead",
+      "Locket"
+    ],
+    "why": "Handed over by a grandmother with instructions nobody writes down, and quietly re-pinned to every new outfit for about the first two years.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-university-close",
+    "q": "A diaspora Bangladeshi student is steered towards a university close enough to keep living ___.",
+    "a": "at home",
+    "show": "At home",
+    "alt": [
+      "home",
+      "in the house",
+      "with the family"
+    ],
+    "decoys": [
+      "With relatives",
+      "In halls",
+      "Near the mosque",
+      "In the city"
+    ],
+    "filler": [
+      "With relatives",
+      "In halls"
+    ],
+    "why": "The argument is always framed as saving rent, and it is never actually about the rent.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "pr-no-teapot",
+    "q": "Bangladeshi tea is boiled all together in one pan, which is why a diaspora kitchen owns no ___.",
+    "a": "teapot",
+    "show": "Teapot",
+    "alt": [
+      "tea pot",
+      "pot"
+    ],
+    "decoys": [
+      "Kettle",
+      "Strainer",
+      "Cafetière",
+      "Mug tree"
+    ],
+    "filler": [
+      "Kettle",
+      "Strainer"
+    ],
+    "why": "There is usually exactly one teapot in the house, received as a wedding present, still in its box, on top of a wardrobe.",
+    "tier": "probash",
+    "region": "global",
+    "era": "modern"
+  },
+  {
+    "id": "bd-pukur",
+    "q": "The pond behind a Bangladeshi village house, used for washing, fish and swimming, is the ___.",
+    "a": "pukur",
+    "show": "Pukur (পুকুর)",
+    "alt": [
+      "pukhur",
+      "pond",
+      "পুকুর"
+    ],
+    "decoys": [
+      "Dighi",
+      "Beel",
+      "Khal",
+      "Jheel"
+    ],
+    "filler": [
+      "Beel",
+      "Khal"
+    ],
+    "why": "It is dug when the house is built, because the earth taken out of it is what the house stands on. The pond and the plinth are the same act.",
+    "tier": "desh",
+    "region": "national",
+    "era": "modern"
+  },
+  {
+    "id": "bd-dighi",
+    "q": "A pond large enough to be a landmark in its own right is a ___.",
+    "a": "dighi",
+    "show": "Dighi (দিঘি)",
+    "alt": [
+      "deeghi",
+      "digi",
+      "দিঘি"
+    ],
+    "decoys": [
+      "Pukur",
+      "Beel",
+      "Haor",
+      "Jheel"
+    ],
+    "filler": [
+      "Pukur",
+      "Jheel"
+    ],
+    "why": "Digging one was how a family bought a reputation. Many are older than any building near them and still carry the founder's name.",
+    "tier": "desh",
+    "region": "national",
+    "era": "precolonial"
+  },
+  {
+    "id": "bd-shako",
+    "q": "The narrow bamboo footbridge across a village canal, crossed with great care, is a ___.",
+    "a": "shako",
+    "show": "Shako (সাঁকো)",
+    "alt": [
+      "sanko",
+      "saanko",
+      "shanko",
+      "সাঁকো"
+    ],
+    "decoys": [
+      "Pul",
+      "Bansher gudam",
+      "Ghat",
+      "Jhulanto pul"
+    ],
+    "filler": [
+      "Pul",
+      "Ghat"
+    ],
+    "why": "Usually a single bamboo with a second one to hold, rebuilt every year after the water goes down, and crossed by children at a speed that terrifies visitors.",
+    "tier": "desh",
+    "region": "national",
+    "era": "modern"
+  },
+  {
+    "id": "bd-uthan",
+    "q": "The swept earth courtyard that a cluster of Bangladeshi village houses is built around is the ___.",
+    "a": "uthan",
+    "show": "Uthan (উঠান)",
+    "alt": [
+      "uthon",
+      "utan",
+      "angina",
+      "উঠান"
+    ],
+    "decoys": [
+      "Baranda",
+      "Chatal",
+      "Khola",
+      "Dalan"
+    ],
+    "filler": [
+      "Baranda",
+      "Chatal"
+    ],
+    "why": "It is a kitchen, a drying floor, a playground, a wedding venue and a place to sit out a power cut, depending entirely on the hour.",
+    "tier": "desh",
+    "region": "national",
+    "era": "modern"
+  },
+  {
+    "id": "bd-chula",
+    "q": "The clay stove that a village Bangladeshi kitchen cooks everything on is the ___.",
+    "a": "chula",
+    "show": "Chula (চুলা)",
+    "alt": [
+      "chulha",
+      "chulla",
+      "chola",
+      "চুলা"
+    ],
+    "decoys": [
+      "Handi",
+      "Tawa",
+      "Kadai",
+      "Dekchi"
+    ],
+    "filler": [
+      "Handi",
+      "Tawa"
+    ],
+    "why": "Built by hand out of mud, fed with rice husk, jute stick and leaves, and rebuilt whenever it cracks — which makes it furniture and appliance at once.",
+    "tier": "desh",
+    "region": "national",
+    "era": "modern"
+  },
+  {
+    "id": "bd-chowki",
+    "q": "The wooden plank bed that serves as sofa, dining table and guest room is the ___.",
+    "a": "chowki",
+    "show": "Chowki (চৌকি)",
+    "alt": [
+      "choki",
+      "chouki",
+      "চৌকি"
+    ],
+    "decoys": [
+      "Palong",
+      "Takht",
+      "Alna",
+      "Morha"
+    ],
+    "filler": [
+      "Palong",
+      "Morha"
+    ],
+    "why": "No mattress, no legs to speak of, and the single most useful object in the house. Visitors are seated on it, fed on it, and eventually sleep on it.",
+    "tier": "desh",
+    "region": "national",
+    "era": "modern"
+  },
+  {
+    "id": "bd-bus-helper",
+    "q": "The man hanging out of a Dhaka bus door shouting the destination is called the ___.",
+    "a": "helper",
+    "show": "Helper",
+    "alt": [
+      "helpar",
+      "conductor's helper",
+      "bus helper"
+    ],
+    "decoys": [
+      "Conductor",
+      "Supervisor",
+      "Contractor",
+      "Guard"
+    ],
+    "filler": [
+      "Conductor",
+      "Supervisor"
+    ],
+    "why": "He collects fares, bangs the side of the bus to start and stop it, and is the only person on board who knows what the route actually is today.",
+    "tier": "desh",
+    "region": "dhaka",
+    "era": "modern"
+  },
+  {
+    "id": "bd-koti",
+    "q": "Bangladeshis count money in thousands, then lakh, and then ___.",
+    "a": "koti",
+    "show": "Koti / crore (কোটি)",
+    "alt": [
+      "crore",
+      "kuti",
+      "coti",
+      "কোটি"
+    ],
+    "decoys": [
+      "Arab",
+      "Nikkhon",
+      "Hajar",
+      "Million"
+    ],
+    "filler": [
+      "Arab",
+      "Million"
+    ],
+    "why": "One koti is ten million, and the jump from lakh to koti is why Bangladeshi numbers so often defeat a Western spreadsheet.",
+    "tier": "desh",
+    "region": "national",
+    "era": "modern"
+  },
+  {
+    "id": "bd-tin-roof-rain",
+    "q": "The sound a Bangladeshi remembers the monsoon by is rain falling on a ___ roof.",
+    "a": "tin",
+    "show": "Tin (টিন)",
+    "alt": [
+      "tin roof",
+      "corrugated tin",
+      "corrugated iron",
+      "টিন"
+    ],
+    "decoys": [
+      "Thatched",
+      "Tiled",
+      "Concrete",
+      "Straw"
+    ],
+    "filler": [
+      "Thatched",
+      "Tiled"
+    ],
+    "why": "Loud enough to end a conversation, and the reason so much Bengali writing about rain is really writing about not being able to hear anything else.",
+    "tier": "desh",
+    "region": "national",
+    "era": "modern"
+  },
+  {
+    "id": "bd-mosquito-coil",
+    "q": "When the moshari is not enough, a Bangladeshi bedroom falls back on a mosquito ___.",
+    "a": "coil",
+    "show": "Coil",
+    "alt": [
+      "coils",
+      "mosquito coil",
+      "green coil"
+    ],
+    "decoys": [
+      "Spray",
+      "Racket",
+      "Cream",
+      "Lamp"
+    ],
+    "filler": [
+      "Spray",
+      "Cream"
+    ],
+    "why": "Lit at dusk, balanced on a saucer, and burnt down to a grey spiral by morning. The smell is half of what a Bangladeshi summer night smells like.",
+    "tier": "desh",
+    "region": "national",
+    "era": "modern"
+  },
+  {
+    "id": "bd-kacha-bazar",
+    "q": "The open market a Bangladeshi household buys its fish and vegetables at each morning is the ___ bazar.",
+    "a": "kacha",
+    "show": "Kacha bazar (কাঁচা বাজার)",
+    "alt": [
+      "kancha",
+      "kacha",
+      "kacha bazar",
+      "কাঁচা বাজার"
+    ],
+    "decoys": [
+      "Boro",
+      "Notun",
+      "Sadar",
+      "Hat"
+    ],
+    "filler": [
+      "Boro",
+      "Sadar"
+    ],
+    "why": "Kacha means raw or unripe, so the name is really 'the raw market' — the one where nothing has been processed, packaged or decided in advance.",
+    "tier": "desh",
+    "region": "national",
+    "era": "modern"
+  },
+  {
+    "id": "bd-para",
+    "q": "A Bangladeshi village or town neighbourhood, small enough that everyone knows everyone, is a ___.",
+    "a": "para",
+    "show": "Para (পাড়া)",
+    "alt": [
+      "parha",
+      "pada",
+      "পাড়া"
+    ],
+    "decoys": [
+      "Mohalla",
+      "Gram",
+      "Union",
+      "Bazar"
+    ],
+    "filler": [
+      "Gram",
+      "Bazar"
+    ],
+    "why": "It is the unit that actually organises life — cricket teams, gossip, wedding invitations and who is expected at a funeral are all decided by it.",
+    "tier": "desh",
+    "region": "national",
+    "era": "modern"
+  },
+  {
+    "id": "bd-gas-diagnosis",
+    "q": "The Bangladeshi household diagnosis for almost any stomach complaint is ___.",
+    "a": "gas",
+    "show": "Gas (গ্যাস)",
+    "alt": [
+      "gyas",
+      "gash",
+      "গ্যাস"
+    ],
+    "decoys": [
+      "Cold",
+      "Heat",
+      "Indigestion",
+      "Weak liver"
+    ],
+    "filler": [
+      "Cold",
+      "Heat"
+    ],
+    "why": "It explains stomach ache, chest pain, back pain, tiredness and bad mood, and the prescribed cure is always the same glass of hot water.",
+    "tier": "shared",
+    "region": "national",
+    "era": "modern"
+  },
+  {
+    "id": "bd-mashallah",
+    "q": "You must never tell a Bangladeshi family their baby is beautiful without also saying ___.",
+    "a": "mashallah",
+    "show": "Mashallah (মাশাআল্লাহ)",
+    "alt": [
+      "masha allah",
+      "mashaallah",
+      "masallah",
+      "মাশাআল্লাহ"
+    ],
+    "decoys": [
+      "Inshallah",
+      "Alhamdulillah",
+      "Subhanallah",
+      "Bismillah"
+    ],
+    "filler": [
+      "Inshallah",
+      "Alhamdulillah"
+    ],
+    "why": "Praise without it is thought to attract the evil eye, so the compliment and the protection have to travel together or not at all.",
+    "tier": "shared",
+    "region": "national",
+    "era": "modern"
+  },
+  {
+    "id": "bd-empty-jar",
+    "q": "The one thing no Bangladeshi household has ever been able to throw away is an empty ___.",
+    "a": "jar",
+    "show": "Jar",
+    "alt": [
+      "jars",
+      "glass jar",
+      "container",
+      "bottle"
+    ],
+    "decoys": [
+      "Box",
+      "Tin",
+      "Carrier bag",
+      "Envelope"
+    ],
+    "filler": [
+      "Box",
+      "Tin"
+    ],
+    "why": "It will hold spices, sugar, screws, buttons or achar within a fortnight, and everybody knows it, which is why nobody is allowed to bin one.",
+    "tier": "shared",
+    "region": "national",
+    "era": "modern"
+  },
+  {
+    "id": "bd-bhabi",
+    "q": "Your elder brother's wife is not called by her name — she is ___.",
+    "a": "bhabi",
+    "show": "Bhabi (ভাবী)",
+    "alt": [
+      "bhabhi",
+      "vabi",
+      "bhabee",
+      "ভাবী"
+    ],
+    "decoys": [
+      "Apu",
+      "Khala",
+      "Chachi",
+      "Boudi"
+    ],
+    "filler": [
+      "Apu",
+      "Chachi"
+    ],
+    "why": "The word carries a whole relationship with it — half sister, half friend, and traditionally the one person in the house a younger sibling can joke with freely.",
+    "tier": "shared",
+    "region": "national",
+    "era": "modern"
+  },
+  {
+    "id": "bd-dulabhai",
+    "q": "Your elder sister's husband is addressed, for the rest of his life, as ___.",
+    "a": "dulabhai",
+    "show": "Dulabhai (দুলাভাই)",
+    "alt": [
+      "dula bhai",
+      "dulavai",
+      "dulabhi",
+      "দুলাভাই"
+    ],
+    "decoys": [
+      "Bhaiya",
+      "Jamai",
+      "Meso",
+      "Boro bhai"
+    ],
+    "filler": [
+      "Bhaiya",
+      "Meso"
+    ],
+    "why": "The word has bhai — brother — built into it, which is the point: he is being told, permanently and politely, that he is now family rather than a guest.",
+    "tier": "shared",
+    "region": "national",
+    "era": "modern"
+  },
+  {
+    "id": "bd-mama-stranger",
+    "q": "In Dhaka, a stranger driving your rickshaw or serving your tea is addressed as ___.",
+    "a": "mama",
+    "show": "Mama (মামা)",
+    "alt": [
+      "mamu",
+      "mama bhai",
+      "মামা"
+    ],
+    "decoys": [
+      "Chacha",
+      "Bhai",
+      "Ostad",
+      "Dada"
+    ],
+    "filler": [
+      "Chacha",
+      "Dada"
+    ],
+    "why": "It literally means mother's brother. Bengali would rather invent a family relationship on the spot than address anybody as nothing at all.",
+    "tier": "shared",
+    "region": "dhaka",
+    "era": "modern"
+  },
+  {
+    "id": "bd-another-fish",
+    "q": "A Bangladeshi host hears 'no thank you' and responds by putting another piece of ___ on your plate.",
+    "a": "fish",
+    "show": "Fish (মাছ)",
+    "alt": [
+      "mach",
+      "maach",
+      "মাছ"
+    ],
+    "decoys": [
+      "Meat",
+      "Chicken",
+      "Sweet",
+      "Egg"
+    ],
+    "filler": [
+      "Meat",
+      "Sweet"
+    ],
+    "why": "Refusing food twice is treated as politeness rather than information, so the only way to actually stop is to leave some on the plate — which is its own crime.",
+    "tier": "shared",
+    "region": "national",
+    "era": "modern"
+  },
+  {
+    "id": "bd-phone-speaker",
+    "q": "A Bangladeshi elder conducts every single telephone call on ___.",
+    "a": "speaker",
+    "show": "Speakerphone",
+    "alt": [
+      "speakerphone",
+      "loudspeaker",
+      "speaker phone",
+      "loud speaker"
+    ],
+    "decoys": [
+      "Video call",
+      "Headphones",
+      "The landline",
+      "Voice notes"
+    ],
+    "filler": [
+      "Video call",
+      "Headphones"
+    ],
+    "why": "Held flat, at arm's length, at full volume, in a room full of people, and there is no version of this that anybody is going to change.",
+    "tier": "shared",
+    "region": "national",
+    "era": "modern"
+  },
+  {
+    "id": "bd-plastic-chair",
+    "q": "The furniture that materialises the moment more guests arrive at a Bangladeshi house is the plastic ___.",
+    "a": "chair",
+    "show": "Chair",
+    "alt": [
+      "chairs",
+      "plastic chair",
+      "stool"
+    ],
+    "decoys": [
+      "Table",
+      "Mat",
+      "Bench",
+      "Crate"
+    ],
+    "filler": [
+      "Table",
+      "Mat"
+    ],
+    "why": "Stacked on a balcony, borrowed from a neighbour, or produced from behind a wardrobe. A Bangladeshi household's real seating capacity is never what the room suggests.",
+    "tier": "shared",
+    "region": "national",
     "era": "modern"
   }
 ]

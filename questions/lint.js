@@ -44,6 +44,11 @@ const warn = (id, msg) => warnings.push(`${id}: ${msg}`);
 function lint(bank) {
   const seenIds = new Set();
   const seenPrompts = new Set();
+  // Two questions may share an answer — "Brick Lane" is both a street and a novel —
+  // but three is a theme the bank keeps circling, and any two of them drawn into the
+  // same game make the second one's truth easier to spot. Collected here, judged once
+  // at the end, so it stays a single pass.
+  const byAnswer = new Map();
 
   for (const [i, q] of bank.entries()) {
     const id = q.id || `#${i}`;
@@ -105,6 +110,13 @@ function lint(bank) {
     for (const p of BLOCKED_PATTERNS) {
       if (p.test(haystack)) fail(id, `matches blocked content pattern ${p} — not safe as bluffing fodder`);
     }
+
+    const ak = norm(q.a);
+    if (ak) byAnswer.set(ak, [...(byAnswer.get(ak) ?? []), q.id]);
+  }
+
+  for (const [answer, ids] of byAnswer) {
+    if (ids.length >= 3) warn(answer, `${ids.length} questions share this answer — ${ids.join(', ')}`);
   }
 
   return bank;

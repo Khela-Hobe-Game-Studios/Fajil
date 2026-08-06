@@ -200,11 +200,20 @@ in its `show` fields, so the Bengali subset is not optional.
 
 ## Question bank
 
-`questions/questions.json`, linted by `questions/lint.js`. 554 questions:
-317 `desh`, 178 `probash`, 59 `shared`. Built out from a 74-question seed by the
+`questions/questions.json`, linted by `questions/lint.js`. 551 questions:
+310 `desh`, 173 `probash`, 68 `shared`. Built out from a 74-question seed by the
 territory-partitioned batch plan in [docs/question-bank-prompt.md](docs/question-bank-prompt.md);
 facts held back as unverified are logged in `questions/NEEDS-CHECKING.md` rather
 than guessed at.
+
+**A question can be accurate, bluffable and still a bad round.** The prompt carries
+three bars, not one: bluffing, **read-aloud** (one clause, ordinary words, at most
+two prepositional phrases before the blank) and **fun** (name three lies for it that
+are funny *and* believable). The second two were added after playing it — 50
+questions that passed the linter were cut for failing them, and the reasons are in
+`questions/CULLED.md`. The recurring failure is a subject whose answer is a term of
+art: when the truth is administrative vocabulary, every plausible lie is too, and the
+ballot reads like a form.
 
 ```jsonc
 {

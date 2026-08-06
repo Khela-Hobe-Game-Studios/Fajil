@@ -9,12 +9,22 @@ single-tier deck (`desh` alone) also has to carry 7 rounds by itself.
 
 **Target ~320: 140 `desh`, 130 `probash`, 50 `shared`.**
 
-**Status: all fifteen batches below have been run.** The bank went from 74 to 554 —
-317 `desh`, 178 `probash`, 59 `shared`, comfortably past the target. Five of the
-`probash` batches came in under their row's aim (East London 22, UK-beyond-London 25,
+**Status: all fifteen batches below have been run**, plus one review pass that cut 50
+and added 48. The bank stands at 551 — 310 `desh`, 173 `probash`, 68 `shared`,
+comfortably past the target. Five of the `probash` batches came in under their row's
+aim (East London 22, UK-beyond-London 25,
 USA 30, Canada/Australia/Europe 20, Gulf & Asia 24) because the territory ran out of
 facts worth being confident about; the shortfall went to `questions/NEEDS-CHECKING.md`
 rather than into filler. The prompt below stays here for topping up a territory later.
+
+**The bar was tightened after playing it.** The first pass optimised for *bluffable
+and accurate*, which let through questions that are both and still make a flat round —
+sentences with three stacked clauses, and subjects (border treaties, administrative
+categories) where every believable lie is a piece of jargon. `bd-chhitmohol` is the
+specimen, and it is now a worked example below. Two new bars — **read-aloud** and
+**fun** — sit alongside the original bluffing bar. Batches run before this change
+predate them, so a top-up session is also asked to nominate existing questions for
+the cull.
 
 ## Do it in batches, on separate territories
 
@@ -94,13 +104,62 @@ Three consequences you must design for:
    player would invent: short, concrete, confident. If the truth is visibly longer,
    more technical or more hedged than the lies, the game is over.
 
-## The single most important quality bar
+## The three quality bars
+
+A question has to clear all three. Most rejected questions fail the second or third
+while passing the first, which is why they get written in the first place.
+
+### 1. The bluffing bar
 
 > **Could a clever person who doesn't know the answer write something that fools the
 > table? And could a person who does know the answer still get fooled by somebody
 > else's lie?**
 
-If both are yes, it is a good question. If either is no, cut it.
+If both are yes, it clears this bar. If either is no, cut it.
+
+### 2. The read-aloud bar
+
+> **Read the question out loud, once, at conversational speed. Could somebody across
+> a room repeat back what is being asked?**
+
+They hear it once, from a screen they may be sitting sideways to, while somebody
+passes them a plate. A sentence that has to be re-read has already lost the round.
+
+Concretely:
+
+- **One idea per sentence.** One main clause, and at most one subordinate clause
+  hanging off it. Never two.
+- **At most two prepositional phrases before the blank.** "of one country / inside
+  the other / along the northern border" is three stacked in a row, and by the third
+  the listener has lost the first.
+- **No definition-shaped questions.** If the sentence is a description of a thing
+  hunting for its name — *"the X that was Y inside Z is ___"* — rewrite it so the
+  sentence is about something that *happens*, and the answer falls out of it.
+- **Plain words.** If a word would make somebody's uncle ask what it means, it does
+  not go in.
+
+Length is *not* the test. `"The fastest way to cause offence entering a Bangladeshi
+home anywhere in the world is to keep your ___ on."` is 22 words and lands instantly,
+because it is one clause and every word is ordinary. A 15-word question with a nested
+relative clause is worse than a 22-word question without one.
+
+### 3. The fun bar
+
+> **Name three lies for this question that would make the table laugh *and* get
+> voted for. If you cannot, the question is not for this game.**
+
+This is a party game. The reveal happens on a shared screen with somebody's parents
+and somebody's children in the room, and the round has to end in a laugh, a groan, or
+an *ohhh* — not a nod.
+
+A question fails this bar when the only plausible lies are dry technical synonyms of
+each other. If the answer is an administrative term, every competing lie is also an
+administrative term, and the ballot reads like a form. Nobody bluffs with wit; they
+bluff with jargon, and voting becomes a coin toss between five words nobody knows.
+
+**Prefer answers you can see, eat, wear, hold, cook, ride or do.** Things with a
+physical or social shape give players something to be funny *with*. Categories,
+classifications, treaties, statuses and terminology do not.
 
 ## Schema
 
@@ -183,6 +242,19 @@ about the deaths — International Mother Language Day is fine; the shootings ar
 Also avoid: living private individuals, anything requiring a precise recent statistic
 (it will be wrong within a year and the room cannot check it), and religious rulings.
 
+**And avoid the dry-but-permitted.** These break no rule, are often true and
+interesting, and still make a bad round, because they hand the table a ballot of
+jargon:
+
+- treaties, border agreements, land classifications, administrative categories
+- institutional procedure, governance structures, legal or bureaucratic terminology
+- planning, licensing, zoning, census and infrastructure classification
+- any answer that is a **term of art** rather than a thing
+
+A useful reflex: if the answer is a word the room would only ever encounter in a
+document, cut it. If it is a word they would encounter in a kitchen, a market, a
+wedding, a bus or an argument, keep it.
+
 **The overriding test is that this is a fun, lighthearted game**, and it is stricter
 than the linter. If the answer is a place, the question is neutral and the `why` is
 carefully flat, a subject can still be wrong for a living room — because the reveal
@@ -228,6 +300,22 @@ certainly does. Exactly the asymmetry the game runs on.
 Regional and specific. Anyone can bluff with any Bengali sweet, and several will
 sound perfect.
 
+**Bad — clause pile-up and a joyless subject.**
+`"Until 2015, the scraps of one country stranded inside the other along the northern border were called ___."` → *chhitmohol (enclaves)*
+This one shipped, and it is the reason these bars exist. It passes the bluffing bar
+cleanly — the shape is obvious and the answer is guessable — and fails the other two.
+The listener has to hold *one country*, then *inside the other*, then *along the
+northern border* before the blank arrives. And the subject is a border treaty, so
+every believable lie is another piece of administrative vocabulary: char land, zero
+point, no man's land, corridor. Nobody at the table can be funny with that ballot.
+A correct, well-sourced, genuinely interesting fact can still be the wrong question.
+
+**Bad — a definition hunting for its term.**
+`"The system by which X is administered under Y is ___."`
+If you can only phrase it as a description looking for a name, the answer is a term,
+and terms are the least funny thing a person can be handed. Find the same territory's
+food, garment, festival, insult, superstition or habit instead.
+
 **Bad — no shape.** `"The most surprising thing about the Sundarbans is ___."`
 Answers could be anything. Lies cannot be plausible because there is nothing to be
 plausible *against*.
@@ -272,6 +360,11 @@ nobody in the room knows either.
 Before you output, check each entry against this list:
 
 - [ ] `q` has `___`, is a statement, ≤160 chars
+- [ ] **Said out loud once, could the room repeat it back?** One clause, ordinary
+      words, no more than two prepositional phrases before the blank
+- [ ] **Can I name three lies for it that are funny *and* believable?**
+- [ ] Is the answer a thing rather than a term — something you can see, eat, wear,
+      hold, cook, ride or do?
 - [ ] Could a clueless player bluff this? Could a knowledgeable one be fooled?
 - [ ] Is the answer 1–4 words and the same register as the lies?
 - [ ] ≥3 decoys, ≥2 filler, **none of them secretly true**
@@ -292,3 +385,10 @@ Write **45** new questions, all on the assigned territory below and nothing outs
 
 Do not repeat any subject in that list. If an obvious question on your territory is
 already taken, go one level more specific rather than rephrasing it.
+
+**Also nominate a cull.** The existing bank was written against a looser bar. After
+your JSON array, add a short list headed **CULL** naming any questions in ALREADY
+COVERED that fail the read-aloud bar or the fun bar — id, and one line saying which
+bar and why. Do not rewrite them; just name them. Ten well-argued nominations are
+worth more than fifty. If a territory's existing questions are all fine, say so
+rather than padding the list.
