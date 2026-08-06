@@ -34,6 +34,7 @@ const {
   limitStats,
   describeTrustProxy,
   MAX_ROOMS_GLOBAL,
+  TRUST_PROXY,
 } = require('./limits');
 
 /**
@@ -78,6 +79,14 @@ app.get('/health', (req, res) => {
     ok: true,
     rooms: rooms.size,
     maxRooms: MAX_ROOMS_GLOBAL,
+    // The two settings that fail *silently* rather than loudly, reported so a
+    // misconfigured deploy is visible without shell access to read the boot log.
+    // `trustProxy: false` behind a proxy puts every player on earth in one
+    // rate-limit bucket; `cors: "open"` means any site can drive this backend.
+    // Neither is sensitive — both are observable from outside anyway, one by
+    // probing the limits and one by reading a preflight response.
+    trustProxy: TRUST_PROXY,
+    cors: ALLOWED_ORIGINS.length ? 'allowlist' : 'open',
     sockets: io.engine?.clientsCount ?? 0,
     players: [...rooms.values()].reduce((n, r) => n + r.players.length, 0),
     rssMb: Math.round(mem.rss / 1048576),
