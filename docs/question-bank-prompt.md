@@ -9,8 +9,8 @@ single-tier deck (`desh` alone) also has to carry 7 rounds by itself.
 
 **Target ~320: 140 `desh`, 130 `probash`, 50 `shared`.**
 
-**Status: all fifteen batches below have been run.** The bank went from 74 to 556 —
-317 `desh`, 180 `probash`, 59 `shared`, comfortably past the target. Five of the
+**Status: all fifteen batches below have been run.** The bank went from 74 to 554 —
+317 `desh`, 178 `probash`, 59 `shared`, comfortably past the target. Five of the
 `probash` batches came in under their row's aim (East London 22, UK-beyond-London 25,
 USA 30, Canada/Australia/Europe 20, Gulf & Asia 24) because the territory ran out of
 facts worth being confident about; the shortfall went to `questions/NEEDS-CHECKING.md`
@@ -182,6 +182,15 @@ about the deaths — International Mother Language Day is fine; the shootings ar
 
 Also avoid: living private individuals, anything requiring a precise recent statistic
 (it will be wrong within a year and the room cannot check it), and religious rulings.
+
+**The overriding test is that this is a fun, lighthearted game**, and it is stricter
+than the linter. If the answer is a place, the question is neutral and the `why` is
+carefully flat, a subject can still be wrong for a living room — because the reveal
+reads it out to everyone, including somebody's parents and somebody's children.
+Deaths, disasters, drownings and racist violence are all in that category however
+respectfully they are handled. Do not write the question and then justify it. Cut it,
+and note the subject under NEEDS CHECKING so the omission is visible. No single
+question is load-bearing; the bank is deep.
 
 ## The three tiers
 

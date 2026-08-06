@@ -82,18 +82,20 @@ Confirm one, write the entry, merge it, delete the line.
   framing is a benefit concert rather than the war itself — but it is inseparable from
   1971, which the deck refuses on purpose. Left out; worth a decision rather than a
   quiet inclusion.
-- **`pr-altab-ali-park` is IN the bank** — flagged here so the call is visible rather
-  than buried. Altab Ali Park is central to British Bangladeshi identity and the
-  question itself asks for a park name, so the lies players write are park names. The
-  `why` states plainly that the park is named for a young man killed in a racist attack
-  in 1978. That is history told soberly, not atrocity offered as bluffing fodder — but
-  it is the closest anything in the bank comes to the line, so it is worth a second
-  opinion. Removing it costs the bank one question and nothing else.
-- **`pr-libya-route` is IN the bank** — the sea crossing to Italy. The question asks
-  which country migrants set out from and the `why` is deliberately flat, but the
-  subject carries drowned people behind it. Same call as above: defensible, and worth
-  making on purpose rather than by omission.
-- **Rana Plaza and the 1943 famine were both left out** of the modern-life and history
-  batches. Neither is on the linter's blocked list and both are legitimate history;
-  both are also mass death, which is the thing the deck refuses to hand players as
-  bluffing fodder. Noted so the absence reads as a decision.
+**The standard: this is a fun, lighthearted game.** That is the test, and it is
+stricter than the linter. A subject can be accurate, important and safely phrased and
+still be wrong for a party in somebody's living room. When in doubt, cut it — the bank
+is deep enough that no single question is load-bearing.
+
+Removed on that basis, after being written:
+
+- **`pr-altab-ali-park`** — the park at the end of Brick Lane, named for a young man
+  killed in a racist attack in 1978. Central to British Bangladeshi identity and the
+  question only asked for a park name, but the reveal would have put that in the room.
+- **`pr-libya-route`** — which country migrants sail from to reach Italy. People drown
+  on that crossing.
+
+Never written, on the same reasoning that keeps 1971 off the deck:
+
+- **Rana Plaza**, the **1943 famine**, and specific named cyclones. All legitimate
+  history, none of it something to invent funny answers about.

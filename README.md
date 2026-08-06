@@ -60,7 +60,7 @@ Sheet published as CSV. Either way it must pass:
 npm run questions:lint
 ```
 
-The bank ships with 556 questions across three tiers — `desh` (Bangladesh), `probash`
+The bank ships with 554 questions across three tiers — `desh` (Bangladesh), `probash`
 (the diaspora) and `shared`. A game is at most 7 rounds and the deck is redrawn fresh
 each time, so that is deep enough that a table playing all evening will not see a
 repeat.

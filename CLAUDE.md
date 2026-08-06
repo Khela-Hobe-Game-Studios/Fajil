@@ -200,8 +200,8 @@ in its `show` fields, so the Bengali subset is not optional.
 
 ## Question bank
 
-`questions/questions.json`, linted by `questions/lint.js`. 556 questions:
-317 `desh`, 180 `probash`, 59 `shared`. Built out from a 74-question seed by the
+`questions/questions.json`, linted by `questions/lint.js`. 554 questions:
+317 `desh`, 178 `probash`, 59 `shared`. Built out from a 74-question seed by the
 territory-partitioned batch plan in [docs/question-bank-prompt.md](docs/question-bank-prompt.md);
 facts held back as unverified are logged in `questions/NEEDS-CHECKING.md` rather
 than guessed at.

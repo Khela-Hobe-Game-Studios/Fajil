@@ -7029,32 +7029,6 @@
     "era": "modern"
   },
   {
-    "id": "pr-altab-ali-park",
-    "q": "The park at the Whitechapel end of Brick Lane, home to a replica of Dhaka's Shaheed Minar, is ___ Park.",
-    "a": "altab ali",
-    "show": "Altab Ali Park",
-    "alt": [
-      "altab ali",
-      "altab ali park",
-      "আলতাব আলী"
-    ],
-    "decoys": [
-      "Weavers Fields",
-      "Allen Gardens",
-      "Victoria",
-      "Bethnal Green"
-    ],
-    "filler": [
-      "Weavers Fields",
-      "Allen Gardens",
-      "Victoria"
-    ],
-    "why": "Renamed for a young Bangladeshi clothing worker killed in a racist attack there in 1978, whose death brought thousands of people onto the streets and changed how the community organised itself. The language monument was added later; every 21 February the flowers go down at it.",
-    "tier": "probash",
-    "region": "uk",
-    "era": "modern"
-  },
-  {
     "id": "pr-rag-trade",
     "q": "Before the restaurants, the East End trade that employed most Bangladeshi men was the ___ trade.",
     "a": "rag trade",
@@ -12929,32 +12903,6 @@
       "Tribunal"
     ],
     "why": "Italy has run several, each converting tens of thousands of undocumented workers into legal residents overnight. Whole Bangladeshi communities in Rome and the Veneto date their legal existence to a specific one, and can tell you which.",
-    "tier": "probash",
-    "region": "europe",
-    "era": "modern"
-  },
-  {
-    "id": "pr-libya-route",
-    "q": "Bangladeshis who reached Italy irregularly by sea generally set out from ___.",
-    "a": "libya",
-    "show": "Libya",
-    "alt": [
-      "libia",
-      "libya coast",
-      "tripoli"
-    ],
-    "decoys": [
-      "Turkey",
-      "Morocco",
-      "Egypt",
-      "Tunisia"
-    ],
-    "filler": [
-      "Turkey",
-      "Morocco",
-      "Egypt"
-    ],
-    "why": "Flown to North Africa on a work visa that turns out not to be one, then handed on to smugglers. Bangladesh has repeatedly appeared among the top nationalities arriving on that crossing, which is not a statistic anybody at home is proud of.",
     "tier": "probash",
     "region": "europe",
     "era": "modern"
