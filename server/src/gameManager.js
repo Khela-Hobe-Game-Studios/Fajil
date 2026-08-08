@@ -180,7 +180,7 @@ function revealSchedule(steps) {
  * sent once the room is in REVEAL.
  */
 function buildRevealSteps(room) {
-  const { options, votes } = room.current;
+  const { options, votes, question } = room.current;
   const votersByOption = {};
   for (const [pid, optionId] of Object.entries(votes)) {
     (votersByOption[optionId] ??= []).push(pid);
@@ -188,7 +188,11 @@ function buildRevealSteps(room) {
 
   const decorated = options.map((o) => ({
     id: o.id,
-    text: o.text,
+    // The ballot printed the truth bare and in caps so it read like everyone else's
+    // lie (see ballotText). The correction is where it gets set properly — full
+    // display form, Bangla and all. Nothing is at risk once voting has closed, and
+    // that expansion is half of what the reveal is for.
+    text: o.truth ? (question.show || o.text) : o.text,
     truth: o.truth,
     house: o.house,
     authors: o.authors.map((pid) => publicPlayer(room, pid)).filter(Boolean),
@@ -420,7 +424,10 @@ function startReveal(io, room) {
     steps,
     schedule,
     why: q.why,
-    answer: q.show || q.a,
+    // Read off the truth card rather than rebuilt from the question, so the phone's
+    // "the answer was X" and the television's correction cannot drift apart — they
+    // are being read aloud in the same room at the same moment.
+    answer: steps.find((s) => s.truth)?.text ?? (q.show || q.a),
     doublePoints: roundMultiplier(room) > 1,
     players: sanitizePlayers(room.players),
     gains: room.current.gains,
