@@ -1,6 +1,7 @@
 import {
   Page, PageBody, Masthead, Nameplate, Kicker, Rule, Prompt, Clock, Meter, Ballot, Btn,
 } from '../../press';
+import { SoundToggle } from '../Shared';
 
 const TIER_LABEL = { desh: 'Desh edition', probash: 'Probash edition', shared: 'Home & away' };
 
@@ -23,6 +24,7 @@ export default function HostRound({ state, actions }) {
             <span>Room</span><b>{state.code}</b>
             <span>Round</span><b>{round}/{of}</b>
             <Clock timing={state.timing} />
+            <SoundToggle />
           </>
         }
       >

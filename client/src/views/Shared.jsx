@@ -1,4 +1,34 @@
 import { Btn } from '../press';
+import { useSoundPref, setSound } from '../game/useCues';
+
+/**
+ * The sound switch, in the masthead's dateline.
+ *
+ * Shared-screen only, because the shared screen is the only thing that makes a
+ * sound. It sits in the dateline rather than behind a settings screen for the
+ * same reason the deck and the round count sit on the landing page: the host is
+ * standing at a television with people watching, and a party that has to be
+ * paused while somebody finds a menu is a party that just turns the television
+ * off instead.
+ */
+export function SoundToggle() {
+  const on = useSoundPref();
+  // The visible word is the state, so the accessible name is the thing rather than
+  // the state: "Muted, not pressed" reads as a double negative.
+  return (
+    <button
+      type="button"
+      className={`sh-sound ${on ? '' : 'sh-sound--off'}`}
+      aria-label="Sound"
+      aria-pressed={on}
+      onClick={() => setSound(!on)}
+      data-testid="sound-toggle"
+    >
+      <span className="sh-sound-mark" aria-hidden="true" />
+      <span>{on ? 'Sound' : 'Muted'}</span>
+    </button>
+  );
+}
 
 /**
  * The connection banner.

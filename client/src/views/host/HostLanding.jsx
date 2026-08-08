@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Page, PageBody, Masthead, Nameplate, Kicker, Rule, Btn } from '../../press';
-import { ErrorNote } from '../Shared';
+import { ErrorNote, SoundToggle } from '../Shared';
 
 const ROUNDS = [3, 5, 7];
 const SECONDS = [45, 60, 90];
@@ -25,7 +25,7 @@ export default function HostLanding({ state, actions, onSwitch }) {
 
   return (
     <Page>
-      <Masthead right={<><b>Est. 2026</b><span>Two-colour press</span></>}>
+      <Masthead right={<><b>Est. 2026</b><span>Two-colour press</span><SoundToggle /></>}>
         <Nameplate />
       </Masthead>
 

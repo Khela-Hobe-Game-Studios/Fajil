@@ -198,6 +198,80 @@ in its `show` fields, so the Bengali subset is not optional.
 
 ---
 
+## Audio
+
+**Eleven voices, synthesised — no files, no dependency, no CDN.** `client/src/game/cues.js`,
+plain Web Audio. The entire sound design costs **3.8 KB gzipped** in the bundle and
+zero requests; a sample pack would have been the largest asset in the build by an
+order of magnitude, and it would have arrived at exactly the moment the room is
+already waiting on Render's cold start. It also could not be retuned by changing a
+number.
+
+**The voices are a cheap two-colour press**, because that is what the screen is —
+the same reason `press/` is plain CSS. A platen cycling, a slug of hot metal
+dropping into the galley, a brass rule laid on the stone, the linotype's
+end-of-line bell, and a rubber stamp for the correction.
+
+| Cue | Fires on |
+|---|---|
+| `platen` | every phase change; the reveal's first frame and its "why it matters" panel |
+| `slug` | each lie filed (full weight on the last), and a lie that scored at the reveal |
+| `ballot` | each vote cast |
+| `riffle` | `VOTING` — the ballot going up |
+| `rule` | one per reveal card, louder the more players that lie took down |
+| `bell` | each of the last five seconds of `COLLECTING` / `VOTING` |
+| `rollRise` | the last 8s of those two phases |
+| `deadline` | the clock beating the room |
+| `stamp` | the truth card. The payoff, and the biggest sound in the file |
+| `sigh` | the truth card when *nobody* found it |
+| `finalEdition` | game over |
+
+Plus a persistent low **bed** — the press switched on and left on. It drops for the
+reveal, so the corrections land in a room that has just gone quiet, and for game
+over, so the final edition rings on silence.
+
+**Cues read the same clock the pixels do.** `useCues` turns each phase's `endsAt`
+and the server's reveal `schedule` into AudioContext-time offsets and hands the
+whole sequence to Web Audio in one pass — a 60-second `COLLECTING` phase schedules
+its rise and all five bells the moment it starts. Nothing counts down, ticks, or
+fires off a render. Same two consequences the visuals already obey: a shared screen
+that reconnects mid-reveal seeds from `elapsedMs` and only schedules the beats still
+ahead of it, and every phase can be cut short (`killAll()` on transition,
+`kill('clock')` for the narrower case of a resume rescheduling its countdown).
+
+**`ctx.state === 'running'` is the wrong gate for playing a cue.** `resume()` is
+asynchronous, so for tens of milliseconds after the click that unlocks audio the
+state still reads `suspended` — and everything fired in that window is silently
+dropped. The same gap reopens after every `visibilitychange` resume, which is a live
+path here because `socket.js` already treats a returning tab as a first-class event.
+So playback gates on `armed`: has a gesture ever happened.
+
+**Every platform suspends the AudioContext and none of them resume it** — iOS on any
+interruption, Android Chrome when the tab backgrounds, desktop when the lid closes. A
+host who shut the laptop between rounds would come back to a silent screen for the
+rest of the night. `cues.js` registers its own `visibilitychange` resume at context
+creation, where a caller cannot forget it.
+
+**A past-due beat needs a grace, not a strict `at < elapsed`.** The reveal's opening
+beat sits at offset 0, but `elapsed` is never 0 by the time it is read — the frame
+has crossed a socket and React has rendered. A strict filter reads that as history
+and drops the beat the sequence opens on, every single time. `BEAT_GRACE_MS` is the
+difference between "we only just got this frame" and "we rejoined a sequence already
+in progress"; anything inside it is still scheduled and `voiceAt` clamps it to now.
+
+**Shared screen only.** Eight phones must not fight the television, and the one on
+hotel wifi is the one everybody hears. The phone answers with the motor instead —
+`game/haptics.js`, feature-detected, silently absent on iOS. Two of its patterns are
+not confirmations but summonses: a phone spends the round face-down while its owner
+watches the television, and the box opening and the ballot going up are exactly the
+moments nothing on the phone is being looked at.
+
+Gated on the `SOUND` toggle in the masthead and deliberately **not** on
+`prefers-reduced-motion` — someone who turned the animation down still wants to hear
+the stamp land.
+
+---
+
 ## Question bank
 
 `questions/questions.json`, linted by `questions/lint.js`. 551 questions:
@@ -263,6 +337,9 @@ client/src/
     useGameSocket.js  One reducer owning every socket event
     clock.js          Server-time offset, phase remaining
     revealBeats.js    Plays the server's beat schedule
+    cues.js           The eleven voices, synthesised; channels, scheduling, the bed
+    useCues.js        Cues ↔ phase events and the reveal schedule; shared screen only
+    haptics.js        The phone's half — vibration, not sound
   press/            The design system
   views/host/       Landing, Lobby, Round, Reveal, Standings
   views/player/     Join, Lobby, Round, Result
@@ -333,5 +410,7 @@ it, which is how the test exercises the limits at all.
   audience this game is actually for. See the note in `render.yaml`.
 - No accounts, no history, no persistence between games.
 - Questions load once at startup unless `QUESTIONS_SHEET_URL` is set.
-- No audio. The reveal is silent, which costs it something.
+- **No music.** The cues are punctuation, not a soundtrack; between phases the room
+  has only the bed. A bed of licensed tracks is the obvious next step and is also the
+  first thing here that would need hosted files.
 - 8 players max by design; 2 minimum to start.

@@ -1,6 +1,7 @@
 import {
   Page, PageBody, Masthead, Nameplate, Kicker, Rule, Btn, Score, playerInk, Stamp,
 } from '../../press';
+import { SoundToggle } from '../Shared';
 
 /**
  * The scoreboard between rounds, and the final table.
@@ -24,8 +25,8 @@ export default function HostStandings({ state, actions }) {
       <Masthead
         right={
           isFinal
-            ? <><span>Final</span><b>{data.rounds} rounds</b></>
-            : <><span>Room</span><b>{state.code}</b><span>Round</span><b>{data.round}/{data.of}</b></>
+            ? <><span>Final</span><b>{data.rounds} rounds</b><SoundToggle /></>
+            : <><span>Room</span><b>{state.code}</b><span>Round</span><b>{data.round}/{data.of}</b><SoundToggle /></>
         }
       >
         <Nameplate sub={isFinal ? 'final edition' : 'the standings'} />

@@ -109,6 +109,14 @@ strips every button's fill.
 **React StrictMode is on.** Effects run twice in dev; every `socket.on` needs a
 matching `socket.off` in cleanup.
 
+**`ctx.state === 'running'` is the wrong gate for playing a cue.** `resume()` is
+asynchronous, so for tens of milliseconds after the unlocking click the state still
+reads `suspended` and everything fired in that window is dropped without a trace.
+`cues.js` gates on `armed` — has a gesture ever happened — which a resuming context
+honours. The same applies to a beat that is barely past due: a strict
+`at < elapsed` looks right and silently eats the beat the reveal opens on, because
+`elapsed` is never 0 by the time the frame has crossed a socket and rendered.
+
 **A limit that lives on `socket.data` is not a limit.** Sockets are free to open, so
 anything keyed to one resets by reconnecting. Every abuse ceiling started out this
 way and one laptop took all 432 room codes in under a minute — a worldwide outage,

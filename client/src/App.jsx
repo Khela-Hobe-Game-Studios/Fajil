@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import useGameSocket from './game/useGameSocket';
+import useCues, { useSoundPref } from './game/useCues';
+import useHaptics from './game/haptics';
 import { JOIN_CODE, loadSession } from './session';
 import useMediaQuery, { WIDE } from './hooks/useMediaQuery';
 
@@ -39,6 +41,15 @@ export default function App() {
   }, [state.role]);
 
   const chosen = side ?? (wide ? 'host' : 'player');
+
+  /* Sound is the shared screen's and haptics are the phone's, so both hang off the
+   * one decision about which side this device is. Wired here rather than inside
+   * the screens because a cue belongs to a phase, not to a view: hanging them off
+   * mounts would fire the reveal's sequence again every time a card re-rendered,
+   * and would lose the transition entirely on the phases that share a component. */
+  const sound = useSoundPref();
+  useCues({ enabled: sound && chosen === 'host', state });
+  useHaptics({ enabled: chosen === 'player', state });
 
   const shell = (children) => (
     <>

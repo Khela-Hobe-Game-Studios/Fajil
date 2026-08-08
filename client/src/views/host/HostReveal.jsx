@@ -3,6 +3,7 @@ import {
   Page, PageBody, Masthead, Nameplate, Kicker, Rule, Prompt, Chip, Stamp, Btn,
 } from '../../press';
 import { useRevealBeat } from '../../game/revealBeats';
+import { SoundToggle } from '../Shared';
 
 /**
  * The reveal.
@@ -20,7 +21,7 @@ export default function HostReveal({ state, actions }) {
 
   return (
     <Page>
-      <Masthead right={<><span>Room</span><b>{state.code}</b><span>Round</span><b>{r.round}/{r.of}</b></>}>
+      <Masthead right={<><span>Room</span><b>{state.code}</b><span>Round</span><b>{r.round}/{r.of}</b><SoundToggle /></>}>
         <Nameplate sub="the corrections" />
       </Masthead>
 

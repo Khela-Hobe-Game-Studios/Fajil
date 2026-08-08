@@ -1,6 +1,6 @@
 import { Page, PageBody, Masthead, Nameplate, Kicker, Rule, Btn, Chip } from '../../press';
 import JoinQR from '../../components/JoinQR';
-import { ErrorNote } from '../Shared';
+import { ErrorNote, SoundToggle } from '../Shared';
 
 const MIN_PLAYERS = 2;
 const MAX_PLAYERS = 8;
@@ -18,7 +18,7 @@ export default function HostLobby({ state, actions }) {
 
   return (
     <Page>
-      <Masthead right={<><span>Room</span><b>{state.code}</b></>}>
+      <Masthead right={<><span>Room</span><b>{state.code}</b><SoundToggle /></>}>
         <Nameplate sub="the bluffing game" />
       </Masthead>
 

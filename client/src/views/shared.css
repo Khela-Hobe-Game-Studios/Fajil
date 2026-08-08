@@ -72,6 +72,52 @@
 
 .sh-error .pr-btn { min-height: 2rem; padding: 0 0.6em; }
 
+/* The sound switch. Dateline furniture, so it inherits the dateline's type and
+   only has to draw the mark and the state. */
+.sh-sound {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  /* A television is watched from three metres but operated from arm's length, so
+     the target is a real one even though the label is dateline-sized. */
+  min-height: 2.2rem;
+  padding: 0 0.2em;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.sh-sound:hover { color: var(--ink); }
+.sh-sound--off { color: var(--ink-3); }
+
+/* Two ruled bars — the press running. Muted collapses them to one flat rule,
+   which reads at a distance without needing a speaker glyph. */
+.sh-sound-mark {
+  position: relative;
+  width: 0.85em;
+  height: 0.85em;
+  border-left: var(--rule-thick) solid currentColor;
+}
+
+.sh-sound-mark::before,
+.sh-sound-mark::after {
+  content: '';
+  position: absolute;
+  left: 0.28em;
+  width: 0.5em;
+  border-top: var(--rule-thick) solid currentColor;
+}
+
+.sh-sound-mark::before { top: 0.18em; }
+.sh-sound-mark::after { bottom: 0.18em; }
+
+.sh-sound--off .sh-sound-mark::before { top: 50%; width: 0.62em; left: 0.14em; }
+.sh-sound--off .sh-sound-mark::after { display: none; }
+
 @media (prefers-reduced-motion: reduce) {
   .sh-banner-dot { animation: none; }
 }
