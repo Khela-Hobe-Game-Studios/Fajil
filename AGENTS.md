@@ -40,7 +40,7 @@ Cheapest-first, so the most common failure is also the quickest to find:
 | `questions/lint.js` | The bank meets the quality and content rules |
 | `vite build` | No import or syntax errors in any view |
 | `test-reliability.js` | Truth secrecy, reconnect, scoring, a full game over real sockets |
-| `test-browser.js` | The real UI: shared screen + 3 phones, layout, tap targets |
+| `test-browser.js` | The real UI: shared screen + 3 phones, layout, tap targets, cues |
 
 **A green verify is the bar for committing.** It is not a substitute for looking at
 the screen — `test-browser.js` writes every phase to `.screens/` (gitignored) at both
