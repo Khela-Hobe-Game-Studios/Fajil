@@ -36,7 +36,7 @@ One instance only; scaling past one needs sticky sessions *and* a shared room st
 **The correct answer must not leave the server before the reveal.**
 
 If it ships early, one player reads it out of a WebSocket frame on round one and the
-game is over. Three specific defences, all in `server/src/lies.js`:
+game is over. Four specific defences, all in `server/src/lies.js`:
 
 1. `toClientOptions()` is the **only** shape allowed out during `VOTING`, and it
    *builds a fresh `{id, text}`* rather than deleting secrets from the internal
@@ -46,11 +46,20 @@ game is over. Three specific defences, all in `server/src/lies.js`:
 3. **Authorship is withheld on the same reasoning** — knowing who wrote what is
    knowing what is not true. Authors and voters appear for the first time in
    `round:reveal`.
+4. **The ballot prints `a`, in caps — never `show`.** The fourth defence is
+   typographic, and it is the one that was missed for a while: 313 of the bank's
+   551 display forms carry Bangla script (`Jackfruit (কাঁঠাল)`), which no player
+   writing a lie on a phone keyboard will ever produce. Printing the display form
+   identifies the truth as plainly as a flag would. `ballotText()` returns `a` —
+   literally what fills the blank, and the register the decoys are written in — and
+   `ballotCase()` uppercases every option, because the truth arriving in sentence
+   case next to a hurried lowercase lie is the same tell in miniature. `show` is
+   restored on the truth card at the reveal, which is the moment it is worth having.
 
 `test-reliability.js` records every frame each client is ever sent and re-reads the
 transcript the way a player with devtools would. Note that the answer's *text* is
 necessarily present during voting — it is one of the options — so the assertion is
-that nothing identifies **which** one.
+that nothing identifies **which** one, in the payload or on the page.
 
 ---
 
@@ -139,9 +148,9 @@ This is load-bearing. Phones sleep, tabs get backgrounded, wifi drops.
   socket id. Socket ids change on every reconnect; keying game state off them silently
   resets a returning player's score to zero.
 - **Host control is a separate minted `hostToken`**, sent only to the socket that
-  created the room and required back on `host:rejoin`. Room codes are 48 dictionary
-  words, so granting host control on the code alone means anyone who guesses one
-  seizes the game — and demotes the real host.
+  created the room and required back on `host:rejoin`. Room codes are drawn from a
+  74-word bank, so granting host control on the code alone means anyone who guesses
+  one seizes the game — and demotes the real host.
 - **The client re-announces on every `connect`, not the first.** `socket.once` looks
   correct and silently kills every player who reconnects.
 - **`socket.js` also reconnects on `visibilitychange` / `online` / `pageshow`**, because
@@ -293,8 +302,8 @@ ballot reads like a form.
 {
   "id": "bd-natl-fruit",
   "q": "Bangladesh's national fruit is the ___.",   // must contain ___
-  "a": "jackfruit",
-  "show": "Jackfruit (কাঁঠাল)",                     // display form at reveal
+  "a": "jackfruit",                                 // the ballot prints this, in caps
+  "show": "Jackfruit (কাঁঠাল)",                     // display form, reveal only
   "alt": ["kathal"],                                // also counts as truth-collision
   "decoys": ["Mango", "Lychee", "Guava"],           // ≥3, pad a thin room
   "filler": ["Mango", "Papaya"],                    // ≥2, for AFK players
@@ -314,6 +323,11 @@ legitimate trivia subjects; they are not safe as bluffing fodder.
 The linter also fails a decoy or filler that **collides with the real answer**, which
 would put two correct options on the board, and warns when the desh:probash ratio
 passes 2.5:1, at which point the mixed deck can no longer alternate.
+
+**Bangla belongs in `show` and `alt`, and the linter refuses it anywhere else.** `a`
+is what the ballot prints and the decoys are what it prints alongside; a single
+option in Bengali script identifies itself as the one no player could have typed.
+Same rule, stated from the content side, as defence 4 above.
 
 ---
 
@@ -366,8 +380,9 @@ not be the constraint. What binds is memory and the single instance.
 | `ALLOWED_ORIGINS` | unset (open) | Set to the deployed client in production |
 | `TRUST_PROXY` | on under Render | See below — getting this wrong breaks the game either way |
 
-**The room code space was a global single point of failure.** 48 words plus a
-digit-suffix tier is 432 codes *in total*, and every limit protecting them lived on
+**The room code space was a global single point of failure.** The word bank plus its
+digit-suffix tier is a few hundred codes *in total* (74 words and 552 word+digit
+forms today, 48 and 384 when this bit), and every limit protecting them lived on
 `socket.data` — which a reconnect discards. One laptop, unauthenticated, took every
 code in under a minute; the failure mode is not degradation but a worldwide outage,
 because every host anywhere gets "No rooms available". Fixed in two places: a random

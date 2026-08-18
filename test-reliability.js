@@ -164,6 +164,11 @@ async function run() {
   check('reveal names the answer', typeof reveal.answer === 'string' && reveal.answer.length > 0);
   check('reveal carries authorship for the first time', reveal.steps.some((s) => s.authors.length > 0));
   check('reveal ends on the truth', reveal.steps[reveal.steps.length - 1].truth === true);
+  // The ballot printed the answer bare so it read like a lie; the correction prints
+  // it properly. If these two ever disagree the reveal is showing the ballot form,
+  // which is the whole payoff of a bank that carries Bangla thrown away.
+  check('the truth card prints the display form, not the ballot form',
+    reveal.steps[reveal.steps.length - 1].text === reveal.answer);
   check('reveal orders lies by how many they fooled',
     isNonDecreasing(reveal.steps.filter((s) => !s.truth).map((s) => s.voters.length)));
   check('reveal schedule fits inside its phase',
@@ -391,6 +396,17 @@ function assertNoTruthLeak(players, optionsFrame) {
   // 3. The options payload is exactly {id, text} and nothing else.
   const keys = new Set(optionsFrame.options.flatMap((o) => Object.keys(o)));
   check('vote options carry only id and text', [...keys].every((k) => k === 'id' || k === 'text'), [...keys].join(','));
+
+  // 4. Nothing about how an option is *printed* may identify it either. The bank's
+  // display forms carry Bangla and sentence case ("Jackfruit (কাঁঠাল)"); the lies
+  // above are typed by hand and carry neither. Ship the display form on the ballot
+  // and the truth is as good as flagged, so both are asserted here rather than left
+  // to the stylesheet. Bengali codepoints, and case that survives uppercasing.
+  const texts = optionsFrame.options.map((o) => o.text);
+  const scripted = texts.filter((t) => /[\u0980-\u09FF]/.test(t));
+  check('no option is printed in Bengali script', scripted.length === 0, scripted.join(' | '));
+  const mixed = texts.filter((t) => t !== t.toUpperCase());
+  check('every option is printed in the same case', mixed.length === 0, mixed.join(' | '));
 }
 
 function isNonDecreasing(arr) {

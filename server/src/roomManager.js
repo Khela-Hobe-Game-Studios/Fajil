@@ -4,16 +4,33 @@ const rooms = new Map();
 
 // Codes are read aloud across a room, so they are words rather than random letters.
 // A random 4-letter code needs an ambiguity-free alphabet (no I/O/0/1/L) because it
-// is spelled out; a word is *said*, and "GUJOB" survives a noisy room in a way that
-// "QXTL" does not. 48 words, distinct from the studio's other games so a player with
-// two tabs open cannot join the wrong one.
+// is spelled out; a word is *said*, and "ADDA" survives a noisy room in a way that
+// "QXTL" does not.
+//
+// Every word is something a Bangladeshi table already says out loud, which is the
+// point: the code is the first thing the game shows anybody, and "MAMA" or "BIRI" on
+// a television sets the register of the whole evening before a question is asked.
+// Grouped by what they are, because the bank is content and gets edited like content.
+//
+// Two standing rules for anything added here. It must be four ASCII letters, and it
+// must be safe to put on a screen in somebody's living room — no slang that is rude
+// in either language, and nothing that reads as a word you would not want a room to
+// chant. Prefer the warm and the domestic; that is what the list is for.
 const WORD_BANK = [
-  'ADDA', 'BAJE', 'BHAB', 'BHUA', 'BOKA', 'CHAL', 'CHOR', 'CHUP',
-  'DADU', 'DEKH', 'DHAP', 'DHOA', 'DHUP', 'DUSH', 'FAKI', 'HASI',
-  'HAWA', 'JADU', 'JAMA', 'JHAL', 'JHOK', 'JHUT', 'KHAI', 'KHEL',
-  'KOTA', 'MAJA', 'MAYA', 'MELA', 'MITH', 'MOJA', 'MUKH', 'NAAM',
-  'NAKA', 'NESA', 'PARA', 'PATA', 'RAJA', 'RONG', 'ROSH', 'RUPA',
-  'SHAT', 'SHOK', 'SHUR', 'SONA', 'TAKA', 'TOLA', 'TUKI', 'UDAS',
+  // people at the table
+  'MAMA', 'KAKA', 'DADA', 'DADU', 'NANA', 'NANI', 'BHAI', 'DIDI', 'BABA', 'MASI',
+  // what is on it
+  'BIRI', 'TONG', 'CHAA', 'MURI', 'DAAL', 'BHAT', 'RUTI', 'KOLA', 'PAAN', 'BORA',
+  'CHOP', 'DUDH', 'JHAL', 'JHOL', 'MOJA',
+  // out of the window
+  'NODI', 'MEGH', 'HAWA', 'MATI', 'GHAT', 'KHAL', 'BAGH', 'HATI', 'MACH', 'PHUL',
+  'TARA', 'RAAT', 'BEEL', 'CHAR', 'DHAN', 'KASH',
+  // the life
+  'ADDA', 'TAKA', 'GARI', 'NOKA', 'DHOL', 'JAMA', 'SARI', 'ALTA', 'MELA', 'PARA',
+  'BARI', 'DESH', 'JADU', 'HASI', 'MAYA', 'SONA', 'RONG', 'SHUR', 'KHEL', 'MUKH',
+  'NAAM', 'TUMI', 'EIDI', 'PUJO', 'ROZA', 'TALI',
+  // what the game is about
+  'CHOR', 'CHUP', 'BOKA', 'BHUT', 'UDAS', 'BAJE', 'DEKH',
 ];
 
 // Reading N lies is O(N) attention, unlike guessing a number — at 15 players the
@@ -43,15 +60,15 @@ const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
  * Never hand out a code belonging to a live room.
  *
  * Three tiers, widest-appeal first. The word bank is what a host actually wants —
- * "GUJOB" survives a noisy room in a way "QXTL" does not — so it is always tried
+ * "ADDA" survives a noisy room in a way "QXTL" does not — so it is always tried
  * first and the overflow only ever appears under load the game has never seen.
  *
- * The tiers matter because the first two are tiny: 48 words and 384 word+digit forms
- * is 432 codes in total, and that was a hard global ceiling on concurrent games.
- * Reaching it is not a degraded experience, it is a total outage — every host in the
- * world gets "No rooms available" — and it was reachable from one machine in under a
- * minute. The random tier is 31^4, so the ceiling that binds is now MAX_ROOMS_GLOBAL,
- * which refuses politely and bounds memory instead.
+ * The tiers matter because the first two are small: the bank and its digit forms are
+ * a few hundred codes in total, and that used to be a hard global ceiling on
+ * concurrent games. Reaching it is not a degraded experience, it is a total outage —
+ * every host in the world gets "No rooms available" — and it was reachable from one
+ * machine in under a minute. The random tier is 31^4, so the ceiling that binds is
+ * now MAX_ROOMS_GLOBAL, which refuses politely and bounds memory instead.
  */
 function generateCode() {
   const available = WORD_BANK.filter((w) => !rooms.has(w));
@@ -59,7 +76,10 @@ function generateCode() {
     return available[Math.floor(Math.random() * available.length)];
   }
   for (let digit = 2; digit <= 9; digit++) {
-    const pool = WORD_BANK.map((w) => w.slice(0, 3) + digit).filter((c) => !rooms.has(c));
+    // Deduped, because the bank has words that share three letters — DADA and DADU,
+    // NANA and NANI — and a plain map would deal the same code twice and quietly
+    // shrink this tier.
+    const pool = [...new Set(WORD_BANK.map((w) => w.slice(0, 3) + digit))].filter((c) => !rooms.has(c));
     if (pool.length > 0) return pool[Math.floor(Math.random() * pool.length)];
   }
   return randomCode();
@@ -116,7 +136,7 @@ function createRoom({ hostSocketId, settings, creatorIp = null }) {
     // scanning live rooms rather than by a running total that drifts. Never emitted.
     creatorIp,
     // The host's half of what a player's pid already is: a secret the client holds,
-    // minted here, required back on rejoin. Codes are 48 dictionary words, so
+    // minted here, required back on rejoin. Codes are a small bank of words, so
     // granting host control on the code alone means anyone who guesses one takes
     // over the game — and demotes the real host, whose socket id no longer matches.
     // Never broadcast; only ever sent to the socket that created the room.

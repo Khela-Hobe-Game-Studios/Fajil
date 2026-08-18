@@ -11,7 +11,10 @@
  */
 
 const path = require('path');
-const { norm } = require('../server/src/lies');
+// BENGALI comes from the server rather than being re-declared here: the linter's job
+// is to refuse what the ballot builder would mis-print, so the two must be the same
+// range or the gate passes a question the game then leaks.
+const { norm, BENGALI, isTruthCollision } = require('../server/src/lies');
 
 const TIERS = ['desh', 'probash', 'shared'];
 
@@ -66,14 +69,15 @@ function lint(bank) {
     seenPrompts.add(pk);
 
     if (typeof q.a !== 'string' || !q.a.trim()) { fail(id, 'missing answer'); continue; }
+
+    // Bangla belongs in `show`, `alt` and nowhere else. `a` is what the ballot
+    // prints and the decoys are what it prints alongside — a single option in
+    // Bengali script identifies itself as the one no player could have typed, which
+    // is the truth leak this bank spent its whole design avoiding.
+    if (BENGALI.test(q.a)) fail(id, `answer "${q.a}" is in Bengali script — the ballot prints \`a\`, put the Bangla in \`show\``);
     if (!q.show) warn(id, 'no `show` — the raw answer will be displayed at reveal');
     if (!q.why || q.why.length < 40) fail(id, 'missing or too-short `why` (the payoff of the round)');
     if (!TIERS.includes(q.tier)) fail(id, `tier must be one of ${TIERS.join(' | ')}, got ${q.tier}`);
-
-    // The truth set: everything that counts as "you wrote the real answer".
-    const truthKeys = new Set(
-      [q.a, q.show, ...(q.alt ?? [])].map(norm).filter(Boolean),
-    );
 
     const decoys = q.decoys ?? [];
     const filler = q.filler ?? [];
@@ -85,12 +89,18 @@ function lint(bank) {
 
     // The failure that actually breaks a game: a house lie that is also true. It
     // puts two correct options on the board and makes the scoring incoherent.
+    //
+    // Asked with the server's own predicate rather than a truth set assembled here.
+    // A decoy the game considers true is silently dropped from the board at build
+    // time, so a linter working from a narrower set passes a question that quietly
+    // plays a decoy short — and the two definitions drift the moment either moves.
     for (const [label, list] of [['decoy', decoys], ['filler', filler]]) {
       const seen = new Set();
       for (const item of list) {
         const k = norm(item);
         if (!k) { fail(id, `empty ${label}`); continue; }
-        if (truthKeys.has(k)) fail(id, `${label} "${item}" collides with the real answer`);
+        if (isTruthCollision(q, item)) fail(id, `${label} "${item}" collides with the real answer`);
+        if (BENGALI.test(item)) fail(id, `${label} "${item}" is in Bengali script — it would stand out on the ballot`);
         if (seen.has(k)) fail(id, `duplicate ${label} "${item}"`);
         seen.add(k);
         if (item.length > 60) fail(id, `${label} "${item}" is longer than a player could write`);

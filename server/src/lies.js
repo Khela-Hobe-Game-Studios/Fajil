@@ -12,6 +12,12 @@
 
 const LIE_MAX = 60;
 
+// Bengali codepoints, the same range norm() preserves. The bank carries Bangla on
+// purpose; ballotText() is about where it is allowed to appear. Exported because
+// questions/lint.js refuses at author time exactly what this module refuses to
+// print, and two copies of the range is two chances for them to disagree.
+const BENGALI = /[\u0980-\u09FF]/;
+
 // Below this the vote is trivial — with three players you would be picking between
 // two lies and the truth, and simply avoiding your own leaves a coin flip. House
 // decoys pad the board out so a small room still plays a real round.
@@ -30,6 +36,54 @@ function norm(s) {
     .normalize('NFKC')
     .toLowerCase()
     .replace(/[^a-z0-9\u0980-\u09FF]+/g, '');
+}
+
+/**
+ * What the truth is *printed as on the ballot* — deliberately not the display form.
+ *
+ * 313 of the bank's 551 `show` fields carry Bangla script — "Jackfruit (কাঁঠাল)",
+ * "Natok (নাটক) — TV dramas" — and no player writing a lie on a phone produces
+ * Bengali script or a bracketed gloss. Printing `show` on the ballot therefore
+ * labels the truth as plainly as a `truth: true` flag would; it is the same leak
+ * this module exists to prevent, arriving through the display layer rather than
+ * the protocol.
+ *
+ * `a` is the right string because it is literally what fills the blank, and the
+ * bank's decoys are written to match it: "guest" belongs among Winter / Snow /
+ * Traveller in a way that "Otithi pakhi (অতিথি পাখি) — 'guest birds'" does not.
+ *
+ * `show` is not lost. It is what the reveal prints, which is the moment the Bangla
+ * is worth having.
+ */
+function ballotText(question) {
+  const a = String(question.a ?? '').trim();
+  if (a && !BENGALI.test(a)) return a;
+  // A sheet-loaded bank the linter never saw could still hand us a Bangla `a`.
+  // Strip the parenthetical gloss off the display form rather than shipping script.
+  const bare = plainShow(question);
+  return bare && !BENGALI.test(bare) ? bare : a || bare;
+}
+
+/** The display form with its bracketed gloss removed. */
+function plainShow(question) {
+  return String(question.show ?? '')
+    .replace(/\s*\([^)]*\)/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * Every option goes on the ballot in caps.
+ *
+ * Case is a tell, not styling. The truth arrives from the bank in sentence case
+ * ("Jackfruit") and a player typing at speed on a phone does not capitalise
+ * ("mango"), so a mixed-case board quietly sorts itself into "set by the house" and
+ * "written by a person". Uppercasing is done here rather than in CSS for the same
+ * reason toClientOptions() builds a fresh object: the leak has to be closed in the
+ * frame the client receives, not in the stylesheet it is free to ignore.
+ */
+function ballotCase(text) {
+  return String(text).toUpperCase();
 }
 
 /** Trim and bound a submitted lie. Returns null for anything unusable. */
@@ -58,7 +112,11 @@ function cleanLie(raw) {
 function isTruthCollision(question, text) {
   const n = norm(text);
   if (!n) return false;
-  const candidates = [question.a, question.show, ...(question.alt ?? [])];
+  // The bare display form is in here too: with the ballot printing "Mango" and the
+  // reveal printing "Mango tree (আম গাছ)", a player who writes "Mango tree" is
+  // writing the answer, and without this they would merge into the truth's own
+  // option and be credited as its author.
+  const candidates = [question.a, question.show, plainShow(question), ...(question.alt ?? [])];
   return candidates.some((c) => c && norm(c) === n);
 }
 
@@ -107,7 +165,7 @@ function buildOptions(question, lies, awaited = [], rand = Math.random) {
   // second correct answer on the board. Submission rejects these, but a filler pool
   // or a stale client could still get one here, so it is enforced at build time too.
   const altKeys = new Set(
-    [question.a, question.show, ...(question.alt ?? [])].map(norm).filter(Boolean),
+    [question.a, question.show, plainShow(question), ...(question.alt ?? [])].map(norm).filter(Boolean),
   );
 
   for (const [pid, text] of Object.entries(lies)) {
@@ -136,11 +194,11 @@ function buildOptions(question, lies, awaited = [], rand = Math.random) {
     add(decoys[decoyAt++], null, true);
   }
 
-  // The truth goes in last, in its display form. Look it up by the key it was
-  // actually filed under rather than by norm(question.a): `show` is a different
-  // string ("Jackfruit (কাঁঠাল)" vs "jackfruit") and normalises to a different key,
-  // so keying off the answer finds nothing and ships a round with no correct option.
-  const truthText = question.show || question.a;
+  // The truth goes in last, in its ballot form rather than its display form — see
+  // ballotText(). Look it up by the key it was actually filed under rather than by
+  // norm(question.a): the two agree today, and a bank entry that made them disagree
+  // would otherwise ship a round with no correct option on the board.
+  const truthText = ballotText(question);
   add(truthText, null, false);
   const truthEntry = byNorm.get(norm(truthText));
   if (!truthEntry) throw new Error(`question ${question.id}: truth produced no option`);
@@ -151,7 +209,7 @@ function buildOptions(question, lies, awaited = [], rand = Math.random) {
   // make "the truth is always o1" true, and the whole game rests on it not being.
   const options = shuffle([...byNorm.values()], rand).map((o, i) => ({
     id: `o${i + 1}`,
-    text: o.text,
+    text: ballotCase(o.text),
     truth: !!o.truth,
     authors: o.authors,
     house: !!o.house && o.authors.length === 0,
@@ -180,8 +238,11 @@ function ownOptionId(options, pid) {
 module.exports = {
   LIE_MAX,
   MIN_OPTIONS,
+  BENGALI,
   norm,
   cleanLie,
+  ballotText,
+  ballotCase,
   isTruthCollision,
   buildOptions,
   toClientOptions,

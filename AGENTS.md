@@ -55,6 +55,12 @@ lives or dies by. `toClientOptions()` in `server/src/lies.js` is a whitelist tha
 builds a fresh object — if you find yourself adding a field to the options payload,
 stop and ask whether it narrows down which option is true. Authorship counts.
 
+**And how an option is *printed* narrows it down too.** The bank's `show` fields
+carry Bangla and sentence case; a lie typed on a phone carries neither, so the
+ballot prints `a` in caps and `show` waits for the truth card. Anything that makes
+one option look unlike the others — script, case, length, punctuation a player
+cannot type — is the same leak wearing a different hat.
+
 **8 players is the design target, not 3.** Layouts that look fine with three
 fixtures fall apart at eight — the reveal is nine cards and the ballot is nine
 options. The reveal list scrolls and follows the beat for exactly this reason.

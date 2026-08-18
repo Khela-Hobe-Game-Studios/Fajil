@@ -169,8 +169,8 @@ Output a **JSON array**. Every object:
 {
   "id": "bd-natl-fruit",         // unique, kebab-case; bd-* for desh, pr-* for probash
   "q": "Bangladesh's national fruit is the ___.",
-  "a": "jackfruit",              // the canonical answer, lowercase, for matching
-  "show": "Jackfruit (কাঁঠাল)",   // how it is DISPLAYED at the reveal
+  "a": "jackfruit",              // lowercase; THE BALLOT PRINTS THIS, in caps
+  "show": "Jackfruit (কাঁঠাল)",   // display form — the reveal only, never the ballot
   "alt": ["kathal", "kanthal"],  // other spellings that count as "you wrote the truth"
   "decoys": ["Mango", "Lychee", "Guava"],      // >=3, house lies for a small room
   "filler": ["Mango", "Papaya"],               // >=2, used for players who go AFK
@@ -187,10 +187,17 @@ Output a **JSON array**. Every object:
   near the end** where possible; a blank in the middle is harder to read aloud from
   across a room. Max 160 characters. Write it as a *statement with a hole*, not a
   question — "Bangladesh's national fruit is the ___." not "What is…?"
-- **`a`** — lowercase, no punctuation, the plainest form. Used only for matching.
-- **`show`** — the display form, properly capitalised. Add Bengali script in
-  parentheses where it adds something: `"Jackfruit (কাঁঠাল)"`. The game ships a
-  Bengali font, so script is welcome and looks good.
+- **`a`** — lowercase, no punctuation, the plainest form. **This is what the ballot
+  prints**, uppercased, alongside the lies — so it has to read like something a
+  player could have typed. No Bengali script (the linter refuses it), no bracketed
+  gloss, no trailing apposition. If `a` cannot stand on its own next to the decoys,
+  the question needs rewriting, not a longer `a`.
+- **`show`** — the display form, properly capitalised, **printed at the reveal and
+  nowhere else**. Add Bengali script in parentheses where it adds something:
+  `"Jackfruit (কাঁঠাল)"`. The game ships a Bengali font, so script is welcome and
+  looks good — and because it never touches the ballot, it cannot give the round
+  away. Expand freely here: `"Natok (নাটক) — TV dramas"` is a good `show` and would
+  have been a terrible option.
 - **`alt`** — **this field prevents a broken round.** If a player types the real
   answer into the lie box the game catches it and asks for a lie instead. Miss a
   spelling and the truth appears on the board twice. Include: transliteration
@@ -367,6 +374,7 @@ Before you output, check each entry against this list:
       hold, cook, ride or do?
 - [ ] Could a clueless player bluff this? Could a knowledgeable one be fooled?
 - [ ] Is the answer 1–4 words and the same register as the lies?
+- [ ] Is `a` free of Bengali script and brackets — could a player have typed it?
 - [ ] ≥3 decoys, ≥2 filler, **none of them secretly true**
 - [ ] `alt` covers every spelling someone might type, including Bengali script
 - [ ] `why` earns the round — tells them something, ≥40 chars
